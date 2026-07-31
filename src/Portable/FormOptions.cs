@@ -123,23 +123,25 @@ namespace DesktopPet
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "DesktopPet");
+
+            //urls
             var urlVanilla = "https://raw.githubusercontent.com/Adrianotiger/desktopPet/master/Pets/";
             var urlZech = "https://raw.githubusercontent.com/ZechsVariety/Zechs-Desktop-Pets/main/";
 
-            var content = await client.GetStringAsync(urlVanilla + "pets.json");
-            WebPets = Newtonsoft.Json.JsonConvert.DeserializeObject<Pets>(content);
+            //get the pets object from Adriano's pets.json
+            var vanillaContent = await client.GetStringAsync(urlVanilla + "pets.json");
+            WebPets = Newtonsoft.Json.JsonConvert.DeserializeObject<Pets>(vanillaContent);
 
-            StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, $"WebPets count: {WebPets.pets.Count}");
-
+            //get the pets object from Zecheriah's pets.json
             var extraContent = await client.GetStringAsync(urlZech + "pets.json");
             Pets extraPets = Newtonsoft.Json.JsonConvert.DeserializeObject<Pets>(extraContent);
+            //add the extra pets to the main WebPets object
             foreach (Pet pet in extraPets.pets)
             {
                 WebPets.pets.Add(pet);
             }
 
-            StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, $"WebPets new count: {WebPets.pets.Count}");
-
+            //order by update date, with extra pets coming first
             WebPets.Reorder(extraPets.pets.Count);
 
             List<Button> butts = new List<Button>();
@@ -164,9 +166,8 @@ namespace DesktopPet
 
             for (int j = 0; j < WebPets.pets.Count; j++)
             {
-                var url = j < WebPets.pets.Count - extraPets.pets.Count ? urlVanilla : urlZech;
-                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, $"url: {url}");
-                //StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, $"pet: {WebPets.pets[j].folder.ToString()}");
+                //determine which url to use
+                var url = WebPets.pets[j].author == "Zecheriah" ? urlZech : urlVanilla;
 
                 using (WebResponse wrFileResponse = WebRequest.Create(url + WebPets.pets[j].folder + "/icon.png").GetResponse())
                 {
@@ -211,7 +212,11 @@ namespace DesktopPet
 
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Add("User-Agent", "DesktopPet");
-                var url = "https://raw.githubusercontent.com/ZechsVariety/Zechs-Desktop-Pets/main/";
+
+                var urlVanilla = "https://raw.githubusercontent.com/Adrianotiger/desktopPet/master/Pets/";
+                var urlZech = "https://raw.githubusercontent.com/ZechsVariety/Zechs-Desktop-Pets/main/";
+                //determine which url to use
+                var url = i.author == "Zecheriah" ? urlZech : urlVanilla;
 
                 var content = await client.GetStringAsync(url + i.folder + "/animations.xml");
 
@@ -452,8 +457,17 @@ namespace DesktopPet
     public class Pets
     {
         public List<Pet> pets { get; set; }
+
+        /// <summary>
+        /// Sort pets based on update date. Zech's pets come before the vanilla ones.
+        /// </summary>
+        /// <param name="extraPetsCount">How many of Zech's pets exists in the pets list (used for seperation)</param>
         public void Reorder(int extraPetsCount)
         {
+            //TODO: maybe don't seperate them now that the url checking thing has been fixed
+
+            //seperate vanilla and extra pets so that they can be sorted seperately
+
             List<Pet> petsVanilla = new List<Pet>();
             List<Pet> petsZech = new List<Pet>();
 
@@ -471,20 +485,22 @@ namespace DesktopPet
 
             pets.Clear();
 
-            petsVanilla.Sort(delegate (Pet x, Pet y)
-            {
-                return y.lastupdate.CompareTo(x.lastupdate);
-            });
-            foreach(Pet pet in petsVanilla)
-            {
-                pets.Add(pet);
-            }
-
+            //sort and readd Zech's pets first
             petsZech.Sort(delegate (Pet x, Pet y)
             {
                 return y.lastupdate.CompareTo(x.lastupdate);
             });
             foreach (Pet pet in petsZech)
+            {
+                pets.Add(pet);
+            }
+
+            //then, sort and readd the vanilla pets
+            petsVanilla.Sort(delegate (Pet x, Pet y)
+            {
+                return y.lastupdate.CompareTo(x.lastupdate);
+            });
+            foreach(Pet pet in petsVanilla)
             {
                 pets.Add(pet);
             }

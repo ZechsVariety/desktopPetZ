@@ -73,7 +73,8 @@ namespace DesktopPet
                 }
             } catch (Exception ex)
             {
-                MessageBox.Show("Can't load pets: " + ex.Message);
+                //TODO: ensure user can still access options without wifi
+                MessageBox.Show("Can't load pets: " + ex.Message + "\nEnsure you have an internet connection, and check if all the pets have icons!");
             }
         }
 
