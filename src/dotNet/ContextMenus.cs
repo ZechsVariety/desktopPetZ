@@ -25,6 +25,10 @@ namespace DesktopPet
             /// </summary>
         static ToolStripMenuItem newSheepMenuItem;
             /// <summary>
+            /// Kill Sheep Menu Item
+            /// </summary>
+        static ToolStripMenuItem killSheepMenuItem;
+            /// <summary>
             /// Close Menu Item: if another pet was downloaded, the text of this item will change.
             /// </summary>
         static ToolStripMenuItem closeSheepMenuItem;
@@ -134,8 +138,18 @@ namespace DesktopPet
             sep = new ToolStripSeparator();
             menu.Items.Add(sep);
 
-			// Item: Close application.
-			closeSheepMenuItem = new ToolStripMenuItem
+            // Item: Kill All Sheep.
+            killSheepMenuItem = new ToolStripMenuItem
+            {
+                Text = "&Kill all Sheep"
+            };
+            killSheepMenuItem.Click += new EventHandler(KillAllSheep_Click);
+            killSheepMenuItem.Image = Resources.exit;
+            killSheepMenuItem.Font = new Font(killSheepMenuItem.Font, killSheepMenuItem.Font.Style | FontStyle.Bold);
+            menu.Items.Add(killSheepMenuItem);
+
+            // Item: Close application.
+            closeSheepMenuItem = new ToolStripMenuItem
 			{
 				Text = "&Remove Sheep and Close"
 			};
@@ -176,6 +190,7 @@ namespace DesktopPet
         {
             newSheepMenuItem.Text = "&Add new " + petName;
             newSheepMenuItem.Image = newIcon.ToBitmap();
+            killSheepMenuItem.Text = "&Kill all " + petName + "s";
             closeSheepMenuItem.Text = "&Remove " + petName + " and Close";
 
             author = aboutAuthor;
@@ -271,11 +286,21 @@ namespace DesktopPet
 #endif
         }
 
-            /// <summary>
-            /// Processes a menu item. Will close the application after closing all pets.
-            /// </summary>
-            /// <param name="sender">The sender.</param>
-            /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        /// <summary>
+        /// Handles the Click event of the Kill All Sheep control.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void KillAllSheep_Click(object sender, EventArgs e)
+        {
+            Program.Mainthread.KillSheeps(true, false);
+        }
+
+        /// <summary>
+        /// Processes a menu item. Will close the application after closing all pets.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         void Exit_Click(object sender, EventArgs e)
         {
             // Quit without further ado.

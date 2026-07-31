@@ -1078,6 +1078,7 @@ namespace DesktopPet
             /// <param name="e">Mouse event values.</param>
         private void PictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
+            //NOTE: you might be able to drag children if you remove the 2nd part of this if
             if (e.Button == MouseButtons.Left && Name.IndexOf("child") < 0)
             {
                 hwndWindow = (IntPtr)0;             // Remove window handles
@@ -1184,6 +1185,8 @@ namespace DesktopPet
                 }
             }
 			IsDragging = false;
+
+            //TODO: add throwing the pet (with a new variable IsThrown that automatically applies gravity IF there is a thrown animation, or maybe if there is a fall at least)
         }
         
             /// <summary>
@@ -1199,6 +1202,12 @@ namespace DesktopPet
                 if(!Program.Mainthread.KillSheep(this))
                 {
                     Close();
+                }
+            } else if(me.Button == MouseButtons.Middle)
+            {
+                if (!Program.Mainthread.KillSheep(this))
+                {
+                    Program.Mainthread.KillSheeps(true, false);
                 }
             }
         }

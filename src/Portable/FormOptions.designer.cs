@@ -375,14 +375,14 @@ namespace DesktopPet
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(173, 40);
             this.label4.TabIndex = 2;
-            this.label4.Text = "How many pets start with application";
+            this.label4.Text = "How many pets start with application\nWARNING: going above 16 WILL lag. If it gets bad, consult the task manager.";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // trackBar2
             // 
             this.trackBar2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.trackBar2.Location = new System.Drawing.Point(3, 23);
-            this.trackBar2.Maximum = 16;
+            this.trackBar2.Maximum = 100;
             this.trackBar2.Minimum = 1;
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Size = new System.Drawing.Size(172, 34);

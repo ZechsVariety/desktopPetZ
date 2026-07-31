@@ -20,7 +20,7 @@ namespace DesktopPet
         /// <summary>
         /// Maximal sheeps (too much sheeps will cover too much the screen and would not be nice to see).
         /// </summary>
-        public const int MAX_SHEEPS = 16;
+        public const int MAX_SHEEPS = 100;
 
         /// <summary>
         /// DEBUG TYPE. If you press "SHIFT" by starting the application, a debug Window will appear.
@@ -200,11 +200,13 @@ namespace DesktopPet
             /// Close all sheeps on the desktop and eventually closes the application.
             /// </summary>
             /// <param name="exit">If true, the application will close after 1 second (leaving time to the sheeps to die).</param>
-        public void KillSheeps(bool exit)
+            /// <param name="closeApp">If true, the app closes afterwards. Otherwise, it stays open.</param>
+        public void KillSheeps(bool exit, bool closeApp = true)
         {
             AddDebugInfo(DEBUG_TYPE.info, "Killing all sheeps");
             timer1.Tag = "0";
-            pi.Dispose();
+            if(closeApp)
+                pi.Dispose();
 
                 // Leave open application to show some kill animations. 
                 // Only if there is a pet on the desktop.
@@ -215,17 +217,19 @@ namespace DesktopPet
                 {
                     Thread.Sleep(rand.Next(100, 200));
                     sheeps[i].Kill();
+
+                    if(closeApp)
                     Application.DoEvents();
                 }
                 iSheeps = 0;
 
-                if (exit)
+                if (exit && closeApp)
                 {
                     timer1.Interval = 1100;
                     timer1.Enabled = true;
                 }
             }
-            else
+            else if(closeApp)
             {
                 timer1.Interval = 100;
                 timer1.Enabled = true;
