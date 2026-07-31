@@ -123,12 +123,24 @@ namespace DesktopPet
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "DesktopPet");
-            var url = "https://raw.githubusercontent.com/ZechsVariety/Zechs-Desktop-Pets/main/";
+            var urlVanilla = "https://raw.githubusercontent.com/Adrianotiger/desktopPet/master/Pets/";
+            var urlZech = "https://raw.githubusercontent.com/ZechsVariety/Zechs-Desktop-Pets/main/";
 
-            var content = await client.GetStringAsync(url + "pets.json");
+            var content = await client.GetStringAsync(urlVanilla + "pets.json");
             WebPets = Newtonsoft.Json.JsonConvert.DeserializeObject<Pets>(content);
 
-            WebPets.Reorder();
+            StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, $"WebPets count: {WebPets.pets.Count}");
+
+            var extraContent = await client.GetStringAsync(urlZech + "pets.json");
+            Pets extraPets = Newtonsoft.Json.JsonConvert.DeserializeObject<Pets>(extraContent);
+            foreach (Pet pet in extraPets.pets)
+            {
+                WebPets.pets.Add(pet);
+            }
+
+            StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, $"WebPets new count: {WebPets.pets.Count}");
+
+            WebPets.Reorder(extraPets.pets.Count);
 
             List<Button> butts = new List<Button>();
             for (int j = 0; j < WebPets.pets.Count; j++)
@@ -152,6 +164,10 @@ namespace DesktopPet
 
             for (int j = 0; j < WebPets.pets.Count; j++)
             {
+                var url = j < WebPets.pets.Count - extraPets.pets.Count ? urlVanilla : urlZech;
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, $"url: {url}");
+                //StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, $"pet: {WebPets.pets[j].folder.ToString()}");
+
                 using (WebResponse wrFileResponse = WebRequest.Create(url + WebPets.pets[j].folder + "/icon.png").GetResponse())
                 {
                     using (Stream objWebStream = wrFileResponse.GetResponseStream())
@@ -436,12 +452,42 @@ namespace DesktopPet
     public class Pets
     {
         public List<Pet> pets { get; set; }
-        public void Reorder()
+        public void Reorder(int extraPetsCount)
         {
-            pets.Sort(delegate (Pet x, Pet y)
+            List<Pet> petsVanilla = new List<Pet>();
+            List<Pet> petsZech = new List<Pet>();
+
+            for(int i = 0; i < pets.Count; i++)
+            {
+                if(i < pets.Count - extraPetsCount)
+                {
+                    petsVanilla.Add(pets[i]);
+                }
+                else
+                {
+                    petsZech.Add(pets[i]);
+                }
+            }
+
+            pets.Clear();
+
+            petsVanilla.Sort(delegate (Pet x, Pet y)
             {
                 return y.lastupdate.CompareTo(x.lastupdate);
             });
+            foreach(Pet pet in petsVanilla)
+            {
+                pets.Add(pet);
+            }
+
+            petsZech.Sort(delegate (Pet x, Pet y)
+            {
+                return y.lastupdate.CompareTo(x.lastupdate);
+            });
+            foreach (Pet pet in petsZech)
+            {
+                pets.Add(pet);
+            }
         }
     }
 }
