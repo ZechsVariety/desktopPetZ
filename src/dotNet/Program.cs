@@ -59,15 +59,21 @@ namespace DesktopPet
         public static void OpenOptionDialog()
         {
             FormOptions formoptions = new FormOptions();
-            switch (formoptions.ShowDialog())
+            try
             {
-                case DialogResult.Retry:
-                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "restoring default XML");
+                switch (formoptions.ShowDialog())
+                {
+                    case DialogResult.Retry:
+                        StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "restoring default XML");
 
-                    MyData.SetIcon("");
-                    MyData.SetImages("");
-                    MyData.SetXml("","");
-                    break;
+                        MyData.SetIcon("");
+                        MyData.SetImages("");
+                        MyData.SetXml("", "");
+                        break;
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show("Can't load pets: " + ex.Message);
             }
         }
 

@@ -123,7 +123,7 @@ namespace DesktopPet
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "DesktopPet");
-            var url = "https://raw.githubusercontent.com/Adrianotiger/desktopPet/master/Pets/";
+            var url = "https://raw.githubusercontent.com/ZechsVariety/Zechs-Desktop-Pets/main/";
 
             var content = await client.GetStringAsync(url + "pets.json");
             WebPets = Newtonsoft.Json.JsonConvert.DeserializeObject<Pets>(content);
@@ -195,7 +195,7 @@ namespace DesktopPet
 
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Add("User-Agent", "DesktopPet");
-                var url = "https://raw.githubusercontent.com/Adrianotiger/desktopPet/master/Pets/";
+                var url = "https://raw.githubusercontent.com/ZechsVariety/Zechs-Desktop-Pets/main/";
 
                 var content = await client.GetStringAsync(url + i.folder + "/animations.xml");
 
