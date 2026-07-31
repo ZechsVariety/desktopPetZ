@@ -152,23 +152,14 @@ namespace DesktopPet
 
             for (int j = 0; j < WebPets.pets.Count; j++)
             {
-                try
+                using (WebResponse wrFileResponse = WebRequest.Create(url + WebPets.pets[j].folder + "/icon.png").GetResponse())
                 {
-                    WebResponse wrFileResponse = WebRequest.Create(url + WebPets.pets[j].folder + "/icon.png").GetResponse();
-                    MessageBox.Show(wrFileResponse.ToString());
-
                     using (Stream objWebStream = wrFileResponse.GetResponseStream())
                     {
                         MemoryStream ms = new MemoryStream();
                         objWebStream.CopyTo(ms, 8192);
                         butts[j].Image = Image.FromStream(ms);
                     }
-
-                    wrFileResponse.Dispose();
-                } catch (Exception e)
-                {
-                    butts[j].Image = Image.FromFile("../Images/esheep.png");
-                    MessageBox.Show($"Could not find icon for {WebPets.pets[j].folder}: {e}");
                 }
                 Application.DoEvents();
                 butts[j].Click += Pet_Click;
