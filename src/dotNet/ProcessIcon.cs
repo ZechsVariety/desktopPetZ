@@ -33,7 +33,7 @@ namespace DesktopPet
             ni.MouseClick += new MouseEventHandler(Ni_MouseClick);
             ni.MouseDoubleClick += new MouseEventHandler(Ni_MouseDoubleClick);
 
-            ni.Text = "eSheep Desktop Pet";
+            ni.Text = "eSheep Desktop Pet Z";
             ni.Visible = true;
 
             // Attach a context menu.
@@ -50,7 +50,7 @@ namespace DesktopPet
 			{
 				ni.Icon = new Icon(icon, 32, 32);
 				ContextMenus.UpdateIcon(ni.Icon, petName, aboutAuthor, aboutTitle, aboutVersion, aboutInfo);
-				ni.Text = petName + " Desktop Pet";
+				ni.Text = petName + " Desktop Pet Z";
 			}
 			catch(Exception)
 			{

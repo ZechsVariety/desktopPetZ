@@ -42,7 +42,7 @@ namespace DesktopPet
             /// <summary>
             /// Application Name.
             /// </summary>
-        readonly string appName = "DesktopPet";
+        readonly string appName = "DesktopPetZ";
             /// <summary>
             /// Name of the uninstall batch file.
             /// </summary>

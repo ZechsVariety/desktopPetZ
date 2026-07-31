@@ -95,6 +95,7 @@ namespace DesktopPet
             sep = new ToolStripSeparator();
             menu.Items.Add(sep);
 
+            /*
 #if PORTABLE
             // Create install class
             installForm = new Install();
@@ -109,6 +110,7 @@ namespace DesktopPet
             item.Image = installForm.Icon.ToBitmap();
             menu.Items.Add(item);
 #endif
+            */
 
 			// Item: About.
 			item = new ToolStripMenuItem
