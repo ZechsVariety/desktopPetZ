@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("eSheep")]
-[assembly: AssemblyDescription("Remembering the old 16-bit eSheep")]
+[assembly: AssemblyTitle("zSheep")]
+[assembly: AssemblyDescription("A fork of Adriano's eSheep!")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Adriano")]
-[assembly: AssemblyProduct("eSheep")]
-[assembly: AssemblyCopyright("Copyright ©  2015-2025")]
+[assembly: AssemblyCompany("Zecheriah")]
+[assembly: AssemblyProduct("zSheep")]
+[assembly: AssemblyCopyright("Copyright ©  2015-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
