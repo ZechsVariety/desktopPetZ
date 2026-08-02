@@ -141,8 +141,8 @@ namespace DesktopPet
                 WebPets.pets.Add(pet);
             }
 
-            //order by update date, with extra pets coming first
-            WebPets.Reorder(extraPets.pets.Count);
+            //order by update date, with Zech's pets coming first
+            WebPets.Reorder();
 
             List<Button> butts = new List<Button>();
             for (int j = 0; j < WebPets.pets.Count; j++)
@@ -167,7 +167,8 @@ namespace DesktopPet
             for (int j = 0; j < WebPets.pets.Count; j++)
             {
                 //determine which url to use
-                var url = WebPets.pets[j].author == "Zecheriah" ? urlZech : urlVanilla;
+                var url = WebPets.pets[j].author == "Zecheriah" || WebPets.pets[j].folder.Contains("classic/") ? urlZech : urlVanilla;
+                //MessageBox.Show(WebPets.pets[j].folder);
 
                 using (WebResponse wrFileResponse = WebRequest.Create(url + WebPets.pets[j].folder + "/icon.png").GetResponse())
                 {
@@ -216,7 +217,7 @@ namespace DesktopPet
                 var urlVanilla = "https://raw.githubusercontent.com/Adrianotiger/desktopPet/master/Pets/";
                 var urlZech = "https://raw.githubusercontent.com/ZechsVariety/Zechs-Desktop-Pets/main/";
                 //determine which url to use
-                var url = i.author == "Zecheriah" ? urlZech : urlVanilla;
+                var url = i.author == "Zecheriah" || i.folder.Contains("classic/") ? urlZech : urlVanilla;
 
                 var content = await client.GetStringAsync(url + i.folder + "/animations.xml");
 
@@ -461,25 +462,24 @@ namespace DesktopPet
         /// <summary>
         /// Sort pets based on update date. Zech's pets come before the vanilla ones.
         /// </summary>
-        /// <param name="extraPetsCount">How many of Zech's pets exists in the pets list (used for seperation)</param>
-        public void Reorder(int extraPetsCount)
+        public void Reorder()
         {
             //TODO: maybe don't seperate them now that the url checking thing has been fixed
 
-            //seperate vanilla and extra pets so that they can be sorted seperately
+            //separate vanilla and Zech's pets so that they can be sorted separately
 
-            List<Pet> petsVanilla = new List<Pet>();
+            List<Pet> petsVanilla = new List<Pet>(); //includes classic pets from Zech's pets.json
             List<Pet> petsZech = new List<Pet>();
 
             for(int i = 0; i < pets.Count; i++)
             {
-                if(i < pets.Count - extraPetsCount)
+                if (pets[i].author == "Zecheriah")
                 {
-                    petsVanilla.Add(pets[i]);
+                    petsZech.Add(pets[i]);
                 }
                 else
                 {
-                    petsZech.Add(pets[i]);
+                    petsVanilla.Add(pets[i]);
                 }
             }
 
@@ -495,7 +495,7 @@ namespace DesktopPet
                 pets.Add(pet);
             }
 
-            //then, sort and readd the vanilla pets
+            //then, sort and readd the vanilla and classic pets
             petsVanilla.Sort(delegate (Pet x, Pet y)
             {
                 return y.lastupdate.CompareTo(x.lastupdate);
