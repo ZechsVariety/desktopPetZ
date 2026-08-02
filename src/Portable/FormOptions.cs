@@ -158,21 +158,21 @@ namespace DesktopPet
             {
                 if(j == 0)
                 {
-                    var test = new Label();
-                    test.Text = "Zecheriah's Pets";
-                    test.Width = 450;
-                    test.Height = 30;
-                    test.TextAlign = ContentAlignment.BottomLeft;
-                    test.Parent = flowLayoutPanel1;
+                    var header = new Label();
+                    header.Text = "Zecheriah's Pets";
+                    header.Width = 450;
+                    header.Height = 30;
+                    header.TextAlign = ContentAlignment.BottomLeft;
+                    header.Parent = flowLayoutPanel1;
                 }
                 else if(j == zechPetCount)
                 {
-                    var test = new Label();
-                    test.Text = "Vanilla Pets";
-                    test.Width = 450;
-                    test.Height = 30;
-                    test.TextAlign = ContentAlignment.BottomLeft;
-                    test.Parent = flowLayoutPanel1;
+                    var header = new Label();
+                    header.Text = "Vanilla Pets";
+                    header.Width = 450;
+                    header.Height = 30;
+                    header.TextAlign = ContentAlignment.BottomLeft;
+                    header.Parent = flowLayoutPanel1;
                 }
 
                 var b = new Button();
@@ -209,6 +209,61 @@ namespace DesktopPet
                 }
                 Application.DoEvents();
                 butts[j].Click += Pet_Click;
+            }
+
+            //pet sets
+
+            var header2 = new Label();
+            header2.Text = "Pet Sets";
+            header2.Width = 450;
+            header2.Height = 30;
+            header2.TextAlign = ContentAlignment.BottomLeft;
+            header2.Parent = flowLayoutPanel1;
+
+            var desc = new Label();
+            desc.Text = "These are sets of the pets above and will randomly pick a pet from its set every time it respawns.";
+            desc.Width = 450;
+            desc.Height = 30;
+            desc.TextAlign = ContentAlignment.BottomLeft;
+            desc.Parent = flowLayoutPanel1;
+
+            //get the petSets object
+            var petSetsContent = await client.GetStringAsync(urlZech + "petSets.json");
+            PetSets petSets = Newtonsoft.Json.JsonConvert.DeserializeObject<PetSets>(petSetsContent);
+
+            List<Button> butts2 = new List<Button>();
+            for (int j = 0; j < petSets.petSets.Count; j++)
+            {
+                var b = new Button();
+                b.Width = 85;
+                b.Height = 80;
+                b.TextImageRelation = TextImageRelation.Overlay;
+                b.Margin = new Padding(5);
+                b.Padding = new Padding(1);
+                b.FlatStyle = FlatStyle.Popup;
+                b.ImageAlign = ContentAlignment.TopCenter;
+                b.TextAlign = ContentAlignment.BottomCenter;
+                b.Text = petSets.petSets[j].title;
+                b.Tag = petSets.petSets[j];
+                b.Parent = flowLayoutPanel1;
+                b.Cursor = Cursors.Hand;
+                butts2.Add(b);
+            }
+            Application.DoEvents();
+
+            for (int j = 0; j < petSets.petSets.Count; j++)
+            {
+                using (WebResponse wrFileResponse = WebRequest.Create(urlZech + petSets.petSets[j].folder + "/icon.png").GetResponse())
+                {
+                    using (Stream objWebStream = wrFileResponse.GetResponseStream())
+                    {
+                        MemoryStream ms = new MemoryStream();
+                        objWebStream.CopyTo(ms, 8192);
+                        butts2[j].Image = Image.FromStream(ms);
+                    }
+                }
+                Application.DoEvents();
+                //butts[j].Click += Set_Click;
             }
         }
 
@@ -533,5 +588,18 @@ namespace DesktopPet
                 pets.Add(pet);
             }
         }
+    }
+
+    public class PetSet
+    {
+        public string title { get; set; }
+        public string folder { get; set; }
+        public List<Pet> zechsPets { get; set; }
+        public List<Pet> vanillaPets { get; set; }
+    }
+
+    public class PetSets
+    {
+        public List<PetSet> petSets { get; set; }
     }
 }
