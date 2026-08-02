@@ -135,9 +135,18 @@ namespace DesktopPet
             //get the pets object from Zecheriah's pets.json
             var extraContent = await client.GetStringAsync(urlZech + "pets.json");
             Pets extraPets = Newtonsoft.Json.JsonConvert.DeserializeObject<Pets>(extraContent);
+
+            int zechPetCount = 0;
+            int classicPetCount = 0;
+
             //add the extra pets to the main WebPets object
             foreach (Pet pet in extraPets.pets)
             {
+                if (pet.folder.Contains("classic/"))
+                    classicPetCount++;
+                else
+                    zechPetCount++;
+
                 WebPets.pets.Add(pet);
             }
 
@@ -147,8 +156,27 @@ namespace DesktopPet
             List<Button> butts = new List<Button>();
             for (int j = 0; j < WebPets.pets.Count; j++)
             {
+                if(j == 0)
+                {
+                    var test = new Label();
+                    test.Text = "Zecheriah's Pets";
+                    test.Width = 450;
+                    test.Height = 30;
+                    test.TextAlign = ContentAlignment.BottomLeft;
+                    test.Parent = flowLayoutPanel1;
+                }
+                else if(j == zechPetCount)
+                {
+                    var test = new Label();
+                    test.Text = "Vanilla Pets";
+                    test.Width = 450;
+                    test.Height = 30;
+                    test.TextAlign = ContentAlignment.BottomLeft;
+                    test.Parent = flowLayoutPanel1;
+                }
+
                 var b = new Button();
-                b.Width = 90;
+                b.Width = 85;
                 b.Height = 80;
                 b.TextImageRelation = TextImageRelation.Overlay;
                 b.Margin = new Padding(5);
