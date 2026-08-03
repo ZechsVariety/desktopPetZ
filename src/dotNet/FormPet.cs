@@ -233,6 +233,24 @@ namespace DesktopPet
         /// <param name="first">If it is playing a spawn for the first time. Does not have any functionality for the moment.</param>
         public void Play(bool first, int forceSpawn = -1)
         {
+            //if you have a pet set selected, and it's not the first time spawning (ie: it just died), randomize the pet.
+            if(!first && Properties.Settings.Default.multiXml != null)
+            {
+                //Program.Mainthread.KillSheep(this);
+
+                //get a random xml from the multiXml list
+                string xml = Program.MyData.GetRandomXml();
+
+                //set xml to the random one
+                Program.MyData.SetXml(xml, "..");
+                //NOTE: this automatically kills all pets.
+                Program.Mainthread.LoadNewXMLFromString(xml);
+
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "pet randomized!");
+
+                return;  // Currently only 1 file, in future maybe more animations at the same time
+            }
+
             timer1.Enabled = false;                     // Stop the timer
 
 			AnimationStep = 0;                         // First step
