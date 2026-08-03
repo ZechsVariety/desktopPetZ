@@ -77,6 +77,9 @@ namespace DesktopPet
         readonly ProcessIcon pi;
 
         bool isRealoadingSettings = false;
+
+        //previous sheep count. used for pet sets, so that the correct amount of sheep are respawned when the xml is randomized.
+        public int prevSheepCount = 0;
         
         /// <summary>
         /// Error message for exceptions. It is shown in the options if an error occurs.
@@ -299,9 +302,14 @@ namespace DesktopPet
                 // "A" when application starts. Add a sheep.
             if (timer1.Tag.ToString() == "A")
             {
-				if (iSheeps < Program.MyData.GetAutoStartPets() && iSheeps < MAX_SHEEPS)
+                bool petSetEnabled = Properties.Settings.Default.multiXml != null;
+
+                //spawn auto start pets, or prev sheep count if pet set is enabled. automatically runs multiple times.
+                if ((iSheeps < Program.MyData.GetAutoStartPets() || (petSetEnabled && iSheeps < prevSheepCount)) && iSheeps < MAX_SHEEPS)
 				{
-					if (iSheeps == 0)
+                    AddDebugInfo(DEBUG_TYPE.warning, "RAN");
+
+                    if (iSheeps == 0)
 					{
 						AddDebugInfo(DEBUG_TYPE.info, "init application...");
 						xml.LoadAnimations(animations);
@@ -342,6 +350,7 @@ namespace DesktopPet
                 return;
             }
 
+            prevSheepCount = 0;
             // Close all sheeps
             for (int i = 0; i < iSheeps; i++)
             {
@@ -350,6 +359,8 @@ namespace DesktopPet
                 sheeps[i].Close();
                 sheeps[i].Dispose();
                 */
+
+                prevSheepCount++;
             }
             iSheeps = 0;
 
