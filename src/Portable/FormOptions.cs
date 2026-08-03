@@ -156,6 +156,7 @@ namespace DesktopPet
             List<Button> butts = new List<Button>();
             for (int j = 0; j < WebPets.pets.Count; j++)
             {
+                //category headers
                 if(j == 0)
                 {
                     var header = new Label();
@@ -231,6 +232,7 @@ namespace DesktopPet
             var petSetsContent = await client.GetStringAsync(urlZech + "petSets.json");
             PetSets petSets = Newtonsoft.Json.JsonConvert.DeserializeObject<PetSets>(petSetsContent);
 
+            //create buttons for each of them
             List<Button> butts2 = new List<Button>();
             for (int j = 0; j < petSets.petSets.Count; j++)
             {
@@ -251,6 +253,7 @@ namespace DesktopPet
             }
             Application.DoEvents();
 
+            //find and set the image for each button
             for (int j = 0; j < petSets.petSets.Count; j++)
             {
                 using (WebResponse wrFileResponse = WebRequest.Create(urlZech + petSets.petSets[j].folder + "/icon.png").GetResponse())
@@ -354,6 +357,10 @@ namespace DesktopPet
                 {
                     Program.MyData.SetXml(xml.OuterXml, "");
                     Program.Mainthread.LoadNewXMLFromString(xml.OuterXml);
+
+                    //remove the stored multiXml value to indicate a set is not in use
+                    Program.MyData.ClearMultiXml();
+
                     Close();
                 };
                 flowLayoutPanel2.Controls.Add(d);
@@ -412,6 +419,11 @@ namespace DesktopPet
             }
         }
 
+        /// <summary>
+        /// Download page for when you click a pet set
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Set_Click(object sender, EventArgs e)
         {
             try
@@ -421,6 +433,7 @@ namespace DesktopPet
 
                 while (flowLayoutPanel2.Controls.Count > 1) flowLayoutPanel2.Controls.Remove(flowLayoutPanel2.Controls[1]);
 
+                //folder text
                 var l = new Label();
                 l.Font = new Font(l.Font.FontFamily, 15, FontStyle.Bold);
                 l.Width = flowLayoutPanel2.Width - 30;
@@ -430,6 +443,7 @@ namespace DesktopPet
                 l.Text = i.folder;
                 flowLayoutPanel2.Controls.Add(l);
 
+                //image
                 var p = new PictureBox();
                 p.Image = b.Image;
                 p.Width = flowLayoutPanel2.Width - 30;
@@ -445,37 +459,49 @@ namespace DesktopPet
                 var urlVanilla = "https://raw.githubusercontent.com/Adrianotiger/desktopPet/master/Pets/";
                 var urlZech = "https://raw.githubusercontent.com/ZechsVariety/Zechs-Desktop-Pets/main/";
 
+                List<XmlDocument> petXmls = new List<XmlDocument>();
+                //if set contains zech's pets
                 if (i.zechsPets != null)
                 {
+                    //run through each pet
                     foreach (Pet pet in i.zechsPets)
                     {
+                        //parse xml from Zech's repo and add it to the petXmls list
                         var content = await client.GetStringAsync(urlZech + pet.folder + "/animations.xml");
+                        petXmls.Add(new XmlDocument());
+                        petXmls[petXmls.Count - 1].LoadXml(content);
 
+                        //show the pet name
                         var name = new Label();
                         name.Width = flowLayoutPanel2.Width - 30;
                         name.Height = 30;
                         name.TextAlign = ContentAlignment.MiddleCenter;
                         name.Parent = flowLayoutPanel2;
-
                         name.Text = pet.folder;
                     }
                 }
+                //if set contains vanilla pets
                 if (i.vanillaPets != null)
                 {
+                    //run through each pet
                     foreach (Pet pet in i.vanillaPets)
                     {
+                        //parse xml from Adriano's repo and add it to the petXmls list
                         var content = await client.GetStringAsync(urlVanilla + pet.folder + "/animations.xml");
+                        petXmls.Add(new XmlDocument());
+                        petXmls[petXmls.Count - 1].LoadXml(content);
 
+                        //show the pet name
                         var name = new Label();
                         name.Width = flowLayoutPanel2.Width - 30;
                         name.Height = 30;
                         name.TextAlign = ContentAlignment.MiddleCenter;
                         name.Parent = flowLayoutPanel2;
-
                         name.Text = pet.folder;
                     }
                 }
 
+                //download button
                 var d = new Button();
                 d.Width = flowLayoutPanel2.Width - 30;
                 d.Text = "Download";
@@ -487,13 +513,22 @@ namespace DesktopPet
                 d.BackgroundImageLayout = ImageLayout.Zoom;
                 d.TextAlign = ContentAlignment.MiddleRight;
                 d.Height = 60;
+                //on click
                 d.Click += (se, ev) =>
                 {
-                    /*
-                    Program.MyData.SetXml(xml.OuterXml, "");
-                    Program.Mainthread.LoadNewXMLFromString(xml.OuterXml);
+                    //set the multiXml value to a concatenated string of all the selected pet xmls
+                    Program.MyData.SetMultiXml(petXmls);
+
+                    //get a random xml from the multiXml list
+                    string xml = Program.MyData.GetRandomXml();
+
+                    //set xml to the random one
+                    Program.MyData.SetXml(xml, "");
+                    Program.Mainthread.LoadNewXMLFromString(xml);
+
+                    //TODO: add "[petname] has been loaded" message box (easy)
+
                     Close();
-                    */
                 };
                 flowLayoutPanel2.Controls.Add(d);
 
@@ -503,9 +538,9 @@ namespace DesktopPet
                 desc.Height = 30;
                 desc.TextAlign = ContentAlignment.MiddleCenter;
                 desc.Parent = flowLayoutPanel2;
-
                 desc.Text = i.description;
 
+                //show this layout (avoids pop in)
                 flowLayoutPanel2.Visible = true;
                 flowLayoutPanel2.HorizontalScroll.Enabled = false;
             }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.Configuration;
+using System.Xml;
 
 namespace DesktopPet
 {
@@ -196,6 +197,55 @@ namespace DesktopPet
                 writer.Write(AppSettings["xml"].Value);
                 return AppSettings["xml"].Value;
             }
+        }
+
+        /// <summary>
+        /// Set the "multiXml" property, which is a concatenation of multiple xmls with a pipe (|) delimiter (ex: "[xml1]|[xml2]")
+        /// It should save between sessions.
+        /// </summary>
+        /// <param name="xmls">List of xmls to be added</param>
+        public void SetMultiXml(List<XmlDocument> xmls)
+        {
+            //concat string
+            string multiXml = "";
+            for (int i = 0; i < xmls.Count; i++)
+            {
+                //delimiter
+                if(i != 0)
+                    multiXml += "|";
+
+                //add xml to string
+                multiXml += xmls[i].OuterXml;
+            }
+
+            //set multiXml property
+            Properties.Settings.Default.multiXml = multiXml;
+            AppSettings["multiXml"].Value = multiXml;
+            Save();
+        }
+
+        /// <summary>
+        /// Get a random xml from the "multiXml" property
+        /// </summary>
+        /// <returns></returns>
+        public string GetRandomXml()
+        {
+            //turn multiXml string into list of strings
+            List<string> xmls = AppSettings["multiXml"].Value.Split('|').ToList();
+
+            //get random index and return the chosen xml
+            Random random = new Random();
+            return xmls[random.Next(0, xmls.Count)];
+        }
+
+        /// <summary>
+        /// Clear the "multiXml" property, so that the program knows a pet set is no longer selected (ie: if you select a singular pet)
+        /// </summary>
+        public void ClearMultiXml()
+        {
+            Properties.Settings.Default.multiXml = null;
+            AppSettings["multiXml"].Value = null;
+            Save();
         }
 
         public string GetImages()
