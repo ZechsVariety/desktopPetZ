@@ -263,7 +263,7 @@ namespace DesktopPet
                     }
                 }
                 Application.DoEvents();
-                //butts[j].Click += Set_Click;
+                butts2[j].Click += Set_Click;
             }
         }
 
@@ -411,6 +411,110 @@ namespace DesktopPet
                 MessageBox.Show(ex.Message);
             }
         }
+
+        private async void Set_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var b = sender as Button;
+                var i = b.Tag as PetSet;
+
+                while (flowLayoutPanel2.Controls.Count > 1) flowLayoutPanel2.Controls.Remove(flowLayoutPanel2.Controls[1]);
+
+                var l = new Label();
+                l.Font = new Font(l.Font.FontFamily, 15, FontStyle.Bold);
+                l.Width = flowLayoutPanel2.Width - 30;
+                l.Height = 25;
+                l.TextAlign = ContentAlignment.TopCenter;
+                l.AutoSize = false;
+                l.Text = i.folder;
+                flowLayoutPanel2.Controls.Add(l);
+
+                var p = new PictureBox();
+                p.Image = b.Image;
+                p.Width = flowLayoutPanel2.Width - 30;
+                p.Height = 60;
+                p.SizeMode = PictureBoxSizeMode.CenterImage;
+                flowLayoutPanel2.Controls.Add(p);
+
+                Application.DoEvents();
+
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Add("User-Agent", "DesktopPet");
+
+                var urlVanilla = "https://raw.githubusercontent.com/Adrianotiger/desktopPet/master/Pets/";
+                var urlZech = "https://raw.githubusercontent.com/ZechsVariety/Zechs-Desktop-Pets/main/";
+
+                if (i.zechsPets != null)
+                {
+                    foreach (Pet pet in i.zechsPets)
+                    {
+                        var content = await client.GetStringAsync(urlZech + pet.folder + "/animations.xml");
+
+                        var name = new Label();
+                        name.Width = flowLayoutPanel2.Width - 30;
+                        name.Height = 30;
+                        name.TextAlign = ContentAlignment.MiddleCenter;
+                        name.Parent = flowLayoutPanel2;
+
+                        name.Text = pet.folder;
+                    }
+                }
+                if (i.vanillaPets != null)
+                {
+                    foreach (Pet pet in i.vanillaPets)
+                    {
+                        var content = await client.GetStringAsync(urlVanilla + pet.folder + "/animations.xml");
+
+                        var name = new Label();
+                        name.Width = flowLayoutPanel2.Width - 30;
+                        name.Height = 30;
+                        name.TextAlign = ContentAlignment.MiddleCenter;
+                        name.Parent = flowLayoutPanel2;
+
+                        name.Text = pet.folder;
+                    }
+                }
+
+                var d = new Button();
+                d.Width = flowLayoutPanel2.Width - 30;
+                d.Text = "Download";
+                d.BackColor = Color.MediumTurquoise;
+                d.ForeColor = Color.White;
+                d.Font = new Font(d.Font.FontFamily, 12, FontStyle.Bold);
+                d.Cursor = Cursors.Hand;
+                d.BackgroundImage = Resources.install;
+                d.BackgroundImageLayout = ImageLayout.Zoom;
+                d.TextAlign = ContentAlignment.MiddleRight;
+                d.Height = 60;
+                d.Click += (se, ev) =>
+                {
+                    /*
+                    Program.MyData.SetXml(xml.OuterXml, "");
+                    Program.Mainthread.LoadNewXMLFromString(xml.OuterXml);
+                    Close();
+                    */
+                };
+                flowLayoutPanel2.Controls.Add(d);
+
+                //description
+                var desc = new Label();
+                desc.Width = flowLayoutPanel2.Width - 30;
+                desc.Height = 30;
+                desc.TextAlign = ContentAlignment.MiddleCenter;
+                desc.Parent = flowLayoutPanel2;
+
+                desc.Text = i.description;
+
+                flowLayoutPanel2.Visible = true;
+                flowLayoutPanel2.HorizontalScroll.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         /*
          * Use it once WebView2 works without any bugs and without requesting redistributable dlls
         private void LoadWebViewPage()
@@ -594,6 +698,7 @@ namespace DesktopPet
     {
         public string title { get; set; }
         public string folder { get; set; }
+        public string description { get; set; }
         public List<Pet> zechsPets { get; set; }
         public List<Pet> vanillaPets { get; set; }
     }
