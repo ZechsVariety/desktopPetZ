@@ -243,8 +243,14 @@ namespace DesktopPet
         /// </summary>
         public void ClearMultiXml()
         {
-            Properties.Settings.Default.multiXml = null;
-            AppSettings["multiXml"].Value = null;
+            //return if its already blank
+            if (Properties.Settings.Default.multiXml == "")
+                return;
+
+            //clear it
+            StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "clearing multiXml property...");
+            Properties.Settings.Default.multiXml = "";
+            AppSettings["multiXml"].Value = "";
             Save();
         }
 

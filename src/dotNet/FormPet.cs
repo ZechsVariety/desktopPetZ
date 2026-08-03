@@ -234,7 +234,7 @@ namespace DesktopPet
         public void Play(bool first, int forceSpawn = -1)
         {
             //if you have a pet set selected, and it's not the first time spawning (ie: it just died), randomize the pet.
-            if(!first && Properties.Settings.Default.multiXml != null)
+            if(!first && Properties.Settings.Default.multiXml != "")
             {
                 //Program.Mainthread.KillSheep(this);
 
