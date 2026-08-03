@@ -78,7 +78,7 @@ namespace DesktopPet
 
         bool isRealoadingSettings = false;
 
-        //previous sheep count. used for pet sets, so that the correct amount of sheep are respawned when the xml is randomized.
+        //previous sheep count. used for spawning the correct amount of pets when you swap pets.
         public int prevSheepCount = 0;
         
         /// <summary>
@@ -302,13 +302,9 @@ namespace DesktopPet
                 // "A" when application starts. Add a sheep.
             if (timer1.Tag.ToString() == "A")
             {
-                bool petSetEnabled = Properties.Settings.Default.multiXml != null;
-
-                //spawn auto start pets, or prev sheep count if pet set is enabled. automatically runs multiple times.
-                if ((iSheeps < Program.MyData.GetAutoStartPets() || (petSetEnabled && iSheeps < prevSheepCount)) && iSheeps < MAX_SHEEPS)
+                //spawn auto start pets, or if you swapped pets, spawn the amount you had prior. automatically runs multiple times.
+                if ((iSheeps < Program.MyData.GetAutoStartPets() || iSheeps < prevSheepCount) && iSheeps < MAX_SHEEPS)
 				{
-                    AddDebugInfo(DEBUG_TYPE.warning, "RAN");
-
                     if (iSheeps == 0)
 					{
 						AddDebugInfo(DEBUG_TYPE.info, "init application...");
@@ -351,7 +347,7 @@ namespace DesktopPet
             }
 
             prevSheepCount = 0;
-            // Close all sheeps
+            // Close all sheeps, and count how many are closed
             for (int i = 0; i < iSheeps; i++)
             {
                 sheeps[i].Kill();
