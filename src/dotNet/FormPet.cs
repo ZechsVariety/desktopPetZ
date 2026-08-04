@@ -262,6 +262,9 @@ namespace DesktopPet
             {
                 Random random = new Random();
                 randomSprite = random.Next(0, imageList1.Images.Count);
+
+                //set the sprite to the random one
+                pictureBox1.Image = imageList1.Images[randomSprite];
             }
 
             timer1.Enabled = false;                     // Stop the timer
@@ -482,10 +485,8 @@ namespace DesktopPet
             /// </summary>
         private void NextStep()
         {
-            //set sprite to the random one if the pet is a Skywire Civilian
-            if (Xml.AnimationXML.Header.Petname == "Civilian")
-                pictureBox1.Image = imageList1.Images[randomSprite];
-            else
+            //don't change the sprite if the pet is a Skywire Civilian
+            if (Xml.AnimationXML.Header.Petname != "Civilian")
             {
                     // If there is no repeat, we don't need to calculate the frame index.
                 if (AnimationStep < CurrentAnimation.Sequence.Frames.Count)
@@ -799,10 +800,8 @@ namespace DesktopPet
                                         //x = 0;                  // don't move the pet, if a new animation must be started
                                         //y = 0;                  //  if falling, set the pet to the new position
 
-                //set sprite to the random one if the pet is a Skywire Civilian
-                if (Xml.AnimationXML.Header.Petname == "Civilian")
-                    pictureBox1.Image = imageList1.Images[randomSprite];
-                else
+                //don't change the sprite if the pet is a Skywire Civilian
+                if (Xml.AnimationXML.Header.Petname != "Civilian")
                     pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[0]];
             }
 
