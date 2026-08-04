@@ -87,6 +87,11 @@ namespace DesktopPet
             /// </summary>
         int DisplayIndex = 0;
 
+            /// <summary>
+            /// Used for Zech's Skywire Civilian pet. Randomizes whenever it spawns.
+            /// </summary>
+        int randomSprite = 0;
+
         private readonly List<FormPet> childs = new List<FormPet>(4);
 
         /// <summary>
@@ -249,6 +254,14 @@ namespace DesktopPet
                 StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "pet randomized!");
 
                 return;  // Currently only 1 file, in future maybe more animations at the same time
+            }
+
+            //choose random sprite if the pet is a Skywire Civilian
+            //NOTE: if there are any blank sprites, those have a chance to be selected, so avoid em at all costs...
+            if(Xml.AnimationXML.Header.Petname == "Civilian")
+            {
+                Random random = new Random();
+                randomSprite = random.Next(0, imageList1.Images.Count);
             }
 
             timer1.Enabled = false;                     // Stop the timer
@@ -469,15 +482,21 @@ namespace DesktopPet
             /// </summary>
         private void NextStep()
         {
-                // If there is no repeat, we don't need to calculate the frame index.
-            if (AnimationStep < CurrentAnimation.Sequence.Frames.Count)
-            {
-                pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[AnimationStep]];
-            }
+            //set sprite to the random one if the pet is a Skywire Civilian
+            if (Xml.AnimationXML.Header.Petname == "Civilian")
+                pictureBox1.Image = imageList1.Images[randomSprite];
             else
             {
-                int index = ((AnimationStep - CurrentAnimation.Sequence.Frames.Count + CurrentAnimation.Sequence.RepeatFrom) % (CurrentAnimation.Sequence.Frames.Count - CurrentAnimation.Sequence.RepeatFrom)) + CurrentAnimation.Sequence.RepeatFrom;
-                pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[index]]; 
+                    // If there is no repeat, we don't need to calculate the frame index.
+                if (AnimationStep < CurrentAnimation.Sequence.Frames.Count)
+                {
+                    pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[AnimationStep]];
+                }
+                else
+                {
+                    int index = ((AnimationStep - CurrentAnimation.Sequence.Frames.Count + CurrentAnimation.Sequence.RepeatFrom) % (CurrentAnimation.Sequence.Frames.Count - CurrentAnimation.Sequence.RepeatFrom)) + CurrentAnimation.Sequence.RepeatFrom;
+                    pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[index]];
+                }
             }
 
                 // Get interval, opacity and offset interpolated from START and END values.
@@ -777,9 +796,14 @@ namespace DesktopPet
             if(bNewAnimation)
             {
                 timer1.Interval = 1;    // execute immediately the first step of the next animation.
-                //x = 0;                  // don't move the pet, if a new animation must be started
-                //y = 0;                  //  if falling, set the pet to the new position
-                pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[0]];
+                                        //x = 0;                  // don't move the pet, if a new animation must be started
+                                        //y = 0;                  //  if falling, set the pet to the new position
+
+                //set sprite to the random one if the pet is a Skywire Civilian
+                if (Xml.AnimationXML.Header.Petname == "Civilian")
+                    pictureBox1.Image = imageList1.Images[randomSprite];
+                else
+                    pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[0]];
             }
 
 			// Set the new pet position (and offset) in the screen.
