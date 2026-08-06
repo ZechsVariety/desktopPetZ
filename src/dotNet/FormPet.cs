@@ -88,7 +88,7 @@ namespace DesktopPet
         int DisplayIndex = 0;
 
             /// <summary>
-            /// Used for Zech's Skywire Civilian pet. Randomizes whenever it spawns.
+            /// Used for Zech's Skywire Bean pet. Randomizes whenever it spawns.
             /// </summary>
         int randomSprite = 0;
 
@@ -256,9 +256,9 @@ namespace DesktopPet
                 return;  // Currently only 1 file, in future maybe more animations at the same time
             }
 
-            //choose random sprite if the pet is a Skywire Civilian
+            //choose random sprite if the pet is a Skywire Bean
             //NOTE: if there are any blank sprites, those have a chance to be selected, so avoid em at all costs...
-            if(Xml.AnimationXML.Header.Petname == "Civilian")
+            if(Xml.AnimationXML.Header.Petname == "Passenger")
             {
                 Random random = new Random();
                 randomSprite = random.Next(0, imageList1.Images.Count);
@@ -485,8 +485,8 @@ namespace DesktopPet
             /// </summary>
         private void NextStep()
         {
-            //don't change the sprite if the pet is a Skywire Civilian
-            if (Xml.AnimationXML.Header.Petname != "Civilian")
+            //don't change the sprite if the pet is a Skywire Bean
+            if (Xml.AnimationXML.Header.Petname != "Passenger")
             {
                     // If there is no repeat, we don't need to calculate the frame index.
                 if (AnimationStep < CurrentAnimation.Sequence.Frames.Count)
@@ -800,8 +800,8 @@ namespace DesktopPet
                                         //x = 0;                  // don't move the pet, if a new animation must be started
                                         //y = 0;                  //  if falling, set the pet to the new position
 
-                //don't change the sprite if the pet is a Skywire Civilian
-                if (Xml.AnimationXML.Header.Petname != "Civilian")
+                //don't change the sprite if the pet is a Skywire Bean
+                if (Xml.AnimationXML.Header.Petname != "Passenger")
                     pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[0]];
             }
 
