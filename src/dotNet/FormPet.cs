@@ -8,6 +8,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading;
 using System.Linq;
+using System.Numerics;
 
 namespace DesktopPet
 {
@@ -81,6 +82,21 @@ namespace DesktopPet
             /// Current Y position of the form. Because an offset can be used, this is the origin of the sprite (not like Form2.Top) before an offset was interpolated with the form position.
             /// </summary>
         double PositionY = 0.0;
+
+        //fling stuff
+
+            /// <summary>
+            /// PositionX of the previous frame while dragging. Used to calculate fling force
+            /// </summary>
+        double PrevPositionX = 0.0;
+            /// <summary>
+            /// PositionY of the previous frame while dragging. Used to calculate fling force
+            /// </summary>
+        double PrevPositionY = 0.0;
+            /// <summary>
+            /// The minimum speed in any direction needed to count as a fling. Otherwise, eSheep will fall like usual.
+            /// </summary>
+        float flingMinimum = 50;
 
             /// <summary>
             /// If multi screens are available, the pet can be set on a defined screen
@@ -508,6 +524,10 @@ namespace DesktopPet
                 // If dragging is enabled, move the pet to the mouse position.
             if (IsDragging)
             {
+                //set previous positions for use when calculating fling force
+                PrevPositionX = PositionX;
+                PrevPositionY = PositionY;
+                
 				PositionX = Left = Cursor.Position.X - Width / 2;
 				PositionY = Top = Cursor.Position.Y - 2;
                 return;
@@ -1194,7 +1214,24 @@ namespace DesktopPet
         {
             if (e.Button == MouseButtons.Left && Name.IndexOf("child") < 0)
             {
-                SetNewAnimation(Animations.AnimationFall);
+                //calculate the fling force on both the X an Y axis
+                Vector2 flingForce = new Vector2((float)(PositionX - PrevPositionX), (float)(PositionY - PrevPositionY));
+
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, "Previous Pos: " + PrevPositionX + ", " + PrevPositionY);
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, "Current Pos: " + PositionX + ", " + PositionY);
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Fling force: " + (PositionX - PrevPositionX) + ", " + (PositionY - PrevPositionY));
+
+                //if the fling force's magnitude is bigger than the flingMinimum, fling that sheep >:)
+                if(flingForce.Length() > flingMinimum)
+                {
+                    SetNewAnimation(Animations.AnimationFling);
+                }
+                //otherwise, fall like normal
+                else
+                {
+                    SetNewAnimation(Animations.AnimationFall);
+                }
+                
             }
             if(IsDragging)
             {
@@ -1237,6 +1274,7 @@ namespace DesktopPet
                 {
                     Close();
                 }
+            //THIS DOES NOTHING!!!
             } else if(me.Button == MouseButtons.Middle)
             {
                 if (!Program.Mainthread.KillSheep(this))

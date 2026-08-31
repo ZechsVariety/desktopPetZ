@@ -490,6 +490,10 @@ namespace DesktopPet
             /// Animation ID once the cancel button on the about box was pressed (default: 1)
             /// </summary>
         public int AnimationSync = 1;
+            /// <summary>
+            /// Animation ID for the flinging animation (default: 1)
+            /// </summary>
+        public int AnimationFling = 1;
 
             /// <summary>
             /// Constructor, initialize member variables
