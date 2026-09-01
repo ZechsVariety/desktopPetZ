@@ -491,9 +491,9 @@ namespace DesktopPet
             /// </summary>
         public int AnimationSync = 1;
             /// <summary>
-            /// Animation ID for the flinging animation (default: 1)
+            /// Animation ID for the tossing animation (default: 1)
             /// </summary>
-        public int AnimationFling = 1;
+        public int AnimationToss = 1;
 
             /// <summary>
             /// Constructor, initialize member variables

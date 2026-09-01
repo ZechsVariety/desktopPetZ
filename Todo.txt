@@ -1,5 +1,4 @@
 Tossing:
-- rename all instances of "fling" to "toss"
 - re-add functionality for custom toss animation(?)
 - add functionality for custom land animation
 - cleanup and testing

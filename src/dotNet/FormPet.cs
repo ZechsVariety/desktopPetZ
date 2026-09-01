@@ -83,28 +83,28 @@ namespace DesktopPet
             /// </summary>
         double PositionY = 0.0;
 
-        //fling stuff
+        //toss stuff
 
             /// <summary>
-            /// PositionX of the previous frame while dragging. Used to calculate fling force
+            /// PositionX of the previous frame while dragging. Used to calculate toss force
             /// </summary>
         double PrevPositionX = 0.0;
             /// <summary>
-            /// PositionY of the previous frame while dragging. Used to calculate fling force
+            /// PositionY of the previous frame while dragging. Used to calculate toss force
             /// </summary>
         double PrevPositionY = 0.0;
             /// <summary>
-            /// The force that the user flinged the sheep with.
+            /// The force that the user tossed the sheep with.
             /// </summary>
-        Vector2 FlingForce = Vector2.Zero;
+        Vector2 TossForce = Vector2.Zero;
             /// <summary>
-            /// The sheep is currently in the flinging animation. Works even for pets that don't have a dedicated "fling" animation in their XML
+            /// The sheep is currently in the tossing animation. Works even for pets that don't have a dedicated "toss" animation in their XML
             /// </summary>
-        bool IsFlinging = false;
+        bool IsTossing = false;
             /// <summary>
-            /// The current vertical velocity when flinging
+            /// The current vertical velocity when tossing
             /// </summary>
-        double flingVertVel = 0.0;
+        double tossVertVel = 0.0;
 
             /// <summary>
             /// If multi screens are available, the pet can be set on a defined screen
@@ -369,7 +369,7 @@ namespace DesktopPet
             /// If application is closed, all forms have still 1 second to show something (change animation).
             /// </summary>
             /// <remarks>
-            /// Kill, Sync, Drag, Fall and Fling are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
+            /// Kill, Sync, Drag, Fall and Toss are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
             /// </remarks>
         public void Kill()
         {
@@ -396,7 +396,7 @@ namespace DesktopPet
             /// If user press the CANCEL button in the about box, all pets are synchronized executing the SYNC-animation.
             /// </summary>
             /// <remarks>
-            /// Kill, Sync, Drag, Fall and Fling are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
+            /// Kill, Sync, Drag, Fall and Toss are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
             /// </remarks>
         public void Sync()
         {
@@ -524,8 +524,8 @@ namespace DesktopPet
                 }
             }
 
-                // Get interval (if not flinging), opacity and offset interpolated from START and END values.
-            if(!IsFlinging)
+                // Get interval (if not tossing), opacity and offset interpolated from START and END values.
+            if(!IsTossing)
                 timer1.Interval = CurrentAnimation.Start.Interval.Value + ((CurrentAnimation.End.Interval.Value - CurrentAnimation.Start.Interval.Value) * AnimationStep / CurrentAnimation.Sequence.TotalSteps);
             Opacity = CurrentAnimation.Start.Opacity + (CurrentAnimation.End.Opacity - CurrentAnimation.Start.Opacity) * AnimationStep / CurrentAnimation.Sequence.TotalSteps;
 			OffsetY = CurrentAnimation.Start.OffsetY + (double)((CurrentAnimation.End.OffsetY - CurrentAnimation.Start.OffsetY) * AnimationStep / CurrentAnimation.Sequence.TotalSteps);
@@ -533,7 +533,7 @@ namespace DesktopPet
                 // If dragging is enabled, move the pet to the mouse position.
             if (IsDragging)
             {
-                //set previous positions for use when calculating fling force
+                //set previous positions for use when calculating toss force
                 PrevPositionX = PositionX;
                 PrevPositionY = PositionY;
                 
@@ -542,18 +542,18 @@ namespace DesktopPet
                 return;
             }
 
-                //If the sheep is currently being flung
-            if(IsFlinging)
+                //If the sheep is currently being tossed
+            if(IsTossing)
             {
-                if(PositionX + FlingForce.X <= ScreenArea.X) //left border
+                if(PositionX + TossForce.X <= ScreenArea.X) //left border
                 {
                     StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit left border!");
 
                     //teleport to the screen border this frame
                     PositionX = Left = ScreenArea.X;
 
-                    //bounce by inverting FlingForce.X, and then divide by 2 for friction
-                    FlingForce.X = -FlingForce.X * .3f;
+                    //bounce by inverting TossForce.X, and then divide by 2 for friction
+                    TossForce.X = -TossForce.X * .3f;
 
                     //flip sprite
                     IsMovingLeft = false;
@@ -564,19 +564,19 @@ namespace DesktopPet
                         imageList1.Images[i] = im;
                     }
 
-                    //IsFlinging = false;
+                    //IsTossing = false;
                     return;
                 }
 
-                if (PositionX + FlingForce.X + Width >= ScreenArea.X + ScreenArea.Width) //right border
+                if (PositionX + TossForce.X + Width >= ScreenArea.X + ScreenArea.Width) //right border
                 {
                     StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit right border!");
 
                     //teleport to the screen border this frame
                     PositionX = Left = ScreenArea.X + ScreenArea.Width - Width;
 
-                    //bounce by inverting FlingForce.X, and then divide by 2 for friction
-                    FlingForce.X = -FlingForce.X * .3f;
+                    //bounce by inverting TossForce.X, and then divide by 2 for friction
+                    TossForce.X = -TossForce.X * .3f;
 
                     //flip sprite
                     IsMovingLeft = true;
@@ -587,23 +587,23 @@ namespace DesktopPet
                         imageList1.Images[i] = im;
                     }
 
-                    //IsFlinging = false;
+                    //IsTossing = false;
                     return;
                 }
                 
-                if (PositionY + flingVertVel >= ScreenArea.Y + ScreenArea.Height - Height) //bottom border (taskbar)
+                if (PositionY + tossVertVel >= ScreenArea.Y + ScreenArea.Height - Height) //bottom border (taskbar)
                 {
                     StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit bottom border!");
 
                     //teleport to the screen border this frame
                     PositionY = Top = ScreenArea.Y + ScreenArea.Height - Height;
 
-                    IsFlinging = false;
+                    IsTossing = false;
 
                     return;
                 }
                 
-                int iWindowTop = FallDetect((int)flingVertVel);
+                int iWindowTop = FallDetect((int)tossVertVel);
                 if (iWindowTop > 0) //window top border
                 {
                     StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit window top border!");
@@ -611,19 +611,19 @@ namespace DesktopPet
                     //teleport to the window top border this frame
                     PositionY = Top = iWindowTop - Height;
 
-                    IsFlinging = false;
+                    IsTossing = false;
 
                     return;
                 }
 
-                //if none of those borders were hit, move based on fling physics
+                //if none of those borders were hit, move based on toss physics
 
-                //move in the fling force direction
-                PositionX = Left = (int)(PositionX + FlingForce.X);
-                PositionY = Top = (int)(PositionY + flingVertVel);
+                //move in the toss force direction
+                PositionX = Left = (int)(PositionX + TossForce.X);
+                PositionY = Top = (int)(PositionY + tossVertVel);
 
-                //update flingVertVel with gravity
-                flingVertVel += 1.5f;
+                //update tossVertVel with gravity
+                tossVertVel += 1.5f;
 
                 return;
             }
@@ -1234,7 +1234,7 @@ namespace DesktopPet
                 TopMost = false;
                 TopMost = true;                     // Set again the topmost
 				IsDragging = true;                   // Flag it as dragging pet
-                IsFlinging = false;                     // Flag it as not being flung
+                IsTossing = false;                     // Flag it as not being tossed
                 SetNewAnimation(Animations.AnimationDrag);  // Set the dragging animation (if present)
             }
             else if(e.Button == MouseButtons.Right && StartUp.IsDebugActive())
@@ -1311,27 +1311,27 @@ namespace DesktopPet
             if (e.Button == MouseButtons.Left && Name.IndexOf("child") < 0)
             {
                 //calculate the difference between this frame and last frame's positions
-                Vector2 rawFlingForce = new Vector2((float)(PositionX - PrevPositionX), (float)(PositionY - PrevPositionY));
-                //calculate the proper fling force regardless of drag animation interval (so that all pets fling the same). 20 is the fling interval
-                FlingForce = rawFlingForce / timer1.Interval * 20 * .7f;
+                Vector2 rawTossForce = new Vector2((float)(PositionX - PrevPositionX), (float)(PositionY - PrevPositionY));
+                //calculate the proper toss force regardless of drag animation interval (so that all pets toss the same). 20 is the toss interval
+                TossForce = rawTossForce / timer1.Interval * 20 * .7f;
 
-                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Fling force: " + FlingForce.X + ", " + FlingForce.Y);
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Toss force: " + TossForce.X + ", " + TossForce.Y);
 
-                //if the fling force's magnitude is bigger than this value, fling that thang >:)
-                if(FlingForce.Length() > 10)
+                //if the toss force's magnitude is bigger than this value, fling that thang >:)
+                if(TossForce.Length() > 10)
                 {
-                    //SetNewAnimation(Animations.AnimationFling);
+                    //SetNewAnimation(Animations.AnimationToss);
 
-                    IsFlinging = true;
+                    IsTossing = true;
 
-                    //init flingVertVel
-                    flingVertVel = FlingForce.Y;
+                    //init tossVertVel
+                    tossVertVel = TossForce.Y;
 
-                    //set the interval while flinging to a nice 20 (fixes laggy flinging for pets with slow walk anim intervals)
+                    //set the interval while tossing to a nice 20 (fixes laggy tossing for pets with slow walk anim intervals). Changing this will result in the same physics but laggier
                     timer1.Interval = 20;
 
-                    //set isMovingLeft and flip sprites if needed. If horizontal fling force is 0, it goes with whatever was already set
-                    if (FlingForce.X < 0)
+                    //set isMovingLeft and flip sprites if needed. If horizontal toss force is 0, it goes with whatever was already set
+                    if (TossForce.X < 0)
                     {
                         if(!IsMovingLeft)
                         {
@@ -1344,7 +1344,7 @@ namespace DesktopPet
                             }
                         }
                     }
-                    else if (FlingForce.X > 0)
+                    else if (TossForce.X > 0)
                     {
                         if (IsMovingLeft)
                         {
