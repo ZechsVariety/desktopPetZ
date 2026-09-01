@@ -1,6 +1,6 @@
 Tossing:
-- re-add functionality for custom toss animation(?)
-- add functionality for custom land animation
+- add functionality for Splat custom anim (fast land. slow land will just be the default Land)
+- consider removing the flipping when hitting wall and just have it when you toss (it causes lag spike with bigger spritesheets)
 - cleanup and testing
 - setup pull request
 - test a bunch

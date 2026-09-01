@@ -491,9 +491,16 @@ namespace DesktopPet
             /// </summary>
         public int AnimationSync = 1;
             /// <summary>
-            /// Animation ID for the tossing animation (default: 1)
+            /// Animation ID for the tossing animation (default: -1)
             /// </summary>
-        public int AnimationToss = 1;
+            /// <remarks>
+            /// Does not play if it isn't set, in which case the sheep will continue the drag animation
+            /// </remarks>
+        public int AnimationToss = -1;
+            /// <summary>
+            /// Animation ID for the land animation after the sheep was tossed (default: 1)
+            /// </summary>
+        public int AnimationLand = 1;
 
             /// <summary>
             /// Constructor, initialize member variables

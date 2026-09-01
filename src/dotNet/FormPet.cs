@@ -369,7 +369,7 @@ namespace DesktopPet
             /// If application is closed, all forms have still 1 second to show something (change animation).
             /// </summary>
             /// <remarks>
-            /// Kill, Sync, Drag, Fall and Toss are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
+            /// Kill, Sync, Drag, Fall, Toss and Land are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
             /// </remarks>
         public void Kill()
         {
@@ -396,7 +396,7 @@ namespace DesktopPet
             /// If user press the CANCEL button in the about box, all pets are synchronized executing the SYNC-animation.
             /// </summary>
             /// <remarks>
-            /// Kill, Sync, Drag, Fall and Toss are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
+            /// Kill, Sync, Drag, Fall, Toss and Land are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
             /// </remarks>
         public void Sync()
         {
@@ -599,6 +599,7 @@ namespace DesktopPet
                     PositionY = Top = ScreenArea.Y + ScreenArea.Height - Height;
 
                     IsTossing = false;
+                    SetNewAnimation(Animations.AnimationLand);
 
                     return;
                 }
@@ -612,6 +613,7 @@ namespace DesktopPet
                     PositionY = Top = iWindowTop - Height;
 
                     IsTossing = false;
+                    SetNewAnimation(Animations.AnimationLand);
 
                     return;
                 }
@@ -1312,23 +1314,24 @@ namespace DesktopPet
             {
                 //calculate the difference between this frame and last frame's positions
                 Vector2 rawTossForce = new Vector2((float)(PositionX - PrevPositionX), (float)(PositionY - PrevPositionY));
-                //calculate the proper toss force regardless of drag animation interval (so that all pets toss the same). 20 is the toss interval
-                TossForce = rawTossForce / timer1.Interval * 20 * .7f;
+                //calculate the proper toss force regardless of drag animation interval (so that all pets toss the same)
+                TossForce = rawTossForce / timer1.Interval * 10;
 
                 StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Toss force: " + TossForce.X + ", " + TossForce.Y);
 
                 //if the toss force's magnitude is bigger than this value, fling that thang >:)
-                if(TossForce.Length() > 10)
+                if(TossForce.Length() > 5)
                 {
-                    //SetNewAnimation(Animations.AnimationToss);
+                    if(Animations.AnimationToss != -1)
+                        SetNewAnimation(Animations.AnimationToss);
 
                     IsTossing = true;
 
                     //init tossVertVel
                     tossVertVel = TossForce.Y;
 
-                    //set the interval while tossing to a nice 20 (fixes laggy tossing for pets with slow walk anim intervals). Changing this will result in the same physics but laggier
-                    timer1.Interval = 20;
+                    //set the interval while tossing to a nice 30 (fixes laggy tossing for pets with slow walk anim intervals). Changing this will result in the same physics but laggier
+                    timer1.Interval = 30;
 
                     //set isMovingLeft and flip sprites if needed. If horizontal toss force is 0, it goes with whatever was already set
                     if (TossForce.X < 0)
