@@ -524,8 +524,9 @@ namespace DesktopPet
                 }
             }
 
-                // Get interval, opacity and offset interpolated from START and END values.
-            timer1.Interval = CurrentAnimation.Start.Interval.Value + ((CurrentAnimation.End.Interval.Value - CurrentAnimation.Start.Interval.Value) * AnimationStep / CurrentAnimation.Sequence.TotalSteps);
+                // Get interval (if not flinging), opacity and offset interpolated from START and END values.
+            if(!IsFlinging)
+                timer1.Interval = CurrentAnimation.Start.Interval.Value + ((CurrentAnimation.End.Interval.Value - CurrentAnimation.Start.Interval.Value) * AnimationStep / CurrentAnimation.Sequence.TotalSteps);
             Opacity = CurrentAnimation.Start.Opacity + (CurrentAnimation.End.Opacity - CurrentAnimation.Start.Opacity) * AnimationStep / CurrentAnimation.Sequence.TotalSteps;
 			OffsetY = CurrentAnimation.Start.OffsetY + (double)((CurrentAnimation.End.OffsetY - CurrentAnimation.Start.OffsetY) * AnimationStep / CurrentAnimation.Sequence.TotalSteps);
 
@@ -542,10 +543,9 @@ namespace DesktopPet
             }
 
                 //If the sheep is currently being flung
-            //if(CurrentAnimation.Name == "fling")
             if(IsFlinging)
             {
-                if(PositionX + FlingForce.X < ScreenArea.X) //left border
+                if(PositionX + FlingForce.X <= ScreenArea.X) //left border
                 {
                     StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit left border!");
 
@@ -553,12 +553,21 @@ namespace DesktopPet
                     PositionX = Left = ScreenArea.X;
 
                     //bounce by inverting FlingForce.X, and then divide by 2 for friction
-                    FlingForce.X = -FlingForce.X / 2;
+                    FlingForce.X = -FlingForce.X * .3f;
+
+                    //flip sprite
+                    IsMovingLeft = false;
+                    for (int i = 0; i < imageList1.Images.Count; i++)
+                    {
+                        Image im = imageList1.Images[i];
+                        im.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                        imageList1.Images[i] = im;
+                    }
 
                     //IsFlinging = false;
                     return;
                 }
-                else if (PositionX + FlingForce.X + Width > ScreenArea.X + ScreenArea.Width) //right border
+                else if (PositionX + FlingForce.X + Width >= ScreenArea.X + ScreenArea.Width) //right border
                 {
                     StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit right border!");
 
@@ -566,12 +575,21 @@ namespace DesktopPet
                     PositionX = Left = ScreenArea.X + ScreenArea.Width - Width;
 
                     //bounce by inverting FlingForce.X, and then divide by 2 for friction
-                    FlingForce.X = -FlingForce.X / 2;
+                    FlingForce.X = -FlingForce.X * .3f;
+
+                    //flip sprite
+                    IsMovingLeft = true;
+                    for (int i = 0; i < imageList1.Images.Count; i++)
+                    {
+                        Image im = imageList1.Images[i];
+                        im.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                        imageList1.Images[i] = im;
+                    }
 
                     //IsFlinging = false;
                     return;
                 }
-                else if (PositionY + FlingForce.Y > ScreenArea.Y + ScreenArea.Height - Height) //bottom border
+                else if (PositionY + flingVertVel >= ScreenArea.Y + ScreenArea.Height - Height) //bottom border
                 {
                     StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit bottom border!");
 
@@ -581,21 +599,11 @@ namespace DesktopPet
                     IsFlinging = false;
 
                     return;
-
-                    /*
-                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit top border!");
-
-                    //teleport to the screen border this frame
-                    PositionY = Top = ScreenArea.Y + ScreenArea.Height - Height;
-
-                    //bounce by inverting FlingForce.Y
-                    FlingForce.Y = -FlingForce.Y;
-
-                    return;
-                    */
                 }
                 else
                 {
+                    //StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Pos: " + (PositionY + flingVertVel) + " | border: " + (ScreenArea.Y + ScreenArea.Height - Height));
+
                     //move in the fling force direction
                     PositionX = Left = (int)(PositionX + FlingForce.X);
                     PositionY = Top = (int)(PositionY + flingVertVel);
@@ -1289,22 +1297,53 @@ namespace DesktopPet
         {
             if (e.Button == MouseButtons.Left && Name.IndexOf("child") < 0)
             {
-                //calculate the fling force on both the X an Y axis
+                //calculate the difference between this frame and last frame's positions
                 Vector2 rawFlingForce = new Vector2((float)(PositionX - PrevPositionX), (float)(PositionY - PrevPositionY));
-                //for actual fling force, reduce it a lot
-                FlingForce = rawFlingForce * .5f;
+                //calculate the proper fling force regardless of drag animation interval (so that all pets fling the same). 20 is the fling interval
+                FlingForce = rawFlingForce / timer1.Interval * 20 * .7f;
 
                 StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Fling force: " + FlingForce.X + ", " + FlingForce.Y);
 
                 //if the fling force's magnitude is bigger than this value, fling that thang >:)
                 if(FlingForce.Length() > 10)
                 {
-                    SetNewAnimation(Animations.AnimationFling);
+                    //SetNewAnimation(Animations.AnimationFling);
 
                     IsFlinging = true;
 
                     //init flingVertVel
                     flingVertVel = FlingForce.Y;
+
+                    //set the interval while flinging to a nice 20 (fixes laggy flinging for pets with slow walk anim intervals)
+                    timer1.Interval = 20;
+
+                    //set isMovingLeft and flip sprites if needed. If horizontal fling force is 0, it goes with whatever was already set
+                    if (FlingForce.X < 0)
+                    {
+                        if(!IsMovingLeft)
+                        {
+                            IsMovingLeft = true;
+                            for (int i = 0; i < imageList1.Images.Count; i++)
+                            {
+                                Image im = imageList1.Images[i];
+                                im.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                                imageList1.Images[i] = im;
+                            }
+                        }
+                    }
+                    else if (FlingForce.X > 0)
+                    {
+                        if (IsMovingLeft)
+                        {
+                            IsMovingLeft = false;
+                            for (int i = 0; i < imageList1.Images.Count; i++)
+                            {
+                                Image im = imageList1.Images[i];
+                                im.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                                imageList1.Images[i] = im;
+                            }
+                        }
+                    }
                 }
                 //otherwise, fall like normal
                 else
