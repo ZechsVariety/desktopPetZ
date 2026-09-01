@@ -1,8 +1,7 @@
 Tossing:
-- allow sheep to land on windows
+- rename all instances of "fling" to "toss"
 - re-add functionality for custom toss animation(?)
 - add functionality for custom land animation
-- rename all instances of "fling" to "toss"
 - cleanup and testing
 - setup pull request
 - test a bunch

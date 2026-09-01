@@ -567,7 +567,8 @@ namespace DesktopPet
                     //IsFlinging = false;
                     return;
                 }
-                else if (PositionX + FlingForce.X + Width >= ScreenArea.X + ScreenArea.Width) //right border
+
+                if (PositionX + FlingForce.X + Width >= ScreenArea.X + ScreenArea.Width) //right border
                 {
                     StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit right border!");
 
@@ -589,7 +590,8 @@ namespace DesktopPet
                     //IsFlinging = false;
                     return;
                 }
-                else if (PositionY + flingVertVel >= ScreenArea.Y + ScreenArea.Height - Height) //bottom border
+                
+                if (PositionY + flingVertVel >= ScreenArea.Y + ScreenArea.Height - Height) //bottom border (taskbar)
                 {
                     StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit bottom border!");
 
@@ -600,19 +602,30 @@ namespace DesktopPet
 
                     return;
                 }
-                else
+                
+                int iWindowTop = FallDetect((int)flingVertVel);
+                if (iWindowTop > 0) //window top border
                 {
-                    //StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Pos: " + (PositionY + flingVertVel) + " | border: " + (ScreenArea.Y + ScreenArea.Height - Height));
+                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit window top border!");
 
-                    //move in the fling force direction
-                    PositionX = Left = (int)(PositionX + FlingForce.X);
-                    PositionY = Top = (int)(PositionY + flingVertVel);
+                    //teleport to the window top border this frame
+                    PositionY = Top = iWindowTop - Height;
 
-                    //update flingVertVel with gravity
-                    flingVertVel += 1.5f;
+                    IsFlinging = false;
 
                     return;
                 }
+
+                //if none of those borders were hit, move based on fling physics
+
+                //move in the fling force direction
+                PositionX = Left = (int)(PositionX + FlingForce.X);
+                PositionY = Top = (int)(PositionY + flingVertVel);
+
+                //update flingVertVel with gravity
+                flingVertVel += 1.5f;
+
+                return;
             }
             
             double x = CurrentAnimation.Start.X.Value;
