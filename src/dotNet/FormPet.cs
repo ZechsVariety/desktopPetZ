@@ -82,9 +82,6 @@ namespace DesktopPet
             /// Current Y position of the form. Because an offset can be used, this is the origin of the sprite (not like Form2.Top) before an offset was interpolated with the form position.
             /// </summary>
         double PositionY = 0.0;
-
-        //toss stuff
-
             /// <summary>
             /// PositionX of the previous frame while dragging. Used to calculate toss force
             /// </summary>
@@ -94,15 +91,15 @@ namespace DesktopPet
             /// </summary>
         double PrevPositionY = 0.0;
             /// <summary>
-            /// The force that the user tossed the sheep with.
+            /// The force in which the user tossed the sheep with. Uses Vector2 for easy magnitude calculation.
             /// </summary>
         Vector2 TossForce = Vector2.Zero;
             /// <summary>
-            /// The sheep is currently in the tossing animation. Works even for pets that don't have a dedicated "toss" animation in their XML
+            /// If the pet is in tossing mode (it was tossed and is now falling).
             /// </summary>
         bool IsTossing = false;
             /// <summary>
-            /// The current vertical velocity when tossing
+            /// The current vertical velocity while in tossing mode.
             /// </summary>
         double tossVertVel = 0.0;
 
@@ -524,7 +521,7 @@ namespace DesktopPet
                 }
             }
 
-                // Get interval (if not tossing), opacity and offset interpolated from START and END values.
+                // Get interval (if not in tossing mode), opacity and offset interpolated from START and END values.
             if(!IsTossing)
                 timer1.Interval = CurrentAnimation.Start.Interval.Value + ((CurrentAnimation.End.Interval.Value - CurrentAnimation.Start.Interval.Value) * AnimationStep / CurrentAnimation.Sequence.TotalSteps);
             Opacity = CurrentAnimation.Start.Opacity + (CurrentAnimation.End.Opacity - CurrentAnimation.Start.Opacity) * AnimationStep / CurrentAnimation.Sequence.TotalSteps;
@@ -533,7 +530,7 @@ namespace DesktopPet
                 // If dragging is enabled, move the pet to the mouse position.
             if (IsDragging)
             {
-                //set previous positions for use when calculating toss force
+                // Set previous positions for use when calculating toss force
                 PrevPositionX = PositionX;
                 PrevPositionY = PositionY;
                 
@@ -542,49 +539,41 @@ namespace DesktopPet
                 return;
             }
 
-                //If the sheep is currently being tossed, apply toss physics
+                // If the pet is in toss mode, apply toss physics
             if(IsTossing)
             {
-                //border detection
+                // Border detection
                 bool hittingLeftBorder = PositionX + TossForce.X <= ScreenArea.X;
                 bool hittingRightBorder = PositionX + TossForce.X >= ScreenArea.X + ScreenArea.Width - Width;
                 bool hittingTaskbar = PositionY + tossVertVel >= ScreenArea.Y + ScreenArea.Height - Height;
                 int iWindowTop = FallDetect((int)tossVertVel); // >0 means a window top border was hit
 
-                //if hitting left or right border, bounce
+                // If hitting left or right border, bounce
                 if (hittingLeftBorder || hittingRightBorder)
                 {
-                    //bounce by inverting TossForce.X, and then multiply by an amount for friction
+                    // Bounce by inverting TossForce.X, and then multiply by an amount for friction
                     TossForce.X = -TossForce.X * .3f;
 
-                    //teleport to the correct screen border this frame
+                    // Teleport to the correct border
                     if (hittingLeftBorder)
-                        PositionX = Left = ScreenArea.X; //left
+                        PositionX = Left = ScreenArea.X; // Left
                     else
-                        PositionX = Left = ScreenArea.X + ScreenArea.Width - Width; //right
+                        PositionX = Left = ScreenArea.X + ScreenArea.Width - Width; // Right
 
                     return;
                 }
                 
-                //if hitting bottom border or top of a window, land
+                // If hitting taskbar or the top of a window, land
                 if (hittingTaskbar || iWindowTop > 0)
                 {
-                    //teleport to the correct placement this frame
+                    // Teleport to the correct border
                     if(hittingTaskbar)
-                        PositionY = Top = ScreenArea.Y + ScreenArea.Height - Height; //taskbar
+                        PositionY = Top = ScreenArea.Y + ScreenArea.Height - Height; // Taskbar
                     else
-                        PositionY = Top = iWindowTop - Height; //window
+                        PositionY = Top = iWindowTop - Height; // Window
 
-                    /*
-                    //set animation to FallHard if it exists, otherwise default to fall
-                    if (Animations.AnimationFallHard != -1)
-                        SetNewAnimation(Animations.AnimationFallHard);
-                    else
-                        SetNewAnimation(Animations.AnimationFall);
-                    */
-
-                    //set sprite flip based on the direction the sheep hits the ground at
-                    //originally, this was set whenever the sheep hit a wall, but that caused pets with big spritesheets to freeze for a moment, so now this only happens when they land
+                    // Set sprite flip based on the direction the pet hits the ground at
+                    // Originally, this was set whenever the pet hit a wall, but that caused pets with big spritesheets to freeze for a moment, so now this only happens when they land
                     if ((TossForce.X < 0 && !IsMovingLeft) || (TossForce.X > 0 && IsMovingLeft))
                     {
                         IsMovingLeft = !IsMovingLeft;
@@ -597,32 +586,33 @@ namespace DesktopPet
                         }
                     }
 
-                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Toss vert vel: " + tossVertVel);
+                    // Log vertical velocity when landing
+                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, "Toss vert vel: " + tossVertVel);
 
-                    //set soft/hard land animation depending on vertical velocity
+                    // Set soft/hard land animation depending on vertical velocity
                     if (tossVertVel < 40)
                         SetNewAnimation(Animations.AnimationFallSoft);
                     else
                         SetNewAnimation(Animations.AnimationFallHard);
 
-                    //update sprite instantly (otherwise, it'd have to wait until the next interval)
-                    if (Xml.AnimationXML.Header.Petname != "Passenger")
+                    // Update sprite instantly (otherwise, it would wait until the next interval)
+                    if (Xml.AnimationXML.Header.Petname != "Passenger") //TODO: ensure this isn't part of the pull request
                         pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[0]];
 
-                    //disable tossing
+                    // Disable tossing
                     IsTossing = false;
 
                     return;
                 }
 
-                //if none of those borders were hit, move based on toss physics
+                // If none of those borders were hit, move based on toss physics
 
-                //move in the toss force direction
+                // Move in the toss force direction
                 PositionX = Left = (int)(PositionX + TossForce.X);
-                PositionY = Top = (int)(PositionY + tossVertVel);
+                PositionY = Top = (int)(PositionY + tossVertVel); // tossVertVel is initialized as TossForce.Y when tossed
 
-                //update tossVertVel with gravity
-                //note: Y is inverted (so positive is down, negative is up)
+                // Update vertical velocity with gravity
+                // Y axis is inverted (so positive is down, negative is up)
                 tossVertVel += 1.5f;
 
                 return;
@@ -1310,28 +1300,30 @@ namespace DesktopPet
         {
             if (e.Button == MouseButtons.Left && Name.IndexOf("child") < 0)
             {
-                //calculate the difference between this frame and last frame's positions
+                // Calculate the difference between this frame and previous frame's positions
                 Vector2 rawTossForce = new Vector2((float)(PositionX - PrevPositionX), (float)(PositionY - PrevPositionY));
-                //calculate the proper toss force regardless of drag animation interval (so that all pets toss the same)
+                // Calculate the proper toss force regardless of drag animation interval (so that all pets toss the same). Then apply a multiplier to it
                 TossForce = rawTossForce / timer1.Interval * 10;
 
+                // Log toss force
                 StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, "Toss force: (" + TossForce.X + ", " + TossForce.Y + ")");
 
-                //if the toss force's magnitude is bigger than this value, fling that thang >:)
+                // If the toss force's magnitude (length) is bigger than this value, fling that thang >:)
                 if(TossForce.Length() > 5)
                 {
+                    // If toss animation exists, set it. Otherwise, remain in the dragging animation.
                     if(Animations.AnimationToss != -1)
                         SetNewAnimation(Animations.AnimationToss);
 
                     IsTossing = true;
 
-                    //init tossVertVel
+                    // Init vertical toss velocity
                     tossVertVel = TossForce.Y;
 
-                    //set the interval while tossing to a nice 30 (fixes laggy tossing for pets with slow walk anim intervals). Changing this will result in the same physics but laggier
+                    // Force the interval while tossing to be a nice and smooth 30 (prevents laggy tossing for pets with slow drag animation intervals)
                     timer1.Interval = 30;
                 }
-                //otherwise, fall like normal
+                // If toss force wasn't large enough, fall like normal
                 else
                 {
                     SetNewAnimation(Animations.AnimationFall);

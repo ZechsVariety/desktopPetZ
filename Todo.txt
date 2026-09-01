@@ -1,6 +1,4 @@
 Tossing:
-- find all instances of the key names and incorporate the new ones
-- cleanup and testing
 - setup pull request
 - test a bunch
 - fix any issues and submit PR

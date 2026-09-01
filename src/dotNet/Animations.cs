@@ -498,17 +498,17 @@ namespace DesktopPet
             /// </remarks>
         public int AnimationToss = -1;
             /// <summary>
-            /// Animation ID for the soft land animation after the sheep was tossed (default: 1)
+            /// Animation ID for the soft land animation after the pet was tossed (default: 1)
             /// </summary>
             /// <remarks>
-            /// This was named based on eSheep64's animations
+            /// This is named based on eSheep64's "fall soft" animation
             /// </remarks>
         public int AnimationFallSoft = 1;
             /// <summary>
-            /// Animation ID for the hard land animation after the sheep was tossed (default: 1)
+            /// Animation ID for the hard land animation after the pet was tossed (default: 1)
             /// </summary>
             /// <remarks>
-            /// This was named based on eSheep64's animations
+            /// This is named based on eSheep64's "fall hard" animation
             /// </remarks>
         public int AnimationFallHard = 1;
 
