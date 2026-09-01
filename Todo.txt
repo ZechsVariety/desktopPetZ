@@ -1,6 +1,6 @@
 Tossing:
-- add functionality for Splat custom anim (fast land. slow land will just be the default Land)
-- consider removing the flipping when hitting wall and just have it when you toss (it causes lag spike with bigger spritesheets)
+- if land anim doesn't exist, default to fall or something (mimiko specifically doesn't work properly cause it plays the spawn anim)
+- add functionality for Splat (or Land2) custom anim (fast land. slow land will just be the default Land)
 - cleanup and testing
 - setup pull request
 - test a bunch

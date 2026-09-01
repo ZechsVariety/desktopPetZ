@@ -542,76 +542,54 @@ namespace DesktopPet
                 return;
             }
 
-                //If the sheep is currently being tossed
+                //If the sheep is currently being tossed, apply toss physics
             if(IsTossing)
             {
-                if(PositionX + TossForce.X <= ScreenArea.X) //left border
+                //border detection
+                bool hittingLeftBorder = PositionX + TossForce.X <= ScreenArea.X;
+                bool hittingRightBorder = PositionX + TossForce.X >= ScreenArea.X + ScreenArea.Width - Width;
+                bool hittingTaskbar = PositionY + tossVertVel >= ScreenArea.Y + ScreenArea.Height - Height;
+                int iWindowTop = FallDetect((int)tossVertVel); // >0 means a window top border was hit
+
+                //if hitting left or right border, bounce
+                if (hittingLeftBorder || hittingRightBorder)
                 {
-                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit left border!");
-
-                    //teleport to the screen border this frame
-                    PositionX = Left = ScreenArea.X;
-
-                    //bounce by inverting TossForce.X, and then divide by 2 for friction
+                    //bounce by inverting TossForce.X, and then multiply by an amount for friction
                     TossForce.X = -TossForce.X * .3f;
 
-                    //flip sprite
-                    IsMovingLeft = false;
-                    for (int i = 0; i < imageList1.Images.Count; i++)
-                    {
-                        Image im = imageList1.Images[i];
-                        im.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                        imageList1.Images[i] = im;
-                    }
-
-                    //IsTossing = false;
-                    return;
-                }
-
-                if (PositionX + TossForce.X + Width >= ScreenArea.X + ScreenArea.Width) //right border
-                {
-                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit right border!");
-
-                    //teleport to the screen border this frame
-                    PositionX = Left = ScreenArea.X + ScreenArea.Width - Width;
-
-                    //bounce by inverting TossForce.X, and then divide by 2 for friction
-                    TossForce.X = -TossForce.X * .3f;
-
-                    //flip sprite
-                    IsMovingLeft = true;
-                    for (int i = 0; i < imageList1.Images.Count; i++)
-                    {
-                        Image im = imageList1.Images[i];
-                        im.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                        imageList1.Images[i] = im;
-                    }
-
-                    //IsTossing = false;
-                    return;
-                }
-                
-                if (PositionY + tossVertVel >= ScreenArea.Y + ScreenArea.Height - Height) //bottom border (taskbar)
-                {
-                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit bottom border!");
-
-                    //teleport to the screen border this frame
-                    PositionY = Top = ScreenArea.Y + ScreenArea.Height - Height;
-
-                    IsTossing = false;
-                    SetNewAnimation(Animations.AnimationLand);
+                    //teleport to the correct screen border this frame
+                    if (hittingLeftBorder)
+                        PositionX = Left = ScreenArea.X; //left
+                    else
+                        PositionX = Left = ScreenArea.X + ScreenArea.Width - Width; //right
 
                     return;
                 }
                 
-                int iWindowTop = FallDetect((int)tossVertVel);
-                if (iWindowTop > 0) //window top border
+                //if hitting bottom border or top of a window, land
+                if (hittingTaskbar || iWindowTop > 0)
                 {
-                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit window top border!");
+                    //teleport to the correct placement this frame
+                    if(hittingTaskbar)
+                        PositionY = Top = ScreenArea.Y + ScreenArea.Height - Height; //taskbar
+                    else
+                        PositionY = Top = iWindowTop - Height; //window
 
-                    //teleport to the window top border this frame
-                    PositionY = Top = iWindowTop - Height;
+                    //set sprite flip based on the direction the sheep hits the ground at
+                    //originally, this was set whenever the sheep hit a wall, but that caused pets with big spritesheets to freeze for a moment, so now this only happens when they land
+                    if((TossForce.X < 0 && !IsMovingLeft) || (TossForce.X > 0 && IsMovingLeft))
+                    {
+                        IsMovingLeft = !IsMovingLeft;
 
+                        for (int i = 0; i < imageList1.Images.Count; i++)
+                        {
+                            Image im = imageList1.Images[i];
+                            im.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                            imageList1.Images[i] = im;
+                        }
+                    }
+
+                    //disable tossing and change to land animation
                     IsTossing = false;
                     SetNewAnimation(Animations.AnimationLand);
 
@@ -625,6 +603,7 @@ namespace DesktopPet
                 PositionY = Top = (int)(PositionY + tossVertVel);
 
                 //update tossVertVel with gravity
+                //note: Y is inverted (so positive is down, negative is up)
                 tossVertVel += 1.5f;
 
                 return;
@@ -1317,7 +1296,7 @@ namespace DesktopPet
                 //calculate the proper toss force regardless of drag animation interval (so that all pets toss the same)
                 TossForce = rawTossForce / timer1.Interval * 10;
 
-                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Toss force: " + TossForce.X + ", " + TossForce.Y);
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, "Toss force: (" + TossForce.X + ", " + TossForce.Y + ")");
 
                 //if the toss force's magnitude is bigger than this value, fling that thang >:)
                 if(TossForce.Length() > 5)
@@ -1332,34 +1311,6 @@ namespace DesktopPet
 
                     //set the interval while tossing to a nice 30 (fixes laggy tossing for pets with slow walk anim intervals). Changing this will result in the same physics but laggier
                     timer1.Interval = 30;
-
-                    //set isMovingLeft and flip sprites if needed. If horizontal toss force is 0, it goes with whatever was already set
-                    if (TossForce.X < 0)
-                    {
-                        if(!IsMovingLeft)
-                        {
-                            IsMovingLeft = true;
-                            for (int i = 0; i < imageList1.Images.Count; i++)
-                            {
-                                Image im = imageList1.Images[i];
-                                im.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                                imageList1.Images[i] = im;
-                            }
-                        }
-                    }
-                    else if (TossForce.X > 0)
-                    {
-                        if (IsMovingLeft)
-                        {
-                            IsMovingLeft = false;
-                            for (int i = 0; i < imageList1.Images.Count; i++)
-                            {
-                                Image im = imageList1.Images[i];
-                                im.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                                imageList1.Images[i] = im;
-                            }
-                        }
-                    }
                 }
                 //otherwise, fall like normal
                 else
