@@ -369,7 +369,7 @@ namespace DesktopPet
             /// If application is closed, all forms have still 1 second to show something (change animation).
             /// </summary>
             /// <remarks>
-            /// Kill, Sync, Drag, Fall, Toss and Land are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
+            /// Kill, Sync, Drag, Fall, Toss, "Fall Soft" and "Fall Hard" are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
             /// </remarks>
         public void Kill()
         {
@@ -396,7 +396,7 @@ namespace DesktopPet
             /// If user press the CANCEL button in the about box, all pets are synchronized executing the SYNC-animation.
             /// </summary>
             /// <remarks>
-            /// Kill, Sync, Drag, Fall, Toss and Land are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
+            /// Kill, Sync, Drag, Fall, Toss, "Fall Soft" and "Fall Hard" are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
             /// </remarks>
         public void Sync()
         {
@@ -575,9 +575,17 @@ namespace DesktopPet
                     else
                         PositionY = Top = iWindowTop - Height; //window
 
+                    /*
+                    //set animation to FallHard if it exists, otherwise default to fall
+                    if (Animations.AnimationFallHard != -1)
+                        SetNewAnimation(Animations.AnimationFallHard);
+                    else
+                        SetNewAnimation(Animations.AnimationFall);
+                    */
+
                     //set sprite flip based on the direction the sheep hits the ground at
                     //originally, this was set whenever the sheep hit a wall, but that caused pets with big spritesheets to freeze for a moment, so now this only happens when they land
-                    if((TossForce.X < 0 && !IsMovingLeft) || (TossForce.X > 0 && IsMovingLeft))
+                    if ((TossForce.X < 0 && !IsMovingLeft) || (TossForce.X > 0 && IsMovingLeft))
                     {
                         IsMovingLeft = !IsMovingLeft;
 
@@ -589,9 +597,20 @@ namespace DesktopPet
                         }
                     }
 
-                    //disable tossing and change to land animation
+                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Toss vert vel: " + tossVertVel);
+
+                    //set soft/hard land animation depending on vertical velocity
+                    if (tossVertVel < 40)
+                        SetNewAnimation(Animations.AnimationFallSoft);
+                    else
+                        SetNewAnimation(Animations.AnimationFallHard);
+
+                    //update sprite instantly (otherwise, it'd have to wait until the next interval)
+                    if (Xml.AnimationXML.Header.Petname != "Passenger")
+                        pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[0]];
+
+                    //disable tossing
                     IsTossing = false;
-                    SetNewAnimation(Animations.AnimationLand);
 
                     return;
                 }

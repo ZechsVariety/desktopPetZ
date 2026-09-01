@@ -1,6 +1,5 @@
 Tossing:
-- if land anim doesn't exist, default to fall or something (mimiko specifically doesn't work properly cause it plays the spawn anim)
-- add functionality for Splat (or Land2) custom anim (fast land. slow land will just be the default Land)
+- find all instances of the key names and incorporate the new ones
 - cleanup and testing
 - setup pull request
 - test a bunch
