@@ -94,9 +94,17 @@ namespace DesktopPet
             /// </summary>
         double PrevPositionY = 0.0;
             /// <summary>
-            /// The minimum speed in any direction needed to count as a fling. Otherwise, eSheep will fall like usual.
+            /// The force that the user flinged the sheep with.
             /// </summary>
-        float flingMinimum = 50;
+        Vector2 FlingForce = Vector2.Zero;
+            /// <summary>
+            /// The sheep is currently in the flinging animation. Works even for pets that don't have a dedicated "fling" animation in their XML
+            /// </summary>
+        bool IsFlinging = false;
+            /// <summary>
+            /// The current vertical velocity when flinging
+            /// </summary>
+        double flingVertVel = 0.0;
 
             /// <summary>
             /// If multi screens are available, the pet can be set on a defined screen
@@ -361,7 +369,7 @@ namespace DesktopPet
             /// If application is closed, all forms have still 1 second to show something (change animation).
             /// </summary>
             /// <remarks>
-            /// Kill, Sync, Drag and Fall are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
+            /// Kill, Sync, Drag, Fall and Fling are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
             /// </remarks>
         public void Kill()
         {
@@ -388,7 +396,7 @@ namespace DesktopPet
             /// If user press the CANCEL button in the about box, all pets are synchronized executing the SYNC-animation.
             /// </summary>
             /// <remarks>
-            /// Kill, Sync, Drag and Fall are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
+            /// Kill, Sync, Drag, Fall and Fling are "Key-names" in the XML file. If you use one of them, this program will automatically run the animation linked to this names.
             /// </remarks>
         public void Sync()
         {
@@ -531,6 +539,72 @@ namespace DesktopPet
 				PositionX = Left = Cursor.Position.X - Width / 2;
 				PositionY = Top = Cursor.Position.Y - 2;
                 return;
+            }
+
+                //If the sheep is currently being flung
+            //if(CurrentAnimation.Name == "fling")
+            if(IsFlinging)
+            {
+                if(PositionX + FlingForce.X < ScreenArea.X) //left border
+                {
+                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit left border!");
+
+                    //teleport to the screen border this frame
+                    PositionX = Left = ScreenArea.X;
+
+                    //bounce by inverting FlingForce.X, and then divide by 2 for friction
+                    FlingForce.X = -FlingForce.X / 2;
+
+                    //IsFlinging = false;
+                    return;
+                }
+                else if (PositionX + FlingForce.X + Width > ScreenArea.X + ScreenArea.Width) //right border
+                {
+                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit right border!");
+
+                    //teleport to the screen border this frame
+                    PositionX = Left = ScreenArea.X + ScreenArea.Width - Width;
+
+                    //bounce by inverting FlingForce.X, and then divide by 2 for friction
+                    FlingForce.X = -FlingForce.X / 2;
+
+                    //IsFlinging = false;
+                    return;
+                }
+                else if (PositionY + FlingForce.Y > ScreenArea.Y + ScreenArea.Height - Height) //bottom border
+                {
+                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit bottom border!");
+
+                    //teleport to the screen border this frame
+                    PositionY = Top = ScreenArea.Y + ScreenArea.Height - Height;
+
+                    IsFlinging = false;
+
+                    return;
+
+                    /*
+                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Hit top border!");
+
+                    //teleport to the screen border this frame
+                    PositionY = Top = ScreenArea.Y + ScreenArea.Height - Height;
+
+                    //bounce by inverting FlingForce.Y
+                    FlingForce.Y = -FlingForce.Y;
+
+                    return;
+                    */
+                }
+                else
+                {
+                    //move in the fling force direction
+                    PositionX = Left = (int)(PositionX + FlingForce.X);
+                    PositionY = Top = (int)(PositionY + flingVertVel);
+
+                    //update flingVertVel with gravity
+                    flingVertVel += 1.5f;
+
+                    return;
+                }
             }
             
             double x = CurrentAnimation.Start.X.Value;
@@ -1139,6 +1213,7 @@ namespace DesktopPet
                 TopMost = false;
                 TopMost = true;                     // Set again the topmost
 				IsDragging = true;                   // Flag it as dragging pet
+                IsFlinging = false;                     // Flag it as not being flung
                 SetNewAnimation(Animations.AnimationDrag);  // Set the dragging animation (if present)
             }
             else if(e.Button == MouseButtons.Right && StartUp.IsDebugActive())
@@ -1215,16 +1290,21 @@ namespace DesktopPet
             if (e.Button == MouseButtons.Left && Name.IndexOf("child") < 0)
             {
                 //calculate the fling force on both the X an Y axis
-                Vector2 flingForce = new Vector2((float)(PositionX - PrevPositionX), (float)(PositionY - PrevPositionY));
+                Vector2 rawFlingForce = new Vector2((float)(PositionX - PrevPositionX), (float)(PositionY - PrevPositionY));
+                //for actual fling force, reduce it a lot
+                FlingForce = rawFlingForce * .5f;
 
-                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, "Previous Pos: " + PrevPositionX + ", " + PrevPositionY);
-                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, "Current Pos: " + PositionX + ", " + PositionY);
-                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Fling force: " + (PositionX - PrevPositionX) + ", " + (PositionY - PrevPositionY));
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Fling force: " + FlingForce.X + ", " + FlingForce.Y);
 
-                //if the fling force's magnitude is bigger than the flingMinimum, fling that sheep >:)
-                if(flingForce.Length() > flingMinimum)
+                //if the fling force's magnitude is bigger than this value, fling that thang >:)
+                if(FlingForce.Length() > 10)
                 {
                     SetNewAnimation(Animations.AnimationFling);
+
+                    IsFlinging = true;
+
+                    //init flingVertVel
+                    flingVertVel = FlingForce.Y;
                 }
                 //otherwise, fall like normal
                 else
@@ -1256,8 +1336,6 @@ namespace DesktopPet
                 }
             }
 			IsDragging = false;
-
-            //TODO: add throwing the pet (with a new variable IsThrown that automatically applies gravity IF there is a thrown animation, or maybe if there is a fall at least)
         }
         
             /// <summary>
