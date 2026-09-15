@@ -109,6 +109,10 @@ namespace DesktopPet
         int DisplayIndex = 0;
 
             /// <summary>
+            /// Random for Zech's Skywire Bean pet. Not currently used anywhere else.
+            /// </summary>
+        Random rand = new Random();
+            /// <summary>
             /// Used for Zech's Skywire Bean pet. Randomizes whenever it spawns.
             /// </summary>
         int randomSprite = 0;
@@ -167,6 +171,7 @@ namespace DesktopPet
             InitializeComponent();
             Visible = false;            // Is invisible at beginning (we don't know where this sprite should be positioned)
             Opacity = 0.0;
+            rand = new Random();
         }
 
             /// <summary>
@@ -281,8 +286,7 @@ namespace DesktopPet
             //NOTE: if there are any blank sprites, those have a chance to be selected, so avoid em at all costs...
             if(Xml.AnimationXML.Header.Petname == "Passenger")
             {
-                Random random = new Random();
-                randomSprite = random.Next(0, imageList1.Images.Count);
+                randomSprite = rand.Next(0, imageList1.Images.Count);
 
                 //set the sprite to the random one
                 pictureBox1.Image = imageList1.Images[randomSprite];
@@ -458,6 +462,9 @@ namespace DesktopPet
                 CurrentAnimation = Animations.GetAnimation(id);
                 CurrentAnimation.UpdateValues(DisplayIndex);
 
+                // Play sound if there is one
+                Animations.StartSound(id);
+
                 // v.1.2.6: this will steal taskbar focus and the tray menu will disappear. So this should not be used too often.
                 if (Program.MyData.GetStealTaskbarFocus() && CurrentAnimation.Start.OffsetY != 0 && CurrentAnimation.Start.X.Value != 0)
                 {
@@ -590,10 +597,8 @@ namespace DesktopPet
                     StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, "Toss vert vel: " + tossVertVel);
 
                     // Set soft/hard land animation depending on vertical velocity
-                    if (tossVertVel < 40)
-                        SetNewAnimation(Animations.AnimationFallSoft);
-                    else
-                        SetNewAnimation(Animations.AnimationFallHard);
+                    int nextId = tossVertVel < 40 ? Animations.AnimationFallSoft : Animations.AnimationFallHard;
+                    SetNewAnimation(nextId);
 
                     // Update sprite instantly (otherwise, it would wait until the next interval)
                     if (Xml.AnimationXML.Header.Petname != "Passenger") //TODO: ensure this isn't part of the pull request
