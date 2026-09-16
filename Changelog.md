@@ -36,9 +36,8 @@ Technical info:
 
 WIP info:
 
-* Pets currently can only detect the right border of windows
 * Pets currently cannot detect right/left window borders when being tossed
-* Pets currently only play NONE-tagged border animations when hitting windows
+* Pets currently only play VERTICAL and NONE-tagged border animations when hitting windows
 
 
 

@@ -786,10 +786,13 @@ namespace DesktopPet
                 int iVal;
                 int iSum = 0;
                 int iRandMax = 0;
+                Console.WriteLine("\nPotential Anims:");
                 foreach (TNextAnimation anim in list)
                 {
                     // Skip if this animation has the wrong "only" value
                     if (anim.only != TNextAnimation.TOnly.NONE && (anim.only & where) == 0) continue;
+
+                    Console.WriteLine(SheepAnimations[anim.ID].Name + " (" + anim.only + ")");
 
                     iRandMax += anim.Probability;
                 }
