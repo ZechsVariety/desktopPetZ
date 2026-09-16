@@ -796,14 +796,13 @@ namespace DesktopPet
                 int iVal;
                 int iSum = 0;
                 int iRandMax = 0;
-                //Console.WriteLine("\nPotential Anims:");
-                Console.WriteLine();
+                //Console.WriteLine();
                 foreach (TNextAnimation anim in list)
                 {
                     // Skip if this animation has the wrong "only" value
                     if (anim.only != TNextAnimation.TOnly.NONE && anim.only != where) continue;
 
-                    Console.WriteLine("anim: " + SheepAnimations[anim.ID].Name + " | anim.only: " + anim.only + " | where: " + where + " | anim.only & where: " + (anim.only & where));
+                    //Console.WriteLine("anim: " + SheepAnimations[anim.ID].Name + " | anim.only: " + anim.only + " | where: " + where + " | anim.only & where: " + (anim.only & where));
 
                     //Console.WriteLine(SheepAnimations[anim.ID].Name + " (" + anim.only + ")");
 

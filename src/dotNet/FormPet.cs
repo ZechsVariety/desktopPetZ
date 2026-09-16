@@ -641,71 +641,72 @@ namespace DesktopPet
             
             if(x < 0)   // moving left (detect left borders)
             {
-                if (hwndWindow == (IntPtr)0)
+                CheckFullScreen();  // used to check if another window is in full screen
+                if (PositionX + x < ScreenArea.X)    // left screen border!
                 {
-                    CheckFullScreen();  // used to check if another window is in full screen
-                    if (PositionX + x < ScreenArea.X)    // left screen border!
+                    int iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.VERTICAL);
+                    if (iBorderAnimation >= 0)
                     {
-                        int iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.VERTICAL);
-                        if (iBorderAnimation >= 0)
-                        {
-                            PositionX = ScreenArea.X;
-                            x = 0;
-                            SetNewAnimation(iBorderAnimation);
-                            bNewAnimation = true;
-                        }
-                        else
-                        {
-                            bLeavingScreen = true;
-                        }
+                        PositionX = ScreenArea.X;
+                        x = 0;
+                        SetNewAnimation(iBorderAnimation);
+                        bNewAnimation = true;
                     }
-                    else    // run window border detection setup and then check right border of all valid windows!
+                    else
                     {
-                        // Retrieve valid windows
-                        Dictionary<IntPtr, string> windows = EnumerateWindows();
+                        bLeavingScreen = true;
+                    }
+                }
+                else    // run window border detection setup and then check right border of all valid windows!
+                {
+                    // Retrieve valid windows
+                    Dictionary<IntPtr, string> windows = EnumerateWindows();
 
-                        // For each valid window found:
-                        foreach (KeyValuePair<IntPtr, string> window in windows)
+                    // For each valid window found:
+                    foreach (KeyValuePair<IntPtr, string> window in windows)
+                    {
+                        //Console.WriteLine(window.Value);
+
+                        // Get size and position of window
+                        if (NativeMethods.GetWindowRect(new HandleRef(this, window.Key), out NativeMethods.RECT rct))
                         {
-                            // Get size and position of window
-                            if (NativeMethods.GetWindowRect(new HandleRef(this, window.Key), out NativeMethods.RECT rct))
+                            // window right border!
+                            if (PositionX + x <= rct.Right
+                                && PositionX + x > rct.Right + x // A little bit of wiggle-room so the sheep doesn't phase through the window
+                                && PositionY + y < rct.Bottom // Ignore if below window. REMINDER: Y is inverted
+                                && PositionY + y + Height > rct.Top // Ignore if above window
+                                && !CheckTopWindow(false, window.Key) // Ignore windows that aren't visible on top
+                                && rct.Right < ScreenArea.Right - Width // Ignore collision if the sheep doesn't have enough space to make it past the right screen border (ex: if an application is covering the entire screen)
+                                )
                             {
-                                // window right border!
-                                if (PositionX + x <= rct.Right
-                                    && PositionX + x > rct.Right + x // A little bit of wiggle-room so the sheep doesn't phase through the window
-                                    && PositionY + y < rct.Bottom // Ignore if below window. REMINDER: Y is inverted
-                                    && PositionY + y + Height > rct.Top // Ignore if above window
-                                    && !CheckTopWindow(false, window.Key) // Ignore windows that aren't visible on top
-                                    && rct.Right < ScreenArea.Right - Width // Ignore collision if the sheep doesn't have enough space to make it past the right screen border (ex: if an application is covering the entire screen)
-                                    )
+                                //StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value + " right-side collision!");
+
+                                //Console.WriteLine("\n" + CurrentAnimation.Name);
+
+                                // Set border animation with correctly "only" value
+                                int iBorderAnimation = -1;
+                                if (window.Value == "Sheep")
+                                    iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
+                                else
+                                    iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
+
+                                // If a "none" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
+                                if (iBorderAnimation >= 0)
                                 {
-                                    //StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value + " right-side collision!");
-
-                                    Console.WriteLine("\n" + CurrentAnimation.Name);
-
-                                    // Set border animation with correctly "only" value
-                                    int iBorderAnimation = -1;
-                                    if (window.Value == "Sheep")
-                                        iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
-                                    else
-                                        iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
-
-                                    // If a "none" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
-                                    if (iBorderAnimation >= 0)
-                                    {
-                                        PositionX = rct.Right;
-                                        x = 0;
-                                        SetNewAnimation(iBorderAnimation);
-                                        bNewAnimation = true;
-                                    }
-
-                                    break;
+                                    PositionX = rct.Right;
+                                    x = 0;
+                                    SetNewAnimation(iBorderAnimation);
+                                    bNewAnimation = true;
                                 }
+
+                                break;
                             }
                         }
                     }
                 }
-                else
+
+                // If pet is on top of a window, check for left window corner
+                if (hwndWindow != (IntPtr)0)
                 {
                     if (NativeMethods.GetWindowRect(new HandleRef(this, hwndWindow), out NativeMethods.RECT rct))
                     {
@@ -730,72 +731,71 @@ namespace DesktopPet
             }
             else if (x > 0)   // moving right (detect right borders)
             {
-                if (hwndWindow == (IntPtr)0)
+                CheckFullScreen();  // used to check if another window is in full screen
+                if (PositionX + x + Width > ScreenArea.X + ScreenArea.Width)    // right screen border!
                 {
-                    CheckFullScreen();  // used to check if another window is in full screen
-                    if (PositionX + x + Width > ScreenArea.X + ScreenArea.Width)    // right screen border!
-                    {
                         
-                        int iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.VERTICAL);
-                        if (iBorderAnimation >= 0)
-                        {
-                            PositionX = ScreenArea.X + ScreenArea.Width - Width;
-                            x = 0;
-                            SetNewAnimation(iBorderAnimation);
-                            bNewAnimation = true;
-                        }
-                        else
-                        {
-                            bLeavingScreen = true;
-                        }
-                    }
-                    else    // run window border detection setup and then check left border of all valid windows!
+                    int iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.VERTICAL);
+                    if (iBorderAnimation >= 0)
                     {
-                        // Retrieve valid windows
-                        Dictionary<IntPtr, string> windows = EnumerateWindows();
+                        PositionX = ScreenArea.X + ScreenArea.Width - Width;
+                        x = 0;
+                        SetNewAnimation(iBorderAnimation);
+                        bNewAnimation = true;
+                    }
+                    else
+                    {
+                        bLeavingScreen = true;
+                    }
+                }
+                else    // run window border detection setup and then check left border of all valid windows!
+                {
+                    // Retrieve valid windows
+                    Dictionary<IntPtr, string> windows = EnumerateWindows();
 
-                        // For each valid window found:
-                        foreach (KeyValuePair<IntPtr, string> window in windows)
+                    // For each valid window found:
+                    foreach (KeyValuePair<IntPtr, string> window in windows)
+                    {
+                        // Get size and position of window
+                        if (NativeMethods.GetWindowRect(new HandleRef(this, window.Key), out NativeMethods.RECT rct))
                         {
-                            // Get size and position of window
-                            if (NativeMethods.GetWindowRect(new HandleRef(this, window.Key), out NativeMethods.RECT rct))
+                            // window left border!
+                            if (PositionX + x + Width >= rct.Left
+                                && PositionX + x + Width < rct.Left + x // A little bit of wiggle-room so the sheep doesn't phase through the window
+                                && PositionY + y < rct.Bottom // Ignore if below window. REMINDER: Y is inverted
+                                && PositionY + y + Height > rct.Top // Ignore if above window
+                                && !CheckTopWindow(false, window.Key) // Ignore windows that aren't visible on top
+                                && rct.Left > ScreenArea.Left + Width // Ignore collision if the sheep doesn't have enough space to make it past the left screen border (ex: if an application is covering the entire screen)
+                                )
                             {
-                                // window left border!
-                                if (PositionX + x + Width >= rct.Left
-                                    && PositionX + x + Width < rct.Left + x // A little bit of wiggle-room so the sheep doesn't phase through the window
-                                    && PositionY + y < rct.Bottom // Ignore if below window. REMINDER: Y is inverted
-                                    && PositionY + y + Height > rct.Top // Ignore if above window
-                                    && !CheckTopWindow(false, window.Key) // Ignore windows that aren't visible on top
-                                    && rct.Left > ScreenArea.Left + Width // Ignore collision if the sheep doesn't have enough space to make it past the left screen border (ex: if an application is covering the entire screen)
-                                    )
+                                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value + " left-side collision!");
+
+                                //Console.WriteLine("\n" + CurrentAnimation.Name);
+
+                                // Set border animation with correctly "only" value
+                                int iBorderAnimation = -1;
+                                if (window.Value == "Sheep")
+                                    iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
+                                else
+                                    iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
+
+                                // If a "none" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
+                                if (iBorderAnimation >= 0)
                                 {
-                                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value + " left-side collision!");
-
-                                    //Console.WriteLine("\n" + CurrentAnimation.Name);
-
-                                    // Set border animation with correctly "only" value
-                                    int iBorderAnimation = -1;
-                                    if (window.Value == "Sheep")
-                                        iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
-                                    else
-                                        iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
-
-                                    // If a "none" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
-                                    if (iBorderAnimation >= 0)
-                                    {
-                                        PositionX = rct.Left - Width;
-                                        x = 0;
-                                        SetNewAnimation(iBorderAnimation);
-                                        bNewAnimation = true;
-                                    }
-
-                                    break;
+                                    PositionX = rct.Left - Width;
+                                    x = 0;
+                                    SetNewAnimation(iBorderAnimation);
+                                    bNewAnimation = true;
                                 }
+
+                                break;
                             }
                         }
                     }
                 }
-                else
+
+                // If pet is on top of a window, check for right window corner
+                if(hwndWindow != (IntPtr)0)
                 {
                     if (NativeMethods.GetWindowRect(new HandleRef(this, hwndWindow), out NativeMethods.RECT rct))
                     {
