@@ -1000,43 +1000,19 @@ namespace DesktopPet
             /// <returns>Y position of the window or taskbar. -1 if pet is still falling.</returns>
         private int FallDetect(int y)
         {
-            Dictionary<IntPtr, string> windows = new Dictionary<IntPtr, string>();
             NativeMethods.TITLEBARINFO titleBarInfo = new NativeMethods.TITLEBARINFO();
             titleBarInfo.cbSize = Marshal.SizeOf(titleBarInfo);
 
             CheckFullScreen();
 
-                // Enumerate all windows on the desktop.
-            NativeMethods.EnumWindows(delegate (IntPtr hWnd, int lParam)
-            {
-                if (hWnd == Handle) return true;    // form itself, don't parse
-
-                    // Enumerate only visible windows
-                if (NativeMethods.IsWindowVisible(hWnd))
-                {
-                    StringBuilder sTitle = new StringBuilder(128);
-                    NativeMethods.GetWindowText(hWnd, sTitle, 128);
-
-                    // Sheep windows doesn't have a title bar, but we want detect if another pet is present
-                    if (sTitle.ToString() == "Sheep") { }
-                    // If there is no title bar, continue enumerating other windows
-                    else if (!NativeMethods.GetTitleBarInfo(hWnd, ref titleBarInfo)) return true;
-                    // If title bar is not visible, continue enumerating other windows
-                    else if ((titleBarInfo.rgstate[0] & 0x00008000) > 0) // invisible
-                        return true;
-                    
-                        // If window has a title, add this window to list
-                    if (sTitle.Length > 0)
-                    {
-                        windows[hWnd] = sTitle.ToString();
-                    }
-                }
-                return true;
-            }, (IntPtr)0);
+            // Retrieve windows
+            Dictionary<IntPtr, string> windows = EnumerateWindows(titleBarInfo);
 
                 // For each valid window found:
             foreach (KeyValuePair<IntPtr, string> window in windows)
             {
+                Console.WriteLine(window);
+
                     // Get size and position of window
                 if (NativeMethods.GetWindowRect(new HandleRef(this, window.Key), out NativeMethods.RECT rct))
                 {
@@ -1060,6 +1036,8 @@ namespace DesktopPet
 								NativeMethods.ShowWindow(window.Key, 5);        // show window again
 								NativeMethods.SetForegroundWindow(window.Key);  // set focus to window
 							}
+                            StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value);
+
                             return rct.Top;                                 // return the position for the pet
                         }
                         else
@@ -1105,6 +1083,49 @@ namespace DesktopPet
                     }
                 }
             }
+        }
+
+            /// <summary>
+            /// Get a list of all valid windows
+            /// </summary>
+            /// <remarks>
+            /// Ignores self, invisible windows and windows without a title bar
+            /// </remarks>
+            /// <param name="titleBarInfo"></param>
+            /// <returns>A dictionary of window keys values and names</returns>
+        private Dictionary<IntPtr, string> EnumerateWindows(NativeMethods.TITLEBARINFO titleBarInfo)
+        {
+            Dictionary<IntPtr, string> windows = new Dictionary<IntPtr, string>();
+
+                // Enumerate all windows on the desktop.
+            NativeMethods.EnumWindows(delegate (IntPtr hWnd, int lParam)
+            {
+                if (hWnd == Handle) return true;    // form itself, don't parse
+
+                // Enumerate only visible windows
+                if (NativeMethods.IsWindowVisible(hWnd))
+                {
+                    StringBuilder sTitle = new StringBuilder(128);
+                    NativeMethods.GetWindowText(hWnd, sTitle, 128);
+
+                    // Sheep windows doesn't have a title bar, but we want detect if another pet is present
+                    if (sTitle.ToString() == "Sheep") { }
+                    // If there is no title bar, continue enumerating other windows
+                    else if (!NativeMethods.GetTitleBarInfo(hWnd, ref titleBarInfo)) return true;
+                    // If title bar is not visible, continue enumerating other windows
+                    else if ((titleBarInfo.rgstate[0] & 0x00008000) > 0) // invisible
+                        return true;
+
+                    // If window has a title, add this window to list
+                    if (sTitle.Length > 0)
+                    {
+                        windows[hWnd] = sTitle.ToString();
+                    }
+                }
+                return true;
+            }, (IntPtr)0);
+
+            return windows;
         }
 
         private bool FollowWindow()
