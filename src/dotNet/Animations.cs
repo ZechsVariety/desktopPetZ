@@ -788,6 +788,7 @@ namespace DesktopPet
                 int iRandMax = 0;
                 foreach (TNextAnimation anim in list)
                 {
+                    // Skip if this animation has the wrong "only" value
                     if (anim.only != TNextAnimation.TOnly.NONE && (anim.only & where) == 0) continue;
 
                     iRandMax += anim.Probability;

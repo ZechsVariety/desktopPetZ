@@ -554,6 +554,7 @@ namespace DesktopPet
                 bool hittingRightBorder = PositionX + TossForce.X >= ScreenArea.X + ScreenArea.Width - Width;
                 bool hittingTaskbar = PositionY + tossVertVel >= ScreenArea.Y + ScreenArea.Height - Height;
                 int iWindowTop = FallDetect((int)tossVertVel); // >0 means a window top border was hit
+                //TODO: add window side detection so they bounce off windows too
 
                 // If hitting left or right border, bounce
                 if (hittingLeftBorder || hittingRightBorder)
@@ -656,6 +657,45 @@ namespace DesktopPet
                         else
                         {
                             bLeavingScreen = true;
+                        }
+                    }
+                    else    // run window border detection setup and then check right border of all valid windows!
+                    {
+                        // Retrieve valid windows
+                        Dictionary<IntPtr, string> windows = EnumerateWindows();
+
+                        // For each valid window found:
+                        foreach (KeyValuePair<IntPtr, string> window in windows)
+                        {
+                            // Get size and position of window
+                            if (NativeMethods.GetWindowRect(new HandleRef(this, window.Key), out NativeMethods.RECT rct))
+                            {
+                                // window right border!
+                                if (PositionX + x <= rct.Right
+                                    && PositionX + x > rct.Right + x // A little bit of wiggle-room so the sheep doesn't phase through the window
+                                    && !CheckTopWindow(false, window.Key) // Ignore windows that aren't visible on top
+                                    && rct.Right < ScreenArea.Right - Width // Ignore collision if the sheep doesn't have enough space to make it past the right screen border (ex: if an application is covering the entire screen)
+                                    )
+                                {
+                                    //TODO: remove/simplify this debug
+                                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value + " right-side collision!");
+                                    Console.WriteLine("'" + window.Value + "' Radius Right: " + rct.Right + ", Left: " + (rct.Right + x) + " | Sheep Left: " + (PositionX + x));
+
+                                    //TODO: add "only" functionality for WINDOWSIDE and/or PETSIDE value
+                                    // Set border animation
+                                    int iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.NONE);
+                                    // If a "AAAAAAAAAAAAAAAA" or "NONE" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
+                                    if (iBorderAnimation >= 0)
+                                    {
+                                        PositionX = rct.Right;
+                                        x = 0;
+                                        SetNewAnimation(iBorderAnimation);
+                                        bNewAnimation = true;
+                                    }
+
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
@@ -1000,19 +1040,14 @@ namespace DesktopPet
             /// <returns>Y position of the window or taskbar. -1 if pet is still falling.</returns>
         private int FallDetect(int y)
         {
-            NativeMethods.TITLEBARINFO titleBarInfo = new NativeMethods.TITLEBARINFO();
-            titleBarInfo.cbSize = Marshal.SizeOf(titleBarInfo);
-
             CheckFullScreen();
 
-            // Retrieve windows
-            Dictionary<IntPtr, string> windows = EnumerateWindows(titleBarInfo);
+            // Retrieve valid windows
+            Dictionary<IntPtr, string> windows = EnumerateWindows();
 
                 // For each valid window found:
             foreach (KeyValuePair<IntPtr, string> window in windows)
             {
-                Console.WriteLine(window);
-
                     // Get size and position of window
                 if (NativeMethods.GetWindowRect(new HandleRef(this, window.Key), out NativeMethods.RECT rct))
                 {
@@ -1091,10 +1126,11 @@ namespace DesktopPet
             /// <remarks>
             /// Ignores self, invisible windows and windows without a title bar
             /// </remarks>
-            /// <param name="titleBarInfo"></param>
             /// <returns>A dictionary of window keys values and names</returns>
-        private Dictionary<IntPtr, string> EnumerateWindows(NativeMethods.TITLEBARINFO titleBarInfo)
+        private Dictionary<IntPtr, string> EnumerateWindows()
         {
+            NativeMethods.TITLEBARINFO titleBarInfo = new NativeMethods.TITLEBARINFO();
+            titleBarInfo.cbSize = Marshal.SizeOf(titleBarInfo);
             Dictionary<IntPtr, string> windows = new Dictionary<IntPtr, string>();
 
                 // Enumerate all windows on the desktop.
@@ -1162,19 +1198,26 @@ namespace DesktopPet
         }
 
             /// <summary>
-            /// Check if current window handler is still valid (if another window cover the visual of this window, it must not be used as window)
+            /// Check if given window is still valid (if another window cover the visual of this window, it must not be used as window)
             /// </summary>
+            /// <remarks>
+            /// If 'window' is left blank, it defaults to hwndWindow
+            /// </remarks>
             /// <param name="bCheck">Check if it is still valid. Set false if window is not proofed, true if pet is already walking on a window => check if window is still valid.</param>
+            /// <param name="window">The window to be checked. If left blank, default to hwndWindow</param>
             /// <returns>True if window is still valid and present. False if window is not anymore there.</returns>
             /// <seealso cref="NativeMethods.GetWindow(IntPtr, int)"/>
             /// <seealso cref="NativeMethods.GetTitleBarInfo(IntPtr, ref NativeMethods.TITLEBARINFO)"/>
-        private bool CheckTopWindow(bool bCheck)
+        private bool CheckTopWindow(bool bCheck, IntPtr window = default)
         {
+            if (window == default)
+                window = hwndWindow;
+
                 // Check only if we have a valid window handler
-            if ((int)hwndWindow != 0)
+            if ((int)window != 0)
             {
 				// Get window size and position of the current pet
-				NativeMethods.GetWindowRect(new HandleRef(this, hwndWindow), out NativeMethods.RECT rctO);
+				NativeMethods.GetWindowRect(new HandleRef(this, window), out NativeMethods.RECT rctO);
 
 				// If pet was walking on a window, check if window is still in the same position
 				if (bCheck)
@@ -1197,7 +1240,7 @@ namespace DesktopPet
                 while (hwnd2 != (IntPtr)0)
                 {
 						// All windows up to the current window was parsed, now window is overlapping the current window
-					if (hwnd2 == hwndWindow)
+					if (hwnd2 == window)
 					{
                         //Debug.WriteLine("--XX Parsed all windows");
 						return false;
