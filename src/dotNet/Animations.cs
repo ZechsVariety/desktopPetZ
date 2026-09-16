@@ -132,6 +132,14 @@ namespace DesktopPet
                 /// Vertical screen borders - next animation will be executed only if pet is on the left or right screen border
                 /// </summary>
             VERTICAL    = 0x08,
+                /// <summary>
+                /// Pet-side borders - next animation will be executed only if pet hits the left or right of another pet
+                /// </summary>
+            PETSIDE = 0x0A,
+                /// <summary>
+                /// Window-side borders - next animation will be executed only if pet hits the left or right of a window
+                /// </summary>
+            WINDOWSIDE = 0x0C
         }
             /// <summary>
             /// ID of the next animation to play
@@ -780,26 +788,31 @@ namespace DesktopPet
             /// <returns>ID of the next animation to play. -1 if there is no animation.</returns>
         private int SetNextGeneralAnimation(List<TNextAnimation> list, TNextAnimation.TOnly where)
         {
+            //Console.WriteLine(where);
+
             int iDefaultID = -1;
             if (list.Count > 0)     // Find the next animation only if there is at least 1 animation in the list
             {
                 int iVal;
                 int iSum = 0;
                 int iRandMax = 0;
-                Console.WriteLine("\nPotential Anims:");
+                //Console.WriteLine("\nPotential Anims:");
+                Console.WriteLine();
                 foreach (TNextAnimation anim in list)
                 {
                     // Skip if this animation has the wrong "only" value
-                    if (anim.only != TNextAnimation.TOnly.NONE && (anim.only & where) == 0) continue;
+                    if (anim.only != TNextAnimation.TOnly.NONE && anim.only != where) continue;
 
-                    Console.WriteLine(SheepAnimations[anim.ID].Name + " (" + anim.only + ")");
+                    Console.WriteLine("anim: " + SheepAnimations[anim.ID].Name + " | anim.only: " + anim.only + " | where: " + where + " | anim.only & where: " + (anim.only & where));
+
+                    //Console.WriteLine(SheepAnimations[anim.ID].Name + " (" + anim.only + ")");
 
                     iRandMax += anim.Probability;
                 }
                 iVal = rand.Next(1, iRandMax+1);
                 foreach (TNextAnimation anim in list)
                 {
-                    if (anim.only != TNextAnimation.TOnly.NONE && (anim.only & where) == 0) continue;
+                    if (anim.only != TNextAnimation.TOnly.NONE && anim.only != where) continue;
 
                     iSum += anim.Probability;
                     if (iSum >= iVal)

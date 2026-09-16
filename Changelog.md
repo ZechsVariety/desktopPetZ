@@ -28,16 +28,16 @@ v0.3.1 (WIP)
 
 ### V0.4 (WIP)
 
-* Pets can now detect the side borders of windows! This also means they can play certain animations when colliding with other pets!
+* Pets can now detect the side borders of windows and other pets!
 
-Technical info:
+  * Technical info:
 
-* Pets intentionally phase through windows if they don't have enough room to get past the screen borders
+    * There are two new border types: windowSide and petSide.
+    * Pets intentionally phase through windows if they don't have enough room to get past the screen borders
+  * WIP info:
 
-WIP info:
+    * Pets currently don't detect right/left window borders when being tossed
+* Fixed bug where the "only" value of each border animation was not being respected.
 
-* Pets currently cannot detect right/left window borders when being tossed
-* Pets currently only play VERTICAL and NONE-tagged border animations when hitting windows
-
-
+  * EX: if the sheep hits the side of a window, only animations with the Only values "windowSide" and "none" can play
 

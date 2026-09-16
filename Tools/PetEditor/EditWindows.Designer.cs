@@ -944,7 +944,9 @@
             "window",
             "horizontal",
             "horizontal+",
-            "vertical"});
+            "vertical",
+            "petSide",
+            "windowSide"});
             this.toolStripComboBox1.Name = "toolStripComboBox1";
             this.toolStripComboBox1.Size = new System.Drawing.Size(121, 23);
             // 

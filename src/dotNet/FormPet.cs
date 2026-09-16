@@ -679,14 +679,18 @@ namespace DesktopPet
                                     && rct.Right < ScreenArea.Right - Width // Ignore collision if the sheep doesn't have enough space to make it past the right screen border (ex: if an application is covering the entire screen)
                                     )
                                 {
-                                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value + " right-side collision!");
+                                    //StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value + " right-side collision!");
 
                                     Console.WriteLine("\n" + CurrentAnimation.Name);
 
-                                    //TODO: add "only" functionality for WINDOWSIDE and/or PETSIDE value
-                                    // Set border animation
-                                    int iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.VERTICAL);
-                                    // If a "AAAAAAAAAAAAAAAA" or "NONE" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
+                                    // Set border animation with correctly "only" value
+                                    int iBorderAnimation = -1;
+                                    if (window.Value == "Sheep")
+                                        iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
+                                    else
+                                        iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
+
+                                    // If a "none" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
                                     if (iBorderAnimation >= 0)
                                     {
                                         PositionX = rct.Right;
@@ -767,12 +771,16 @@ namespace DesktopPet
                                 {
                                     StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value + " left-side collision!");
 
-                                    Console.WriteLine("\n" + CurrentAnimation.Name);
+                                    //Console.WriteLine("\n" + CurrentAnimation.Name);
 
-                                    //TODO: add "only" functionality for WINDOWSIDE and/or PETSIDE value
-                                    // Set border animation
-                                    int iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.VERTICAL);
-                                    // If a "AAAAAAAAAAAAAAAA" or "NONE" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
+                                    // Set border animation with correctly "only" value
+                                    int iBorderAnimation = -1;
+                                    if (window.Value == "Sheep")
+                                        iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
+                                    else
+                                        iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
+
+                                    // If a "none" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
                                     if (iBorderAnimation >= 0)
                                     {
                                         PositionX = rct.Left - Width;

@@ -133,6 +133,14 @@ namespace PetEditor
                 /// Vertical screen borders - next animation will be executed only if pet is on the left or right screen border
                 /// </summary>
             VERTICAL    = 0x08,
+                /// <summary>
+                /// Pet-side borders - next animation will be executed only if pet hits the left or right of another pet
+                /// </summary>
+            PETSIDE = 0x0A,
+                /// <summary>
+                /// Window-side borders - next animation will be executed only if pet hits the left or right of a window
+                /// </summary>
+            WINDOWSIDE = 0x0C,
         }
             /// <summary>
             /// ID of the next animation to play
