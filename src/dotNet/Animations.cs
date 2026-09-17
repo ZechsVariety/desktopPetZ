@@ -781,6 +781,18 @@ namespace DesktopPet
         }
 
             /// <summary>
+            /// Start the next animation once a pet border is hit and matching pet animation is found
+            /// </summary>
+            /// <param name="animations">Matching animations between both pets.</param>
+            /// <param name="where">Where the pet is "walking"</param>
+            /// <returns>ID of the next animation to play. -1 if there is no animation.</returns>
+        public int SetNextInteractAnimation(List<TNextAnimation> animations, TNextAnimation.TOnly where)
+        {
+            StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, "pet interaction detected");
+            return SetNextGeneralAnimation(animations, where);
+        }
+
+            /// <summary>
             /// Set the next animation, once the last one was finished.
             /// </summary>
             /// <param name="list">List of animations that can be executed.</param>

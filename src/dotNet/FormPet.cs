@@ -672,7 +672,7 @@ namespace DesktopPet
                         {
                             // window right border!
                             if (PositionX + x <= rct.Right
-                                && PositionX + x > rct.Right + x // A little bit of wiggle-room so the sheep doesn't phase through the window
+                                && PositionX + x >= rct.Right + x // A little bit of wiggle-room so the sheep doesn't phase through the window
                                 && PositionY + y < rct.Bottom // Ignore if below window. REMINDER: Y is inverted
                                 && PositionY + y + Height > rct.Top // Ignore if above window
                                 && !CheckTopWindow(false, window.Key) // Ignore windows that aren't visible on top
@@ -683,12 +683,8 @@ namespace DesktopPet
 
                                 //Console.WriteLine("\n" + CurrentAnimation.Name);
 
-                                // Set border animation with correctly "only" value
-                                int iBorderAnimation = -1;
-                                if (window.Value == "Sheep")
-                                    iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
-                                else
-                                    iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
+                                // Set border animation with correct "only" value
+                                int iBorderAnimation = window.Value == "Sheep" ? GetPetInteractAnim(rct) : Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
 
                                 // If a "none" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
                                 if (iBorderAnimation >= 0)
@@ -761,7 +757,7 @@ namespace DesktopPet
                         {
                             // window left border!
                             if (PositionX + x + Width >= rct.Left
-                                && PositionX + x + Width < rct.Left + x // A little bit of wiggle-room so the sheep doesn't phase through the window
+                                && PositionX + x + Width <= rct.Left + x // A little bit of wiggle-room so the sheep doesn't phase through the window
                                 && PositionY + y < rct.Bottom // Ignore if below window. REMINDER: Y is inverted
                                 && PositionY + y + Height > rct.Top // Ignore if above window
                                 && !CheckTopWindow(false, window.Key) // Ignore windows that aren't visible on top
@@ -772,12 +768,8 @@ namespace DesktopPet
 
                                 //Console.WriteLine("\n" + CurrentAnimation.Name);
 
-                                // Set border animation with correctly "only" value
-                                int iBorderAnimation = -1;
-                                if (window.Value == "Sheep")
-                                    iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
-                                else
-                                    iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
+                                // Set border animation with correct "only" value
+                                int iBorderAnimation = window.Value == "Sheep" ? GetPetInteractAnim(rct) : Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
 
                                 // If a "none" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
                                 if (iBorderAnimation >= 0)
@@ -1084,6 +1076,144 @@ namespace DesktopPet
             
         }
 
+        //TODO: ANNOTATE THIS AND CLEAN IT UP
+        private int GetPetInteractAnim(NativeMethods.RECT rct)
+        {
+            FormPet sheepHit = null;
+            
+            //FormPet[] sheeps = Program.Mainthread.GetSheeps();
+
+            //Console.WriteLine("\nSheeps: " + Program.Mainthread.sheeps.ToString());
+
+            Console.WriteLine("Wanted X: " + rct.Left + " | Wanted Y: " + rct.Bottom);
+
+            FormPet[] sheeps = Program.Mainthread.sheeps;
+
+            //foreach (FormPet sheep in Program.Mainthread.sheeps)
+            for (int i = 0; i < sheeps.Length; i++)
+            {
+                if (sheeps[i] == null) break;
+
+                if (sheeps[i].Left == Left)
+                    Console.WriteLine("this is sheep " + i);
+
+                Console.WriteLine("Sheep " + i + " | X: " + sheeps[i].Left + " | Y: " + sheeps[i].Bottom + " | Anim: " + sheeps[i].CurrentAnimation.Name);
+
+                if(sheeps[i].Left == rct.Left && sheeps[i].Bottom == rct.Bottom)
+                {
+                    Console.WriteLine("Sheep " + i + " was collided with!");
+
+                    sheepHit = sheeps[i];
+                    break;
+                }
+
+                foreach (FormPet child in sheeps[i].childs)
+                {
+                    if (child == null) continue;
+
+                    //Console.WriteLine("\tChild " + child.Name + " | X: " + child.PositionX);
+
+                    if (child.PositionX == rct.Left)
+                    {
+                        Console.WriteLine("Sheep " + sheeps[i] + "'s child, " + child.Name + ", was collided with!");
+
+                        sheepHit = child;
+                        break;
+                    }
+                }
+
+                if (sheepHit != null)
+                    break;
+            }
+
+            if (sheepHit == null)
+                return Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
+
+            int matchingAnimID = -1;
+            List<TNextAnimation> matchingBorderAnims = new List<TNextAnimation>();
+
+            foreach (TNextAnimation borderAnim in CurrentAnimation.EndBorder)
+            {
+                if (borderAnim.only != TNextAnimation.TOnly.PETSIDE && borderAnim.only != TNextAnimation.TOnly.NONE)
+                    continue;
+
+                //TNextAnimation[] hitBorderAnims = sheepHit.CurrentAnimation.EndBorder.ToArray();
+
+                if (sheepHit.CurrentAnimation.ID == borderAnim.ID)
+                    matchingAnimID = borderAnim.ID;
+
+                if (IsMovingLeft == sheepHit.IsMovingLeft)
+                    continue;
+
+                foreach (TNextAnimation hitBorderAnim in sheepHit.CurrentAnimation.EndBorder)
+                {
+                    if (hitBorderAnim.ID == borderAnim.ID && (hitBorderAnim.only == TNextAnimation.TOnly.PETSIDE || hitBorderAnim.only == TNextAnimation.TOnly.NONE))
+                    {
+                        matchingBorderAnims.Add(borderAnim);
+                        break;
+                    }
+                }
+            }
+
+            int animationID = -1;
+
+            //TODO: you may be able to remove solution 1 because if collisions are consistent, 2 may cover it?
+            if (matchingBorderAnims.Count > 0)
+            {
+                animationID = Animations.SetNextInteractAnimation(matchingBorderAnims, TNextAnimation.TOnly.PETSIDE);
+                //sheepHit.forceNextAnimation = animationID;
+                sheepHit.SetNewAnimation(animationID);
+                //sheepHit.MatchAnimation(animationID, );
+
+                Console.WriteLine("1");
+            }
+            else if(matchingAnimID > 0)
+            {
+                animationID = matchingAnimID;
+                SetNewAnimation(animationID);
+                //sheepHit.SetNewAnimation(animationID);
+
+                Console.WriteLine("2");
+            }
+            else
+            {
+                animationID = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
+
+                if (animationID == -1)
+                {
+                    Console.Write("FORCING ANIMATION ");
+
+                    int forcedSheepHitAnim = sheepHit.Animations.SetNextBorderAnimation(sheepHit.CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
+
+                    Console.WriteLine(forcedSheepHitAnim);
+
+                    if(forcedSheepHitAnim >= 0)
+                        sheepHit.SetNewAnimation(forcedSheepHitAnim);
+                }
+
+                /*
+                if (animationID == -1)
+                {
+                    sheepHit.NextStep();
+                    //sheepHit.Animations.SetNextBorderAnimation(sheepHit.CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
+                }
+                */
+
+                Console.WriteLine("3");
+            }
+
+            return animationID;
+        }
+
+        //void MatchAnimation(int animationID)
+        //{
+        //    Animations.SetNextInteractAnimation(animationID);
+
+        //    PositionX = rct.Left - Width;
+        //    SetNewAnimation(animationID);
+        //    bNewAnimation = true;
+        //}
+
             /// <summary>
             /// Detect if pet is still falling or if taskbar/window was detected.
             /// </summary>
@@ -1261,6 +1391,7 @@ namespace DesktopPet
             /// <seealso cref="NativeMethods.GetTitleBarInfo(IntPtr, ref NativeMethods.TITLEBARINFO)"/>
         private bool CheckTopWindow(bool bCheck, IntPtr window = default)
         {
+            // Default to hwndWindow if window is blank
             if (window == default)
                 window = hwndWindow;
 
