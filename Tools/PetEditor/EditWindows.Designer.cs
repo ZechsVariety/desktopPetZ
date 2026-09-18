@@ -945,6 +945,7 @@
             "horizontal",
             "horizontal+",
             "vertical",
+            "vertical+",
             "petSide",
             "windowSide"});
             this.toolStripComboBox1.Name = "toolStripComboBox1";

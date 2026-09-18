@@ -173,6 +173,7 @@ namespace PetEditor
                             case "horizontal": where = TNextAnimation.TOnly.HORIZONTAL; break;
                             case "horizontal+": where = TNextAnimation.TOnly.HORIZONTAL_; break;
                             case "vertical": where = TNextAnimation.TOnly.VERTICAL; break;
+                            case "vertical+": where = TNextAnimation.TOnly.VERTICAL_; break;
                             case "petSide": where = TNextAnimation.TOnly.PETSIDE; break;
                             case "windowSide": where = TNextAnimation.TOnly.WINDOWSIDE; break;
                             default: where = TNextAnimation.TOnly.NONE; break;
@@ -200,6 +201,7 @@ namespace PetEditor
                             case "horizontal": where = TNextAnimation.TOnly.HORIZONTAL; break;
                             case "horizontal+": where = TNextAnimation.TOnly.HORIZONTAL_; break;
                             case "vertical": where = TNextAnimation.TOnly.VERTICAL; break;
+                            case "vertical+": where = TNextAnimation.TOnly.VERTICAL_; break;
                             case "petSide": where = TNextAnimation.TOnly.PETSIDE; break;
                             case "windowSide": where = TNextAnimation.TOnly.WINDOWSIDE; break;
                             default: where = TNextAnimation.TOnly.NONE; break;
@@ -227,6 +229,7 @@ namespace PetEditor
                             case "horizontal": where = TNextAnimation.TOnly.HORIZONTAL; break;
                             case "horizontal+": where = TNextAnimation.TOnly.HORIZONTAL_; break;
                             case "vertical": where = TNextAnimation.TOnly.VERTICAL; break;
+                            case "vertical+": where = TNextAnimation.TOnly.VERTICAL_; break;
                             case "petSide": where = TNextAnimation.TOnly.PETSIDE; break;
                             case "windowSide": where = TNextAnimation.TOnly.WINDOWSIDE; break;
                             default: where = TNextAnimation.TOnly.NONE; break;

@@ -213,6 +213,9 @@
       <xsd:enumeration value="horizontal" />
       <xsd:enumeration value="horizontal+" />
       <xsd:enumeration value="vertical" />
+      <xsd:enumeration value="vertical+" />
+	  <xsd:enumeration value="petSide" />
+	  <xsd:enumeration value="windowSide" />
     </xsd:restriction>
   </xsd:simpleType>
 

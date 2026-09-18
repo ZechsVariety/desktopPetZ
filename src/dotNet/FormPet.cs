@@ -686,7 +686,7 @@ namespace DesktopPet
                                 // Set border animation with correct "only" value
                                 int iBorderAnimation = window.Value == "Sheep" ? SetPetInteractionAnimations(rct) : Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
 
-                                // If a "none" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
+                                // If a "none", "vertical+" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
                                 if (iBorderAnimation >= 0)
                                 {
                                     PositionX = rct.Right;
@@ -771,7 +771,7 @@ namespace DesktopPet
                                 // Set border animation with correct "only" value
                                 int iBorderAnimation = window.Value == "Sheep" ? SetPetInteractionAnimations(rct) : Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
 
-                                // If a "none" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
+                                // If a "none", "vertical+" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
                                 if (iBorderAnimation >= 0)
                                 {
                                     PositionX = rct.Left - Width;

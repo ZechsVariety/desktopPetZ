@@ -35,7 +35,11 @@ v0.3.1 (WIP)
     * 1\. Both pets play the same random animation
     * 2\. One pet mimics whatever animation the other pet is currently playing (ex: if a Social Sheep is sleeping, the others will get sleepy too!)
     * 3\. Both pets play different random animations
-  * There are two new border types: windowSide and petSide.
+  * There are 3 new border types that can be used in the Pet Editor:
+
+    * vertical+: pet touched any vertical border (left/right screen borders, window sides and pet sides)
+    * petSide: pet touched the right/left side of another pet
+    * windowSide: pet touched the right/left side of a window
   * Pets intentionally phase through windows if they don't have enough room to get past the screen borders
   * WIP info:
 
@@ -44,7 +48,7 @@ v0.3.1 (WIP)
 
   * EX: previously, if you brought a window to the right of the screen, the sheep could walk outside the screen border. Now it cannot, but you can still force it outside if you're evil like that.
   * As a result, you can now build obstacle courses out of windows :D
-* Fixed bug where the "only" value of each border animation was not being respected(?)
+* Fixed bug(?) where the "only" value of each border animation was not being respected
 
-  * EX: now, if the sheep hits the side of a window, only animations with the Only values "windowSide" and "none" can play
+  * EX: now, if the sheep hits the side of a window, only animations with the Only values "windowSide", "vertical+" or "none" can play
 
