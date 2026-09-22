@@ -62,6 +62,10 @@ namespace DesktopPet
             /// </summary>
         readonly Xml Xml;
             /// <summary>
+            /// Random object
+            /// </summary>
+        Random rand = new Random();
+            /// <summary>
             /// If the pet is in dragging mode (user is holding the pet with the mouse)
             /// </summary>
         bool IsDragging = false;
@@ -108,10 +112,6 @@ namespace DesktopPet
             /// </summary>
         int DisplayIndex = 0;
 
-            /// <summary>
-            /// Random for Zech's Skywire Bean pet. Not currently used anywhere else.
-            /// </summary>
-        Random rand = new Random();
             /// <summary>
             /// Used for Zech's Skywire Bean pet. Randomizes whenever it spawns.
             /// </summary>
@@ -171,7 +171,7 @@ namespace DesktopPet
             InitializeComponent();
             Visible = false;            // Is invisible at beginning (we don't know where this sprite should be positioned)
             Opacity = 0.0;
-            rand = new Random();
+            rand = new Random(); //TODO: ensure this is in pr
         }
 
             /// <summary>
@@ -300,7 +300,6 @@ namespace DesktopPet
             // Multiscreen
             if(Program.MyData.GetMultiscreen())
             {
-                Random rand = new Random();
                 int oldDisplayIndex = DisplayIndex;
                 DisplayIndex = rand.Next(0, Screen.AllScreens.Length);
                 if(oldDisplayIndex != DisplayIndex) // display changed, all computed values could be wrong
@@ -1079,11 +1078,11 @@ namespace DesktopPet
         /// <summary>
         /// When pets collide, this function decides what both of the pets should do
         /// <para>Type 1: Both pets play the same random animation</para>
-        /// <para>Type 2: This pet mimics the animation of the other pet</para>
-        /// <para>Type 3: Both pets play different random animations, but Pet2's animation is ignored if they aren't facing each other</para>
+        /// <para>Type 2: Otherwise, this pet has a 50% chance to mimic the animation that the other pet is already playing</para>
+        /// <para>Type 3: As a last resort, both pets play different random animations, but Pet2's animation stays the same if they aren't facing each other</para>
         /// </summary>
         /// <remarks>
-        /// Pro tip: if you give your pet a buncha border animations with "petSide" as a control and with probability as low as zero, the pet will try and mimic other pets doing these animations.
+        /// Pro tip: to make pets mimic each other, add some "petSide" border animations with their probabilities at 0
         /// </remarks>
         /// <param name="rct">Rect of other pet window (the pet that this pet collided with)</param>
         /// <returns>ID of the next animation for this sheep to play. -1 if there is no animation.</returns>
@@ -1192,8 +1191,8 @@ namespace DesktopPet
                 Console.WriteLine("Type-1 interaction: both pets do same thing");
                 StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Type-1 interaction");
             }
-            // Type 2: otherwise, if sheep2 is currently playing an animation that sheep1 has as an end-border animation (ex: sleeping), sheep1 will "mimic" sheep2 and do that animation
-            else if(mimicAnimID > 0)
+            // Type 2: otherwise, if sheep2 is currently playing an animation that sheep1 has as an end-border animation (ex: sleeping), there's a 50% chance for sheep1 to "mimic" sheep2
+            else if(mimicAnimID > 0 && rand.Next(0, 99) < 50)
             {
                 animationID = mimicAnimID;
                 SetNewAnimation(animationID);
