@@ -1080,7 +1080,7 @@ namespace DesktopPet
         /// When pets collide, this function decides what both of the pets should do
         /// <para>Type 1: Both pets play the same random animation</para>
         /// <para>Type 2: This pet mimics the animation of the other pet</para>
-        /// <para>Type 3: Both pets play different random animations</para>
+        /// <para>Type 3: Both pets play different random animations, but Pet2's animation is ignored if they aren't facing each other</para>
         /// </summary>
         /// <remarks>
         /// Pro tip: if you give your pet a buncha border animations with "petSide" as a control and with probability as low as zero, the pet will try and mimic other pets doing these animations.
@@ -1139,6 +1139,11 @@ namespace DesktopPet
             List<TNextAnimation> commonBorderAnims = new List<TNextAnimation>(); // List of all next end-border animations that both sheep have in common
             int mimicAnimID = -1; // If sheep2 is currently playing an animation that is also in sheep1's end-border animations, its ID is stored here
 
+            // Determine if sheeps are both facing/moving in the same direction
+            bool sameDirection = IsMovingLeft == sheep2.IsMovingLeft
+                    || (IsMovingLeft && sheep2.PositionX > PositionX)
+                    || (!IsMovingLeft && sheep2.PositionX < PositionX);
+
             // Run through sheep1's end-border animations to see if sheep2 has them
             foreach (TNextAnimation borderAnim in CurrentAnimation.EndBorder)
             {
@@ -1150,9 +1155,15 @@ namespace DesktopPet
                 if (sheep2CurrentAnim.ID == borderAnim.ID)
                     mimicAnimID = borderAnim.ID;
 
-                // Ignore this border animation if sheeps aren't facing the same direction
-                if (IsMovingLeft == sheep2.IsMovingLeft)
-                    continue;
+                // Ignore border animation if sheeps are moving in same direction
+                if (sameDirection)
+                {
+                    // If a mimic anim was already found, it's pointless to continue the loop
+                    if (mimicAnimID != -1)
+                        break;
+                    else
+                        continue;
+                }
 
                 // Run through each of sheep2's end-border animations to find any in common
                 foreach (TNextAnimation sheep2BorderAnim in sheep2CurrentAnim.EndBorder)
@@ -1178,7 +1189,8 @@ namespace DesktopPet
                 // Apply to sheep2
                 sheep2.SetNewAnimation(animationID);
 
-                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Type-1 interaction: both pets do same thing");
+                Console.WriteLine("Type-1 interaction: both pets do same thing");
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Type-1 interaction");
             }
             // Type 2: otherwise, if sheep2 is currently playing an animation that sheep1 has as an end-border animation (ex: sleeping), sheep1 will "mimic" sheep2 and do that animation
             else if(mimicAnimID > 0)
@@ -1186,24 +1198,26 @@ namespace DesktopPet
                 animationID = mimicAnimID;
                 SetNewAnimation(animationID);
 
-                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Type-2 interaction: pet1 mimics pet2");
+                Console.WriteLine("Type-2 interaction: pet1 mimics pet2");
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Type-2 interaction");
             }
             // Type 3: if all else fails, set both sheep to random end-border petSide animations
             else
             {
-                // Sheep1
+                Console.WriteLine("Type-3 interaction: Both sheeps play different random animations, but sheep2's animation is ignored if they aren't facing each other");
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Type-3 interaction");
+
+                // Sheep1 animation
                 animationID = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
 
-                // Sheep2 (only if it's facing sheep1)
-                if(IsMovingLeft != sheep2.IsMovingLeft)
+                // Sheep2 animation (only if it is facing sheep1)
+                if (!sameDirection)
                 {
                     int sheep2AnimationID = sheep2.Animations.SetNextBorderAnimation(sheep2CurrentAnim.ID, TNextAnimation.TOnly.PETSIDE);
                     // Only set new animation if one was found
                     if (sheep2AnimationID >= 0)
                         sheep2.SetNewAnimation(sheep2AnimationID);
                 }
-
-                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Type-3 interaction: both do random petSide animations");
             }
 
             return animationID;
