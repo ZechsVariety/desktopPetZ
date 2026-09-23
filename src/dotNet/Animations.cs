@@ -811,6 +811,8 @@ namespace DesktopPet
                 bool isHorizontal_ = (where == TNextAnimation.TOnly.WINDOW || where == TNextAnimation.TOnly.TASKBAR || where == TNextAnimation.TOnly.HORIZONTAL) ? true : false;
                 bool isVertical_ = (where == TNextAnimation.TOnly.VERTICAL || where == TNextAnimation.TOnly.WINDOWSIDE || where == TNextAnimation.TOnly.PETSIDE) ? true : false;
 
+                Console.WriteLine("isHorizontal+: " + isHorizontal_ + " | isVertical+: " + isVertical_);
+
                 int iVal;
                 int iSum = 0;
                 int iRandMax = 0;
@@ -823,12 +825,13 @@ namespace DesktopPet
                         && !(isVertical_ && anim.only == TNextAnimation.TOnly.VERTICAL_)
                         && anim.only != where)
                     {
+                        Console.WriteLine("SKIPPED - " + SheepAnimations[anim.ID].Name + " (" + anim.only + ")");
                         continue;
                     }
 
                     //Console.WriteLine("anim: " + SheepAnimations[anim.ID].Name + " | anim.only: " + anim.only + " | where: " + where + " | anim.only & where: " + (anim.only & where));
 
-                    //Console.WriteLine(SheepAnimations[anim.ID].Name + " (" + anim.only + ")");
+                    Console.WriteLine(SheepAnimations[anim.ID].Name + " (" + anim.only + ")");
 
                     iRandMax += anim.Probability;
                 }
@@ -851,6 +854,9 @@ namespace DesktopPet
                         break;
                     }
                 }
+
+                Console.WriteLine(iDefaultID);
+
                     // If an animation was found, re-calculate the values (if there are some Random values, they must be evaluated again)
                 if (iDefaultID > 0)
                 {

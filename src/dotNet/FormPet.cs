@@ -1146,8 +1146,8 @@ namespace DesktopPet
             // Run through sheep1's end-border animations to see if sheep2 has them
             foreach (TNextAnimation borderAnim in CurrentAnimation.EndBorder)
             {
-                // Skip this animation if it isn't set to petSide or none
-                if (borderAnim.only != TNextAnimation.TOnly.PETSIDE && borderAnim.only != TNextAnimation.TOnly.NONE)
+                // Skip this animation if it isn't set to petSide, none or vertical+
+                if (borderAnim.only != TNextAnimation.TOnly.PETSIDE && borderAnim.only != TNextAnimation.TOnly.NONE && borderAnim.only != TNextAnimation.TOnly.VERTICAL_)
                     continue;
 
                 // If sheep2's current animation matches this sheep1 border animation, update mimicAnimID
@@ -1168,7 +1168,7 @@ namespace DesktopPet
                 foreach (TNextAnimation sheep2BorderAnim in sheep2CurrentAnim.EndBorder)
                 {
                     // If the IDs match and the "only" values are correct, add this animation to the commonBorderAnims list
-                    if (sheep2BorderAnim.ID == borderAnim.ID && (sheep2BorderAnim.only == TNextAnimation.TOnly.PETSIDE || sheep2BorderAnim.only == TNextAnimation.TOnly.NONE))
+                    if (sheep2BorderAnim.ID == borderAnim.ID && (sheep2BorderAnim.only == TNextAnimation.TOnly.PETSIDE || sheep2BorderAnim.only == TNextAnimation.TOnly.NONE || sheep2BorderAnim.only == TNextAnimation.TOnly.VERTICAL_))
                     {
                         commonBorderAnims.Add(borderAnim);
                         break;
@@ -1185,8 +1185,9 @@ namespace DesktopPet
             {
                 // Apply to sheep1
                 animationID = Animations.SetNextInteractAnimation(commonBorderAnims, TNextAnimation.TOnly.PETSIDE);
-                // Apply to sheep2
-                sheep2.SetNewAnimation(animationID);
+                // Apply to sheep2 if not -1 (which should never be the case)
+                if(animationID >= 0)
+                    sheep2.SetNewAnimation(animationID);
 
                 Console.WriteLine("Type-1 interaction: both pets do same thing");
                 StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Type-1 interaction");
