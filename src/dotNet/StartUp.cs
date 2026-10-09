@@ -350,13 +350,13 @@ namespace DesktopPet
             // Close all sheeps, and count how many are closed
             for (int i = 0; i < iSheeps; i++)
             {
+                prevSheepCount++;
+
                 sheeps[i].Kill();
                 /*
                 sheeps[i].Close();
                 sheeps[i].Dispose();
                 */
-
-                prevSheepCount++;
             }
             iSheeps = 0;
 
