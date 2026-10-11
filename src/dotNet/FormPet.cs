@@ -1164,9 +1164,17 @@ namespace DesktopPet
                         continue;
                 }
 
+                // Ignore border animation if the probability is 0
+                if (borderAnim.Probability == 0)
+                    continue;
+
                 // Run through each of sheep2's end-border animations to find any in common
                 foreach (TNextAnimation sheep2BorderAnim in sheep2CurrentAnim.EndBorder)
                 {
+                    // Ignore border animation if the probability is 0
+                    if (sheep2BorderAnim.Probability == 0)
+                        continue;
+
                     // If the IDs match and the "only" values are correct, add this animation to the commonBorderAnims list
                     if (sheep2BorderAnim.ID == borderAnim.ID && (sheep2BorderAnim.only == TNextAnimation.TOnly.PETSIDE || sheep2BorderAnim.only == TNextAnimation.TOnly.NONE || sheep2BorderAnim.only == TNextAnimation.TOnly.VERTICAL_))
                     {
