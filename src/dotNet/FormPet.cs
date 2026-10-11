@@ -729,10 +729,6 @@ namespace DesktopPet
                                 && rct.Right < ScreenArea.Right - Width // Ignore collision if the sheep doesn't have enough space to make it past the right screen border (ex: if an application is covering the entire screen)
                                 )
                             {
-                                //StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value + " right-side collision!");
-
-                                //Console.WriteLine("\n" + CurrentAnimation.Name);
-
                                 // Set border animation with correct "only" value
                                 int iBorderAnimation = window.Value == "Sheep" ? SetPetInteractionAnimations(rct) : Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
 
@@ -814,10 +810,6 @@ namespace DesktopPet
                                 && rct.Left > ScreenArea.Left + Width // Ignore collision if the sheep doesn't have enough space to make it past the left screen border (ex: if an application is covering the entire screen)
                                 )
                             {
-                                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value + " left-side collision!");
-
-                                //Console.WriteLine("\n" + CurrentAnimation.Name);
-
                                 // Set border animation with correct "only" value
                                 int iBorderAnimation = window.Value == "Sheep" ? SetPetInteractionAnimations(rct) : Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
 
@@ -1178,7 +1170,7 @@ namespace DesktopPet
                     break;
             }
 
-            // If sheep2 was not found (which should never happen), make sheep1 play one of its None/PetSide border animations
+            // If sheep2 was not found (which should never happen), make sheep1 play one of its None/PetSide/Vertical+ border animations
             if (sheep2 == null)
                 return Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
 
@@ -1190,8 +1182,8 @@ namespace DesktopPet
             int mimicAnimID = -1; // If sheep2 is currently playing an animation that is also in sheep1's end-border animations, its ID is stored here
 
             // Determine if sheeps are both facing/moving in the same direction
-            bool sameDirection = IsMovingLeft == sheep2.IsMovingLeft
-                    || (IsMovingLeft && sheep2.PositionX > PositionX)
+            bool sameDirection = IsMovingLeft == sheep2.IsMovingLeft // check if they're facing the same direction
+                    || (IsMovingLeft && sheep2.PositionX > PositionX) // or, check that sheep2 is infront of sheep1 in the correct direction (fixes infinite loops if sheep1 is moving backwards)
                     || (!IsMovingLeft && sheep2.PositionX < PositionX);
 
             // Run through sheep1's end-border animations to see if sheep2 has them
@@ -1242,23 +1234,23 @@ namespace DesktopPet
             // Type 1: if both sheep have some of the same end-border animations, randomly pick one of them and apply it to both sheep
             if (commonBorderAnims.Count > 0)
             {
+                Console.WriteLine("Type-1 interaction: both pets do same thing");
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Type-1 interaction");
+
                 // Apply to sheep1
                 animationID = Animations.SetNextInteractAnimation(commonBorderAnims, TNextAnimation.TOnly.PETSIDE);
                 // Apply to sheep2 if not -1 (which should never be the case)
                 if(animationID >= 0)
                     sheep2.SetNewAnimation(animationID);
-
-                Console.WriteLine("Type-1 interaction: both pets do same thing");
-                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Type-1 interaction");
             }
             // Type 2: otherwise, if sheep2 is currently playing an animation that sheep1 has as an end-border animation (ex: sleeping), there's a 50% chance for sheep1 to "mimic" sheep2
             else if(mimicAnimID > 0 && rand.Next(0, 99) < 50)
             {
-                animationID = mimicAnimID;
-                SetNewAnimation(animationID);
-
                 Console.WriteLine("Type-2 interaction: pet1 mimics pet2");
                 StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Type-2 interaction");
+
+                animationID = mimicAnimID;
+                SetNewAnimation(animationID);
             }
             // Type 3: if all else fails, set both sheep to random end-border petSide animations
             else
@@ -1320,8 +1312,6 @@ namespace DesktopPet
 								NativeMethods.ShowWindow(window.Key, 5);        // show window again
 								NativeMethods.SetForegroundWindow(window.Key);  // set focus to window
 							}
-                            StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value);
-
                             return rct.Top;                                 // return the position for the pet
                         }
                         else

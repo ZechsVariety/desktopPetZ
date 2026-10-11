@@ -14,7 +14,7 @@ Original author: [Adrianotiger](https://github.com/Adrianotiger)
 
 
 
-DesktopPet Z is a fork of [desktopPet by Adriano](https://github.com/Adrianotiger/desktopPet). It's my custom build for fun tests and experiments, and it includes [all my custom pets](https://github.com/ZechsVariety/Zechs-Desktop-Pets).
+DesktopPet Z is a fork of [desktopPet v1.3.2 by Adriano](https://github.com/Adrianotiger/desktopPet). It's my custom build for fun tests and experiments, and it includes [all my custom pets](https://github.com/ZechsVariety/Zechs-Desktop-Pets).
 
 
 
@@ -23,12 +23,6 @@ This fork is purely for fun, but I also turn any successful experiments (that co
 
 
 ### Additions
-
-(WIP)
-
-
-
-### Changelog
 
 (WIP)
 
