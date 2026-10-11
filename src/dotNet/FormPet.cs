@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Linq;
 using System.Numerics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace DesktopPet
 {
@@ -658,44 +659,20 @@ namespace DesktopPet
                 }
                 else    // run window border detection setup and then check right border of all valid windows!
                 {
-                    // Retrieve valid windows
-                    Dictionary<IntPtr, string> windows = EnumerateWindows();
+                    (var window, var rct) = WindowSideCheck(x, y);
 
-                    // For each valid window found:
-                    foreach (KeyValuePair<IntPtr, string> window in windows)
+                    if (window != null && rct != null)
                     {
-                        //Console.WriteLine(window.Value);
+                        // Set border animation with correct "only" value
+                        int iBorderAnimation = window.Value == "Sheep" ? SetPetInteractionAnimations(rct) : Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
 
-                        // Get size and position of window
-                        if (NativeMethods.GetWindowRect(new HandleRef(this, window.Key), out NativeMethods.RECT rct))
+                        // If a "none", "vertical+" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
+                        if (iBorderAnimation >= 0)
                         {
-                            // window right border!
-                            if (PositionX + x <= rct.Right
-                                && PositionX + x >= rct.Right + x // A little bit of wiggle-room so the sheep doesn't phase through the window
-                                && PositionY + y < rct.Bottom // Ignore if below window. REMINDER: Y is inverted
-                                && PositionY + y + Height > rct.Top // Ignore if above window
-                                && !CheckTopWindow(false, window.Key) // Ignore windows that aren't visible on top
-                                && rct.Right < ScreenArea.Right - Width // Ignore collision if the sheep doesn't have enough space to make it past the right screen border (ex: if an application is covering the entire screen)
-                                )
-                            {
-                                //StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, window.Value + " right-side collision!");
-
-                                //Console.WriteLine("\n" + CurrentAnimation.Name);
-
-                                // Set border animation with correct "only" value
-                                int iBorderAnimation = window.Value == "Sheep" ? SetPetInteractionAnimations(rct) : Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
-
-                                // If a "none", "vertical+" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
-                                if (iBorderAnimation >= 0)
-                                {
-                                    PositionX = rct.Right;
-                                    x = 0;
-                                    SetNewAnimation(iBorderAnimation);
-                                    bNewAnimation = true;
-                                }
-
-                                break;
-                            }
+                            PositionX = rct.Right;
+                            x = 0;
+                            SetNewAnimation(iBorderAnimation);
+                            bNewAnimation = true;
                         }
                     }
                 }
@@ -1281,6 +1258,40 @@ namespace DesktopPet
                 }
             }
             return -1;      // no windows detected.
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        private (KeyValuePair<IntPtr, string>?, NativeMethods.RECT?) WindowSideCheck(double x, double y)
+        {
+            // Retrieve valid windows
+            Dictionary<IntPtr, string> windows = EnumerateWindows();
+
+            // For each valid window found:
+            foreach (KeyValuePair<IntPtr, string> window in windows)
+            {
+                // Get size and position of window
+                if (NativeMethods.GetWindowRect(new HandleRef(this, window.Key), out NativeMethods.RECT rct))
+                {
+                    // window right border!
+                    if (PositionX + x <= rct.Right
+                        && PositionX + x >= rct.Right + x // A little bit of wiggle-room so the sheep doesn't phase through the window
+                        && PositionY + y < rct.Bottom // Ignore if below window. REMINDER: Y is inverted
+                        && PositionY + y + Height > rct.Top // Ignore if above window
+                        && !CheckTopWindow(false, window.Key) // Ignore windows that aren't visible on top
+                        && rct.Right < ScreenArea.Right - Width // Ignore collision if the sheep doesn't have enough space to make it past the right screen border (ex: if an application is covering the entire screen)
+                        )
+                    {
+                        return (window, rct);
+                    }
+                }
+            }
+
+            return (null, null);
         }
 
         /// <summary>
