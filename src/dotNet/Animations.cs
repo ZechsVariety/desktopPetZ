@@ -121,29 +121,29 @@ namespace DesktopPet
                 /// </summary>
             WINDOW      = 0x02,
                 /// <summary>
+                /// Window-side borders - next animation will be executed only if pet hits the left or right of a window
+                /// </summary>
+            WINDOWSIDE  = 0x04,
+                /// <summary>
                 /// Only horizontal screen borders - next animation will be executed only if pet is on the top or bottom
                 /// </summary>
-            HORIZONTAL  = 0x04,
+            HORIZONTAL  = 0x06,
                 /// <summary>
                 /// Horizontal or Window borders - net animation will be executed only if pet detected an horizontal border
                 /// </summary>
-            HORIZONTAL_ = 0x06,
+            HORIZONTAL_ = 0x08,
                 /// <summary>
                 /// Vertical screen borders - next animation will be executed only if pet is on the left or right screen border
                 /// </summary>
-            VERTICAL    = 0x08,
+            VERTICAL    = 0x0A,
                 /// <summary>
                 /// Vertical screen, window side and pet side borders - next animation will be executed only if pet hits any vertical border
                 /// </summary>
-            VERTICAL_ = 0x0A,
+            VERTICAL_   = 0x0C,
                 /// <summary>
                 /// Pet-side borders - next animation will be executed only if pet hits the left or right of another pet
                 /// </summary>
-            PETSIDE = 0x0C,
-                /// <summary>
-                /// Window-side borders - next animation will be executed only if pet hits the left or right of a window
-                /// </summary>
-            WINDOWSIDE = 0x0E,
+            PETSIDE     = 0x0E,
         }
             /// <summary>
             /// ID of the next animation to play
@@ -808,7 +808,7 @@ namespace DesktopPet
             if (list.Count > 0)     // Find the next animation only if there is at least 1 animation in the list
             {
                 // Determine if horizontal+ or vertical+ animations should also be considered
-                bool isHorizontal_ = (where == TNextAnimation.TOnly.WINDOW || where == TNextAnimation.TOnly.TASKBAR || where == TNextAnimation.TOnly.HORIZONTAL) ? true : false;
+                bool isHorizontal_ = (where == TNextAnimation.TOnly.HORIZONTAL || where == TNextAnimation.TOnly.WINDOW || where == TNextAnimation.TOnly.TASKBAR) ? true : false;
                 bool isVertical_ = (where == TNextAnimation.TOnly.VERTICAL || where == TNextAnimation.TOnly.WINDOWSIDE || where == TNextAnimation.TOnly.PETSIDE) ? true : false;
 
                 Console.WriteLine("isHorizontal+: " + isHorizontal_ + " | isVertical+: " + isVertical_);
