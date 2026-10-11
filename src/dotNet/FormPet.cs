@@ -553,16 +553,67 @@ namespace DesktopPet
                 bool hittingRightBorder = PositionX + TossForce.X >= ScreenArea.X + ScreenArea.Width - Width;
                 bool hittingTaskbar = PositionY + tossVertVel >= ScreenArea.Y + ScreenArea.Height - Height;
                 int iWindowTop = FallDetect((int)tossVertVel); // >0 means a window top border was hit
-                //TODO: add window side detection so they bounce off windows too
+                int windowSide = 0;
+
+                // Detect right/left window borders (sorry it's so convoluted :'( )
+
+                // Retrieve valid windows
+                Dictionary<IntPtr, string> windows = EnumerateWindows();
+                // For each valid window found:
+                foreach (KeyValuePair<IntPtr, string> window in windows)
+                {
+                    // Get size and position of window
+                    if (NativeMethods.GetWindowRect(new HandleRef(this, window.Key), out NativeMethods.RECT rct))
+                    {
+                        // moving left
+                        if(TossForce.X < 0)
+                        {
+                            // window right border!
+                            if (PositionX + TossForce.X <= rct.Right
+                                && PositionX + TossForce.X >= rct.Right + TossForce.X // A little bit of wiggle-room so the sheep doesn't phase through the window
+                                && PositionY + tossVertVel < rct.Bottom // Ignore if below window. REMINDER: Y is inverted
+                                && PositionY + tossVertVel + Height > rct.Top // Ignore if above window
+                                && !CheckTopWindow(false, window.Key) // Ignore windows that aren't visible on top
+                                && rct.Right < ScreenArea.Right - Width // Ignore collision if the sheep doesn't have enough space to make it past the right screen border (ex: if an application is covering the entire screen)
+                                )
+                            {
+                                // teleport position
+                                windowSide = rct.Right;
+
+                                break;
+                            }
+                        }
+                        // moving right
+                        else if(TossForce.X > 0)
+                        {
+                            // window left border!
+                            if (PositionX + TossForce.X + Width >= rct.Left
+                                && PositionX + TossForce.X + Width <= rct.Left + TossForce.X // A little bit of wiggle-room so the sheep doesn't phase through the window
+                                && PositionY + tossVertVel < rct.Bottom // Ignore if below window. REMINDER: Y is inverted
+                                && PositionY + tossVertVel + Height > rct.Top // Ignore if above window
+                                && !CheckTopWindow(false, window.Key) // Ignore windows that aren't visible on top
+                                && rct.Left > ScreenArea.Left + Width // Ignore collision if the sheep doesn't have enough space to make it past the left screen border (ex: if an application is covering the entire screen)
+                                )
+                            {
+                                // teleport position
+                                windowSide = rct.Left - Width;
+
+                                break;
+                            }
+                        }
+                    }
+                }
 
                 // If hitting left or right border, bounce
-                if (hittingLeftBorder || hittingRightBorder)
+                if (hittingLeftBorder || hittingRightBorder || (windowSide != 0))
                 {
                     // Bounce by inverting TossForce.X, and then multiply by an amount for friction
-                    TossForce.X = -TossForce.X * .3f;
+                    TossForce.X = -TossForce.X * .5f;
 
                     // Teleport to the correct border
-                    if (hittingLeftBorder)
+                    if (windowSide != 0)
+                        PositionX = windowSide;
+                    else if (hittingLeftBorder)
                         PositionX = Left = ScreenArea.X; // Left
                     else
                         PositionX = Left = ScreenArea.X + ScreenArea.Width - Width; // Right
