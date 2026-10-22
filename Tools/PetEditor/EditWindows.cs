@@ -163,6 +163,7 @@ namespace PetEditor
                 tableLayoutPanel2.RowCount = 1;
                 EditValues.Add("tilesx", AddTextBoxToTable("Tiles X: ", h.TilesX, tableLayoutPanel2));
                 EditValues.Add("tilesy", AddTextBoxToTable("Tiles Y: ", h.TilesY, tableLayoutPanel2));
+                EditValues.Add("skins", AddTextBoxToTable("Skins: ", h.Skins, tableLayoutPanel2));
                 EditValues.Add("transparency", AddTextBoxToTable("Transparency Key: ", h.Transparency, tableLayoutPanel2));
                 image = AddImageToTable("Image: ", h.Png, tableLayoutPanel2);
 
@@ -180,7 +181,8 @@ namespace PetEditor
                                     DrawLinesOnPictures(pictureBox1, Image.FromStream(
                                         new MemoryStream(Convert.FromBase64String(Program.AnimationXML.Image.Png))), 
                                         Program.AnimationXML.Image.TilesX, 
-                                        Program.AnimationXML.Image.TilesY);
+                                        Program.AnimationXML.Image.TilesY,
+                                        Program.AnimationXML.Image.Skins);
                                 }
                                 catch(Exception)
                                 {
@@ -194,11 +196,28 @@ namespace PetEditor
                                     DrawLinesOnPictures(pictureBox1, Image.FromStream(
                                         new MemoryStream(Convert.FromBase64String(Program.AnimationXML.Image.Png))), 
                                         Program.AnimationXML.Image.TilesX, 
-                                        Program.AnimationXML.Image.TilesY);
+                                        Program.AnimationXML.Image.TilesY,
+                                        Program.AnimationXML.Image.Skins);
                                 }
                                 catch (Exception)
                                 {
                                     el.Value.Text = Program.AnimationXML.Image.TilesY.ToString();
+                                }
+
+                                break;
+                            case "skins":
+                                try
+                                {
+                                    Program.AnimationXML.Image.Skins = int.Parse(el.Value.Text);
+                                    DrawLinesOnPictures(pictureBox1, Image.FromStream(
+                                        new MemoryStream(Convert.FromBase64String(Program.AnimationXML.Image.Png))),
+                                        Program.AnimationXML.Image.TilesX,
+                                        Program.AnimationXML.Image.TilesY,
+                                        Program.AnimationXML.Image.Skins);
+                                }
+                                catch (Exception)
+                                {
+                                    el.Value.Text = Program.AnimationXML.Image.Skins.ToString();
                                 }
 
                                 break;
@@ -212,7 +231,7 @@ namespace PetEditor
                     image.Image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                     var bytes = stream.ToArray();
                     Program.AnimationXML.Image.Png = Convert.ToBase64String(bytes);
-                    DrawLinesOnPictures(pictureBox1, image.Image, Program.AnimationXML.Image.TilesX, Program.AnimationXML.Image.TilesY);
+                    DrawLinesOnPictures(pictureBox1, image.Image, Program.AnimationXML.Image.TilesX, Program.AnimationXML.Image.TilesY, Program.AnimationXML.Image.Skins);
 
                     XmlTools.GenerateImageIcons(image.Image, Program.AnimationXML.Image.TilesX, Program.AnimationXML.Image.TilesY);
 
@@ -224,11 +243,12 @@ namespace PetEditor
             {
                 EditValues["tilesx"].Text = h.TilesX.ToString();
                 EditValues["tilesy"].Text = h.TilesY.ToString();
+                EditValues["skins"].Text = h.Skins.ToString();
                 EditValues["transparency"].Text = h.Transparency;
                 try
                 {
                     image.Image = Image.FromStream(new MemoryStream(Convert.FromBase64String(h.Png)));
-                    DrawLinesOnPictures(pictureBox1, image.Image, h.TilesX, h.TilesY);
+                    DrawLinesOnPictures(pictureBox1, image.Image, h.TilesX, h.TilesY, h.Skins);
                     XmlTools.GenerateImageIcons(image.Image, h.TilesX, h.TilesY);
 
                     panel1.Height = Math.Max(100, image.Image.Height / h.TilesY);
@@ -1095,7 +1115,7 @@ namespace PetEditor
 
         }
 
-        private void DrawLinesOnPictures(PictureBox pb, Image original, int tilesX, int tilesY)
+        private void DrawLinesOnPictures(PictureBox pb, Image original, int tilesX, int tilesY, int skins)
         {
             Bitmap bmp = new Bitmap(original);
             if(bmp.PhysicalDimension.Width % tilesX != 0)
@@ -1105,6 +1125,10 @@ namespace PetEditor
             if (bmp.PhysicalDimension.Height % tilesY != 0)
             {
                 Program.AddLog("Picture height (" + bmp.PhysicalDimension.Height + ") is not divisible for " + tilesY, "Tiles", Program.LOG_TYPE.WARNING, pictureBox1);
+            }
+            if (tilesY % skins != 0)
+            {
+                Program.AddLog("Tiles Y (" + tilesY + ") is not divisible for " + skins, "Tiles", Program.LOG_TYPE.WARNING, pictureBox1);
             }
             for (var y = 0; y < bmp.PhysicalDimension.Height; y += 3)
             {
@@ -1118,6 +1142,10 @@ namespace PetEditor
                 for (var j = 0; j < tilesY; j++)
                 {
                     bmp.SetPixel(x, (int)((bmp.PhysicalDimension.Height / tilesY) * j), Color.Red);
+                }
+                for (var j = 0; j < skins; j++)
+                {
+                    bmp.SetPixel(x, (int)((bmp.PhysicalDimension.Height / skins) * j), Color.Blue);
                 }
             }
             pb.Image = bmp;
