@@ -35,6 +35,10 @@ namespace DesktopPet
             /// </summary>
         TAnimation CurrentAnimation;
             /// <summary>
+            /// Current skin index. Is always 0 for pets without multiple skins.
+            /// </summary>
+        int CurrentSkin = 0;
+            /// <summary>
             /// Handle to the current window. If this value is 0, the sheep is NOT walking on a window.
             /// </summary>
         IntPtr hwndWindow = (IntPtr)0;
@@ -112,11 +116,6 @@ namespace DesktopPet
             /// </summary>
         int DisplayIndex = 0;
 
-            /// <summary>
-            /// Used for Zech's Skywire Bean pet. Randomizes whenever it spawns.
-            /// </summary>
-        int randomSprite = 0;
-
         private readonly List<FormPet> childs = new List<FormPet>(4);
 
         /// <summary>
@@ -171,7 +170,7 @@ namespace DesktopPet
             InitializeComponent();
             Visible = false;            // Is invisible at beginning (we don't know where this sprite should be positioned)
             Opacity = 0.0;
-            rand = new Random(); //TODO: ensure this is in pr
+            rand = new Random();
         }
 
             /// <summary>
@@ -282,15 +281,9 @@ namespace DesktopPet
                 return;  // Currently only 1 file, in future maybe more animations at the same time
             }
 
-            //choose random sprite if the pet is a Skywire Bean
-            //NOTE: if there are any blank sprites, those have a chance to be selected, so avoid em at all costs...
-            if(Xml.AnimationXML.Header.Petname == "Passenger")
-            {
-                randomSprite = rand.Next(0, imageList1.Images.Count);
-
-                //set the sprite to the random one
-                pictureBox1.Image = imageList1.Images[randomSprite];
-            }
+            // Choose a random skin
+            if(Xml.AnimationXML.Image.Skins > 1)
+                CurrentSkin = rand.Next(0, Xml.AnimationXML.Image.Skins);
 
             timer1.Enabled = false;                     // Stop the timer
 
@@ -505,6 +498,14 @@ namespace DesktopPet
             }
         }
 
+        int SkinOffset()
+        {
+            if (Xml.AnimationXML.Image.Skins <= 1)
+                return 0;
+            else
+                return (imageList1.Images.Count / Xml.AnimationXML.Image.Skins) * CurrentSkin;
+        }
+
             /// <summary>
             /// The most important function. Each movement step is managed by this function:<br />
             /// Will calculate how much and where a pet should be positioned in the next step.<br />
@@ -512,19 +513,15 @@ namespace DesktopPet
             /// </summary>
         private void NextStep()
         {
-            //don't change the sprite if the pet is a Skywire Bean
-            if (Xml.AnimationXML.Header.Petname != "Passenger")
+                // If there is no repeat, we don't need to calculate the frame index.
+            if (AnimationStep < CurrentAnimation.Sequence.Frames.Count)
             {
-                    // If there is no repeat, we don't need to calculate the frame index.
-                if (AnimationStep < CurrentAnimation.Sequence.Frames.Count)
-                {
-                    pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[AnimationStep]];
-                }
-                else
-                {
-                    int index = ((AnimationStep - CurrentAnimation.Sequence.Frames.Count + CurrentAnimation.Sequence.RepeatFrom) % (CurrentAnimation.Sequence.Frames.Count - CurrentAnimation.Sequence.RepeatFrom)) + CurrentAnimation.Sequence.RepeatFrom;
-                    pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[index]];
-                }
+                pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[AnimationStep] + SkinOffset()];
+            }
+            else
+            {
+                int index = ((AnimationStep - CurrentAnimation.Sequence.Frames.Count + CurrentAnimation.Sequence.RepeatFrom) % (CurrentAnimation.Sequence.Frames.Count - CurrentAnimation.Sequence.RepeatFrom)) + CurrentAnimation.Sequence.RepeatFrom;
+                pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[index] + SkinOffset()];
             }
 
                 // Get interval (if not in tossing mode), opacity and offset interpolated from START and END values.
@@ -652,8 +649,7 @@ namespace DesktopPet
                     SetNewAnimation(nextId);
 
                     // Update sprite instantly (otherwise, it would wait until the next interval)
-                    if (Xml.AnimationXML.Header.Petname != "Passenger") //TODO: ensure this isn't part of the pull request
-                        pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[0]];
+                    pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[0] + SkinOffset()];
 
                     // Disable tossing
                     IsTossing = false;
@@ -1035,9 +1031,7 @@ namespace DesktopPet
                                         //x = 0;                  // don't move the pet, if a new animation must be started
                                         //y = 0;                  //  if falling, set the pet to the new position
 
-                //don't change the sprite if the pet is a Skywire Bean
-                if (Xml.AnimationXML.Header.Petname != "Passenger")
-                    pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[0]];
+                pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[0] + SkinOffset()];
             }
 
 			// Set the new pet position (and offset) in the screen.
