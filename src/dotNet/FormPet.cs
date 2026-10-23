@@ -281,9 +281,44 @@ namespace DesktopPet
                 return;  // Currently only 1 file, in future maybe more animations at the same time
             }
 
-            // Choose a random skin
-            if(Xml.AnimationXML.Image.Skins > 1)
-                CurrentSkin = rand.Next(0, Xml.AnimationXML.Image.Skins);
+            // Choose a random skin. Picks a unique skin if there aren't too many pets onscreen
+            // EX: if you have only two Twin Shot pets, one will be pink and the other will be orange
+            int skins = Xml.AnimationXML.Image.Skins;
+            if (skins > 1)
+            {
+                // Populate a list of taken skins
+                List<int> takenSkins = new List<int>();
+                foreach (FormPet sheep in Program.Mainthread.sheeps)
+                {
+                    // Skip if the pet doesn't exist or if it's this pet
+                    if (sheep == null || sheep.IsDisposed || sheep == this)
+                        continue;
+
+                    takenSkins.Add(sheep.CurrentSkin);
+                }
+
+                // Get a random skin
+                int potentialSkin = rand.Next(0, skins);
+
+                // If there are less pets than skins, find a unique skin
+                if (takenSkins.Count < skins)
+                {
+                    for(int i = 0; i < skins; i++)
+                    {
+                        // If the randomly picked skin is already taken, skip to the next one
+                        if (takenSkins.Contains(potentialSkin))
+                        {
+                            potentialSkin += 1;
+                            // Loop back to 0
+                            if (potentialSkin >= skins)
+                                potentialSkin = 0;
+                        }
+                    }
+                }
+
+                // Apply skin
+                CurrentSkin = potentialSkin;
+            }
 
             timer1.Enabled = false;                     // Stop the timer
 
