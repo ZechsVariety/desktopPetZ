@@ -494,6 +494,7 @@ namespace PetEditor
                 listView2.SmallImageList = XmlTools.AnimationIcons;
                 listView3.SmallImageList = XmlTools.AnimationIcons;
                 listView4.SmallImageList = XmlTools.AnimationIcons;
+                listView5.SmallImageList = XmlTools.AnimationIcons;
             }
             /*
             var listItems = XmlTools.GetAnimationList();
@@ -506,6 +507,10 @@ namespace PetEditor
             */
             toolStripComboBox2.Items.Clear();
             toolStripComboBox2.Items.AddRange(XmlTools.GetAnimationList());
+            toolStripComboBox4.Items.Clear();
+            toolStripComboBox4.Items.AddRange(XmlTools.GetAnimationList());
+            toolStripComboBox5.Items.Clear();
+            toolStripComboBox5.Items.AddRange(XmlTools.GetAnimationList());
             tabPage4.Tag = null;
             groupBox5.Enabled = false;
             groupBox6.Enabled = false;
@@ -655,6 +660,8 @@ namespace PetEditor
                 }
             }
             listView4.Height = (listView4.Items.Count + 2) * 33;
+
+            //TODO: LISTVIEW5
 
             groupBox8.Height = flowLayoutPanel1.Height + 50;
 
@@ -1277,6 +1284,44 @@ namespace PetEditor
             ListViewItem hoverItem = listView1.GetItemAt(cp.X, cp.Y);
             contextMenuStrip3.Tag = hoverItem;
             contextMenuStrip3.Items[1].Enabled = hoverItem != null;
+        }
+
+        private void contextMenuStrip4_Opening(object sender, CancelEventArgs e)
+        {
+            var cms = sender as ContextMenuStrip;
+            var lv = cms.SourceControl as ListView;
+            if (lv.SelectedIndices.Count == 0)
+            {
+                toolStripMenuItem12.Enabled = false;
+                toolStripMenuItem11.Text = "ADD NEW";
+                toolStripTextBox2.Text = "10";
+                toolStripComboBox3.SelectedIndex = 0;
+                toolStripComboBox4.SelectedIndex = -1;
+            }
+            else
+            {
+                toolStripMenuItem12.Enabled = true;
+                toolStripMenuItem11.Text = "SAVE";
+                toolStripTextBox2.Text = lv.SelectedItems[0].SubItems[2].Text;
+                toolStripComboBox3.SelectedIndex = -1;
+                foreach (var k in toolStripComboBox3.Items)
+                {
+                    if (k.ToString() == lv.SelectedItems[0].SubItems[3].Text)
+                    {
+                        toolStripComboBox3.SelectedItem = k;
+                        break;
+                    }
+                }
+                toolStripComboBox4.SelectedIndex = -1;
+                foreach (var k in toolStripComboBox4.Items)
+                {
+                    if ((k as XmlNodeCombo).Id.ToString() == lv.SelectedItems[0].SubItems[0].Text)
+                    {
+                        toolStripComboBox4.SelectedItem = k;
+                        break;
+                    }
+                }
+            }
         }
 
         private void removeFrameToolStripMenuItem_Click(object sender, EventArgs e)
