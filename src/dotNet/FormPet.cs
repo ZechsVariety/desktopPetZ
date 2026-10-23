@@ -533,12 +533,31 @@ namespace DesktopPet
             }
         }
 
-        int SkinOffset()
+        /// <summary>
+        /// Determine the animation ID for the selected skin, if applicable
+        /// </summary>
+        /// <remarks>
+        /// EX: If you have 100 sprites and 2 skins, skin 2's animation ID is offset by 50
+        /// </remarks>
+        /// <param name="animID">The intended Animation ID</param>
+        /// <returns>Offset Animation ID</returns>
+        int SkinOffset(int animID)
         {
             if (Xml.AnimationXML.Image.Skins <= 1)
-                return 0;
+                return animID;
             else
-                return (imageList1.Images.Count / Xml.AnimationXML.Image.Skins) * CurrentSkin;
+            {
+                int range = imageList1.Images.Count / Xml.AnimationXML.Image.Skins;
+                int offset = range * CurrentSkin; // Reminder: CurrentSkin starts at 0
+
+                // Check if the given animation is from the first skin only (as it should be)
+                // If so, return the offset animation
+                if (animID < range)
+                    return animID + offset;
+                // If not, fall back on the original animation
+                else
+                    return animID;
+            }
         }
 
             /// <summary>
@@ -551,12 +570,12 @@ namespace DesktopPet
                 // If there is no repeat, we don't need to calculate the frame index.
             if (AnimationStep < CurrentAnimation.Sequence.Frames.Count)
             {
-                pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[AnimationStep] + SkinOffset()];
+                pictureBox1.Image = imageList1.Images[SkinOffset(CurrentAnimation.Sequence.Frames[AnimationStep])];
             }
             else
             {
                 int index = ((AnimationStep - CurrentAnimation.Sequence.Frames.Count + CurrentAnimation.Sequence.RepeatFrom) % (CurrentAnimation.Sequence.Frames.Count - CurrentAnimation.Sequence.RepeatFrom)) + CurrentAnimation.Sequence.RepeatFrom;
-                pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[index] + SkinOffset()];
+                pictureBox1.Image = imageList1.Images[SkinOffset(CurrentAnimation.Sequence.Frames[index])];
             }
 
                 // Get interval (if not in tossing mode), opacity and offset interpolated from START and END values.
@@ -684,7 +703,7 @@ namespace DesktopPet
                     SetNewAnimation(nextId);
 
                     // Update sprite instantly (otherwise, it would wait until the next interval)
-                    pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[0] + SkinOffset()];
+                    pictureBox1.Image = imageList1.Images[SkinOffset(CurrentAnimation.Sequence.Frames[0])];
 
                     // Disable tossing
                     IsTossing = false;
@@ -1066,7 +1085,7 @@ namespace DesktopPet
                                         //x = 0;                  // don't move the pet, if a new animation must be started
                                         //y = 0;                  //  if falling, set the pet to the new position
 
-                pictureBox1.Image = imageList1.Images[CurrentAnimation.Sequence.Frames[0] + SkinOffset()];
+                pictureBox1.Image = imageList1.Images[SkinOffset(CurrentAnimation.Sequence.Frames[0])];
             }
 
 			// Set the new pet position (and offset) in the screen.

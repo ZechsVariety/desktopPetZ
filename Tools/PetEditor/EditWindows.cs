@@ -1145,7 +1145,9 @@ namespace PetEditor
                 }
                 for (var j = 0; j < skins; j++)
                 {
+                    // Set 2 pixels so it's easier to see
                     bmp.SetPixel(x, (int)((bmp.PhysicalDimension.Height / skins) * j), Color.Blue);
+                    bmp.SetPixel(x, (int)((bmp.PhysicalDimension.Height / skins) * j + 1), Color.Blue);
                 }
             }
             pb.Image = bmp;
