@@ -529,6 +529,14 @@ namespace PetEditor
 
                 tabPage4.Tag = animationId;
 
+                listView5.Items.Clear();
+                for(int i = 0; i < Program.AnimationXML.Image.Skins; i++)
+                {
+                    // Add an animated image for each skin
+                    listView5.Items.Add("Skin " + (i + 1));
+                    listView5.LargeImageList = XmlTools.AnimationImages;
+                }
+
                 EditAnimationNode.Clear();
                 EditAnimationNode.Add(node);
                 EditAnimationNodeIndex = 0;
@@ -1258,6 +1266,14 @@ namespace PetEditor
             {
                 timer1.Enabled = false;
                 return;
+            }
+
+            // Update animated images
+            for(int i = 0; i < Program.AnimationXML.Image.Skins; i++)
+            {
+                int offset = (XmlTools.AnimationImages.Images.Count / Program.AnimationXML.Image.Skins) * i;
+
+                listView5.Items[i].ImageIndex = imageIndex + offset;
             }
 
             int nextIndex = (int.Parse(timer1.Tag.ToString()) + 1) % stats.SubSteps.Count;
