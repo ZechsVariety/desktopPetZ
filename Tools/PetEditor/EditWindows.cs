@@ -1267,9 +1267,16 @@ namespace PetEditor
             List<PictureBox> pictureBoxes = flowLayoutPanel3.Controls.OfType<PictureBox>().ToList();
             for (int i = 0; i < Program.AnimationXML.Image.Skins; i++)
             {
-                int offset = (XmlTools.AnimationImages.Images.Count / Program.AnimationXML.Image.Skins) * i;
+                int range = XmlTools.AnimationImages.Images.Count / Program.AnimationXML.Image.Skins;
+                int offset = range * i;
 
-                pictureBoxes[i].Image = XmlTools.AnimationImages.Images[imageIndex + offset];
+                // Check if the given animation is from the first skin only (as it should be)
+                // If so, set the offset animation
+                if (imageIndex < range)
+                    pictureBoxes[i].Image = XmlTools.AnimationImages.Images[imageIndex + offset];
+                // If not, fall back on the original animation, just like what will display in DesktopPet
+                else
+                    pictureBoxes[i].Image = XmlTools.AnimationImages.Images[imageIndex];
             }
             flowLayoutPanel3.Tag = val;
 
