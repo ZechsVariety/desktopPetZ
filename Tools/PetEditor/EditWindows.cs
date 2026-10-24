@@ -529,16 +529,14 @@ namespace PetEditor
 
                 tabPage4.Tag = animationId;
 
-                List<PictureBox> pictureBoxes = flowLayoutPanel3.Controls.OfType<PictureBox>().ToList();
+                flowLayoutPanel3.Controls.Clear();
                 for (int i = 0; i < Program.AnimationXML.Image.Skins; i++)
                 {
-                    if (pictureBoxes.ElementAtOrDefault(i) == null)
-                    {
-                        PictureBox newPB = new PictureBox();
-                        //newPB.Location = new Point(XmlTools.AnimationImages.ImageSize.Width * i, 0);
+                    PictureBox newPB = new PictureBox();
+                    newPB.SizeMode = PictureBoxSizeMode.Zoom;
+                    newPB.Size = XmlTools.AnimationImages.ImageSize;
 
-                        flowLayoutPanel3.Controls.Add(newPB);
-                    }
+                    flowLayoutPanel3.Controls.Add(newPB);
                 }
 
                 EditAnimationNode.Clear();
@@ -1266,11 +1264,11 @@ namespace PetEditor
             }
 
             // Update animated images
-            for(int i = 0; i < Program.AnimationXML.Image.Skins; i++)
+            List<PictureBox> pictureBoxes = flowLayoutPanel3.Controls.OfType<PictureBox>().ToList();
+            for (int i = 0; i < Program.AnimationXML.Image.Skins; i++)
             {
                 int offset = (XmlTools.AnimationImages.Images.Count / Program.AnimationXML.Image.Skins) * i;
 
-                List<PictureBox> pictureBoxes = flowLayoutPanel3.Controls.OfType<PictureBox>().ToList();
                 pictureBoxes[i].Image = XmlTools.AnimationImages.Images[imageIndex + offset];
             }
             flowLayoutPanel3.Tag = val;

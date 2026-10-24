@@ -2120,13 +2120,14 @@
             // flowLayoutPanel3
             // 
             this.flowLayoutPanel3.AutoScroll = true;
-            this.flowLayoutPanel3.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.flowLayoutPanel3.BackColor = System.Drawing.Color.GhostWhite;
             this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
             this.flowLayoutPanel3.Padding = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel3.Size = new System.Drawing.Size(267, 123);
             this.flowLayoutPanel3.TabIndex = 8;
+            this.flowLayoutPanel3.TabStop = true;
             this.flowLayoutPanel3.WrapContents = false;
             // 
             // EditWindows
