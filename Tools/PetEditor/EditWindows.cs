@@ -1246,8 +1246,8 @@ namespace PetEditor
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (pictureBox2.Tag == null) pictureBox2.Tag = -1;
-            int val = int.Parse(pictureBox2.Tag.ToString()) + 1;
+            if (listView5.Tag == null) listView5.Tag = -1;
+            int val = int.Parse(listView5.Tag.ToString()) + 1;
             if(listView1.Items.Count == 0)
             {
                 timer1.Enabled = false;
@@ -1260,13 +1260,6 @@ namespace PetEditor
                 timer1.Enabled = false;
                 return;
             }
-            pictureBox2.Image = listView1.LargeImageList.Images[imageIndex];
-            pictureBox2.Tag = val;
-            if (stats.SubSteps.Count <= 0)
-            {
-                timer1.Enabled = false;
-                return;
-            }
 
             // Update animated images
             for(int i = 0; i < Program.AnimationXML.Image.Skins; i++)
@@ -1274,6 +1267,13 @@ namespace PetEditor
                 int offset = (XmlTools.AnimationImages.Images.Count / Program.AnimationXML.Image.Skins) * i;
 
                 listView5.Items[i].ImageIndex = imageIndex + offset;
+            }
+            listView5.Tag = val;
+
+            if (stats.SubSteps.Count <= 0)
+            {
+                timer1.Enabled = false;
+                return;
             }
 
             int nextIndex = (int.Parse(timer1.Tag.ToString()) + 1) % stats.SubSteps.Count;

@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditWindows));
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("");
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -139,8 +139,8 @@
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.richTextBox3 = new System.Windows.Forms.RichTextBox();
+            this.listView5 = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.label32 = new System.Windows.Forms.Label();
             this.label33 = new System.Windows.Forms.Label();
@@ -192,7 +192,6 @@
             this.toolStripButtonRedo = new System.Windows.Forms.ToolStripButton();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.listView5 = new System.Windows.Forms.ListView();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -232,7 +231,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
             this.flowLayoutPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.groupBox9.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.groupBox11.SuspendLayout();
@@ -787,7 +785,7 @@
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.listView1.HideSelection = false;
             this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
             this.listView1.Location = new System.Drawing.Point(20, 84);
             this.listView1.Margin = new System.Windows.Forms.Padding(4);
             this.listView1.Name = "listView1";
@@ -1463,7 +1461,6 @@
             this.flowLayoutPanel2.Controls.Add(this.comboBox2);
             this.flowLayoutPanel2.Controls.Add(this.label6);
             this.flowLayoutPanel2.Controls.Add(this.richTextBox3);
-            this.flowLayoutPanel2.Controls.Add(this.listView5);
             this.flowLayoutPanel2.Controls.Add(this.panel1);
             this.flowLayoutPanel2.Controls.Add(this.groupBox9);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1523,27 +1520,34 @@
             this.richTextBox3.Text = "";
             this.richTextBox3.TextChanged += new System.EventHandler(this.animation_Edited);
             // 
+            // listView5
+            // 
+            this.listView5.Alignment = System.Windows.Forms.ListViewAlignment.Left;
+            this.listView5.BackColor = System.Drawing.Color.GhostWhite;
+            this.listView5.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.listView5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView5.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.listView5.HideSelection = false;
+            this.listView5.LabelWrap = false;
+            this.listView5.Location = new System.Drawing.Point(0, 0);
+            this.listView5.Margin = new System.Windows.Forms.Padding(4);
+            this.listView5.MultiSelect = false;
+            this.listView5.Name = "listView5";
+            this.listView5.Size = new System.Drawing.Size(267, 123);
+            this.listView5.TabIndex = 8;
+            this.listView5.TabStop = false;
+            this.listView5.TileSize = new System.Drawing.Size(1, 1);
+            this.listView5.UseCompatibleStateImageBehavior = false;
+            // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.pictureBox2);
+            this.panel1.Controls.Add(this.listView5);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(4, 241);
+            this.panel1.Location = new System.Drawing.Point(4, 110);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(267, 123);
             this.panel1.TabIndex = 7;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackColor = System.Drawing.Color.MidnightBlue;
-            this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox2.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(267, 123);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox2.TabIndex = 5;
-            this.pictureBox2.TabStop = false;
             // 
             // groupBox9
             // 
@@ -1556,7 +1560,7 @@
             this.groupBox9.Controls.Add(this.label27);
             this.groupBox9.Controls.Add(this.label26);
             this.groupBox9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox9.Location = new System.Drawing.Point(4, 372);
+            this.groupBox9.Location = new System.Drawing.Point(4, 241);
             this.groupBox9.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Padding = new System.Windows.Forms.Padding(4);
@@ -2132,25 +2136,6 @@
             // 
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
-            // listView5
-            // 
-            this.listView5.Alignment = System.Windows.Forms.ListViewAlignment.Left;
-            this.listView5.BackColor = System.Drawing.Color.GhostWhite;
-            this.listView5.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.listView5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView5.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.listView5.HideSelection = false;
-            this.listView5.LabelWrap = false;
-            this.listView5.Location = new System.Drawing.Point(4, 110);
-            this.listView5.Margin = new System.Windows.Forms.Padding(4);
-            this.listView5.MultiSelect = false;
-            this.listView5.Name = "listView5";
-            this.listView5.Size = new System.Drawing.Size(267, 123);
-            this.listView5.TabIndex = 8;
-            this.listView5.TabStop = false;
-            this.listView5.TileSize = new System.Drawing.Size(1, 1);
-            this.listView5.UseCompatibleStateImageBehavior = false;
-            // 
             // EditWindows
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -2220,8 +2205,6 @@
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
             this.tabPage5.ResumeLayout(false);
@@ -2325,7 +2308,6 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox2;
         private System.Windows.Forms.RichTextBox richTextBox12;
-        private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip3;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
