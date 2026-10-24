@@ -139,7 +139,6 @@
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.richTextBox3 = new System.Windows.Forms.RichTextBox();
-            this.listView5 = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.label32 = new System.Windows.Forms.Label();
@@ -192,6 +191,7 @@
             this.toolStripButtonRedo = new System.Windows.Forms.ToolStripButton();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -1520,28 +1520,9 @@
             this.richTextBox3.Text = "";
             this.richTextBox3.TextChanged += new System.EventHandler(this.animation_Edited);
             // 
-            // listView5
-            // 
-            this.listView5.Alignment = System.Windows.Forms.ListViewAlignment.Left;
-            this.listView5.BackColor = System.Drawing.Color.GhostWhite;
-            this.listView5.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.listView5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView5.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.listView5.HideSelection = false;
-            this.listView5.LabelWrap = false;
-            this.listView5.Location = new System.Drawing.Point(0, 0);
-            this.listView5.Margin = new System.Windows.Forms.Padding(4);
-            this.listView5.MultiSelect = false;
-            this.listView5.Name = "listView5";
-            this.listView5.Size = new System.Drawing.Size(267, 123);
-            this.listView5.TabIndex = 8;
-            this.listView5.TabStop = false;
-            this.listView5.TileSize = new System.Drawing.Size(1, 1);
-            this.listView5.UseCompatibleStateImageBehavior = false;
-            // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.listView5);
+            this.panel1.Controls.Add(this.flowLayoutPanel3);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel1.Location = new System.Drawing.Point(4, 110);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
@@ -2136,6 +2117,18 @@
             // 
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.AutoScroll = true;
+            this.flowLayoutPanel3.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Padding = new System.Windows.Forms.Padding(4);
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(267, 123);
+            this.flowLayoutPanel3.TabIndex = 8;
+            this.flowLayoutPanel3.WrapContents = false;
+            // 
             // EditWindows
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -2394,6 +2387,6 @@
         private System.Windows.Forms.Label label45;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
-        private System.Windows.Forms.ListView listView5;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
     }
 }

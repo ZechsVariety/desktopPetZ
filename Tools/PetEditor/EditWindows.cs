@@ -529,12 +529,16 @@ namespace PetEditor
 
                 tabPage4.Tag = animationId;
 
-                listView5.Items.Clear();
-                for(int i = 0; i < Program.AnimationXML.Image.Skins; i++)
+                List<PictureBox> pictureBoxes = flowLayoutPanel3.Controls.OfType<PictureBox>().ToList();
+                for (int i = 0; i < Program.AnimationXML.Image.Skins; i++)
                 {
-                    // Add an animated image for each skin
-                    listView5.Items.Add("Skin " + (i + 1));
-                    listView5.LargeImageList = XmlTools.AnimationImages;
+                    if (pictureBoxes.ElementAtOrDefault(i) == null)
+                    {
+                        PictureBox newPB = new PictureBox();
+                        //newPB.Location = new Point(XmlTools.AnimationImages.ImageSize.Width * i, 0);
+
+                        flowLayoutPanel3.Controls.Add(newPB);
+                    }
                 }
 
                 EditAnimationNode.Clear();
@@ -1246,8 +1250,8 @@ namespace PetEditor
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (listView5.Tag == null) listView5.Tag = -1;
-            int val = int.Parse(listView5.Tag.ToString()) + 1;
+            if (flowLayoutPanel3.Tag == null) flowLayoutPanel3.Tag = -1;
+            int val = int.Parse(flowLayoutPanel3.Tag.ToString()) + 1;
             if(listView1.Items.Count == 0)
             {
                 timer1.Enabled = false;
@@ -1266,9 +1270,10 @@ namespace PetEditor
             {
                 int offset = (XmlTools.AnimationImages.Images.Count / Program.AnimationXML.Image.Skins) * i;
 
-                listView5.Items[i].ImageIndex = imageIndex + offset;
+                List<PictureBox> pictureBoxes = flowLayoutPanel3.Controls.OfType<PictureBox>().ToList();
+                pictureBoxes[i].Image = XmlTools.AnimationImages.Images[imageIndex + offset];
             }
-            listView5.Tag = val;
+            flowLayoutPanel3.Tag = val;
 
             if (stats.SubSteps.Count <= 0)
             {
