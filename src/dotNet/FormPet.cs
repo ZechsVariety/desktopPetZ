@@ -521,6 +521,8 @@ namespace DesktopPet
 								child.Name = "child" + (int.Parse(Name.Substring(5)) + 1).ToString();
 							}
 
+                            child.CurrentSkin = CurrentSkin;
+
 							child.Show(Width, Height);
 							child.PlayChild(id, childInfo);
 
