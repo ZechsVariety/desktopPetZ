@@ -293,6 +293,14 @@ namespace DesktopPet
                     // Skip if the pet doesn't exist or if it's this pet
                     if (sheep == null || sheep.IsDisposed || sheep == this)
                         continue;
+                    // Skip if it's a different pet XML
+                    if (sheep.Animations != Animations)
+                        continue;
+                    // Prevent potential errors
+                    TAnimation sheepCurrentAnim = sheep.CurrentAnimation;
+                    // Skip if it's playing the kill animation
+                    if (sheepCurrentAnim.ID == Animations.AnimationKill)
+                        continue;
 
                     takenSkins.Add(sheep.CurrentSkin);
                 }
@@ -318,6 +326,7 @@ namespace DesktopPet
 
                 // Apply skin
                 CurrentSkin = potentialSkin;
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, $"Skin {CurrentSkin} selected");
             }
 
             timer1.Enabled = false;                     // Stop the timer
