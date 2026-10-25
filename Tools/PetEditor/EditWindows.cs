@@ -1265,9 +1265,9 @@ namespace PetEditor
 
             // Update animated images
             List<PictureBox> pictureBoxes = flowLayoutPanel3.Controls.OfType<PictureBox>().ToList();
-            for (int i = 0; i < Program.AnimationXML.Image.Skins; i++)
+            for (int i = 0; i < pictureBoxes.Count; i++)
             {
-                int range = XmlTools.AnimationImages.Images.Count / Program.AnimationXML.Image.Skins;
+                int range = XmlTools.AnimationImages.Images.Count / pictureBoxes.Count;
                 int offset = range * i;
 
                 // Check if the given animation is from the first skin only (as it should be)
