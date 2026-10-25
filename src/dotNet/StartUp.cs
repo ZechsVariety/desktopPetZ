@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static DesktopPet.StartUp;
 
@@ -202,9 +203,9 @@ namespace DesktopPet
             /// <summary>
             /// Close all sheeps on the desktop and eventually closes the application.
             /// </summary>
-            /// <param name="exit">If true, the application will close after 1 second (leaving time to the sheeps to die).</param>
+            /// <param name="exit">If true, the application will close 4 seconds after all sheeps start their kill animation.</param>
             /// <param name="closeApp">If true, the app closes afterwards. Otherwise, it stays open.</param>
-        public void KillSheeps(bool exit, bool closeApp = true)
+        async public void KillSheeps(bool exit, bool closeApp = true)
         {
             AddDebugInfo(DEBUG_TYPE.info, "Killing all sheeps");
             timer1.Tag = "0";
@@ -218,7 +219,7 @@ namespace DesktopPet
                 Random rand = new Random();
                 for (int i = 0; i < iSheeps; i++)
                 {
-                    Thread.Sleep(rand.Next(100, 200));
+                    await Task.Delay(rand.Next(50, 200));
                     sheeps[i].Kill();
 
                     if(closeApp)
@@ -228,7 +229,7 @@ namespace DesktopPet
 
                 if (exit && closeApp)
                 {
-                    timer1.Interval = 1100;
+                    timer1.Interval = 4100;
                     timer1.Enabled = true;
                 }
             }
@@ -334,7 +335,7 @@ namespace DesktopPet
             /// Load new XML (from XML string).
             /// </summary>
             /// <param name="strXml">A string with the xml content.</param>
-        public void LoadNewXMLFromString(string strXml)
+        async public void LoadNewXMLFromString(string strXml)
         {
             AddDebugInfo(DEBUG_TYPE.info, "load new XML string");
 
@@ -346,10 +347,13 @@ namespace DesktopPet
                 return;
             }
 
+            Random rand = new Random();
             prevSheepCount = 0;
             // Close all sheeps, and count how many are closed
             for (int i = 0; i < iSheeps; i++)
             {
+                await Task.Delay(rand.Next(50, 200));
+
                 prevSheepCount++;
 
                 sheeps[i].Kill();
