@@ -348,13 +348,11 @@ namespace DesktopPet
             }
 
             Random rand = new Random();
-            prevSheepCount = 0;
+            prevSheepCount = iSheeps;
             // Close all sheeps, and count how many are closed
             for (int i = 0; i < iSheeps; i++)
             {
                 await Task.Delay(rand.Next(50, 200));
-
-                prevSheepCount++;
 
                 sheeps[i].Kill();
                 /*
