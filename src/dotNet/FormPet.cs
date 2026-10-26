@@ -326,7 +326,7 @@ namespace DesktopPet
 
                 // Apply skin
                 CurrentSkin = potentialSkin;
-                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, $"Skin {CurrentSkin} selected");
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, $"Skin {CurrentSkin} selected");
             }
 
             timer1.Enabled = false;                     // Stop the timer

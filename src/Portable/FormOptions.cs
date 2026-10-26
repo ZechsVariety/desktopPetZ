@@ -132,6 +132,16 @@ namespace DesktopPet
             var vanillaContent = await client.GetStringAsync(urlVanilla + "pets.json");
             WebPets = Newtonsoft.Json.JsonConvert.DeserializeObject<Pets>(vanillaContent);
 
+            //remove duplicate pets
+            List<Pet> duplicatePets = new List<Pet>();
+            foreach (Pet pet in WebPets.pets)
+            {
+                if (pet.author == "Zecheriah")
+                    duplicatePets.Add(pet);
+            }
+            foreach(Pet duplicatePet in  duplicatePets)
+                WebPets.pets.Remove(duplicatePet);
+
             //get the pets object from Zecheriah's pets.json
             var extraContent = await client.GetStringAsync(urlZech + "pets.json");
             Pets extraPets = Newtonsoft.Json.JsonConvert.DeserializeObject<Pets>(extraContent);
@@ -686,8 +696,6 @@ namespace DesktopPet
         /// </summary>
         public void Reorder()
         {
-            //TODO: maybe don't seperate them now that the url checking thing has been fixed
-
             //separate vanilla and Zech's pets so that they can be sorted separately
 
             List<Pet> petsVanilla = new List<Pet>(); //includes classic pets from Zech's pets.json
