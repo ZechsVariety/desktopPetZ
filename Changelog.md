@@ -20,13 +20,13 @@ This is the changelog for my changes in DesktopPet-Z only. See "Vanilla Changelo
 
 
 
-v0.3.1 (WIP)
+v0.3.1
 
 * Made it so that key-animations can play sound effects
 
 
 
-### V0.4 (WIP)
+### V0.4
 
 * Pets can now interact with each other and the sides of windows! Try it out with the Social Sheep!
 
@@ -51,4 +51,23 @@ v0.3.1 (WIP)
   * EX: now, if the sheep hits the side of a window, only animations with the Only values "windowSide", "vertical+" or "none" can play
 * Lessened toss X friction when bouncing
 * Fixed bug where if you have a buncha pets and choose a new pet, one of them would go missing
+
+
+
+### V0.5
+
+* Added pet skins! You get a random one each time.
+
+  * Updated Pet Editor
+* Fixed lag when killing all pets
+* Removed duplicates of my pets
+* ACTUALLY fixed pets eating each other offscreen
+
+
+
+### V1.0 (WIP)
+
+* Replaced pet-mimicking with a far better "trigger animation" system
+
+  * 
 
