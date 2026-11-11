@@ -797,7 +797,7 @@ namespace PetEditor
                     node.Interaction.Next[k].Probability = int.Parse(listView5.Items[k].SubItems[2].Text);
                     node.Interaction.Next[k].OnlyFlag = listView5.Items[k].SubItems[3].Text;
                     node.Interaction.Next[k].Trigger = int.Parse(listView5.Items[k].SubItems[4].Text);
-                    node.Interaction.Next[k].Direction = listView5.Items[k].SubItems[5].Text;
+                    node.Interaction.Next[k].Direction = listView5.Items[k].SubItems[6].Text;
                 }
             }
             else

@@ -259,6 +259,10 @@ namespace PetEditor
                 {
                     Program.AnimationXML.Animations.Animation[k].Sequence.Next = null;
                 }
+                if (Program.AnimationXML.Animations.Animation[k].Interaction != null && (Program.AnimationXML.Animations.Animation[k].Interaction.Next == null || Program.AnimationXML.Animations.Animation[k].Interaction.Next.Length == 0))
+                {
+                    Program.AnimationXML.Animations.Animation[k].Interaction = null;
+                }
             }
             if (Program.AnimationXML.Sounds != null && Program.AnimationXML.Sounds.Sound != null)
             {

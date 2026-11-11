@@ -231,6 +231,14 @@
     </xsd:restriction>
   </xsd:simpleType>
 
+  <xsd:simpleType name="directionType">
+	<xsd:restriction base="xsd:string">
+      <xsd:enumeration value="any" />
+      <xsd:enumeration value="infront" />
+	  <xsd:enumeration value="behind" />
+	</xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:group name="step">
     <xsd:all>
       <xsd:element name='x' type='xsd:string' minOccurs='1' maxOccurs='1' />
@@ -247,6 +255,8 @@
         <xsd:extension base='xsd:integer'>
           <xsd:attribute name="probability" type="xsd:integer" />
           <xsd:attribute name="only" type="borderType" />
+		  <xsd:attribute name="trigger" type="xsd:integer" />
+		  <xsd:attribute name="direction" type="directionType" />
         </xsd:extension>
       </xsd:simpleContent>
     </xsd:complexType>
@@ -258,5 +268,13 @@
         <xsd:element ref="next" />
       </xsd:choice>
     </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="direction">
+    <xsd:complexType>
+	  <xsd:choice minOccurs="0" maxOccurs="unbounded">
+		<xsd:element ref="next" />
+	  </xsd:choice>
+	</xsd:complexType>
   </xsd:element>
 </xsd:schema>
