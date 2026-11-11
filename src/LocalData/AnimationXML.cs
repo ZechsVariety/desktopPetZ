@@ -400,10 +400,10 @@ namespace XmlData
         [XmlAttribute("only")]
         public string OnlyFlag;
         /// <summary>
-        ///  Animation that will trigger this one.
+        ///  Animation ID that will trigger this one (set as string because it's optional).
         /// </summary>
         [XmlAttribute("trigger")]
-        public int Trigger;
+        public string Trigger = null;
         /// <summary>
         ///  Direction of impact
         /// </summary>

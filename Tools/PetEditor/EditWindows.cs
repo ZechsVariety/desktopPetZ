@@ -691,7 +691,8 @@ namespace PetEditor
                     }
                     lvi.SubItems.Add(n.Probability.ToString());
                     lvi.SubItems.Add(n.OnlyFlag);
-                    lvi.SubItems.Add(n.Trigger.ToString());
+                    lvi.SubItems.Add(XmlTools.GetXmlAnimationNode(int.Parse(n.Trigger)).Id.ToString());
+                    lvi.SubItems.Add(XmlTools.GetXmlAnimationNode(int.Parse(n.Trigger)).Name);
                     lvi.SubItems.Add(n.Direction);
                 }
             }
@@ -796,7 +797,7 @@ namespace PetEditor
                     node.Interaction.Next[k].Value = int.Parse(listView5.Items[k].SubItems[0].Text);
                     node.Interaction.Next[k].Probability = int.Parse(listView5.Items[k].SubItems[2].Text);
                     node.Interaction.Next[k].OnlyFlag = listView5.Items[k].SubItems[3].Text;
-                    node.Interaction.Next[k].Trigger = int.Parse(listView5.Items[k].SubItems[4].Text);
+                    node.Interaction.Next[k].Trigger = listView5.Items[k].SubItems[4].Text;
                     node.Interaction.Next[k].Direction = listView5.Items[k].SubItems[6].Text;
                 }
             }
@@ -1937,7 +1938,7 @@ namespace PetEditor
                 {
                     try
                     {
-                        if (k.ToString() == lv.SelectedItems[0].SubItems[4].Text)
+                        if ((k as XmlNodeCombo).Id.ToString() == lv.SelectedItems[0].SubItems[4].Text)
                         {
                             toolStripComboBox5.SelectedItem = k;
                             break;
