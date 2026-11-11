@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditWindows));
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("");
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -118,8 +118,8 @@
             this.columnHeader14 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader15 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader16 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader17 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader18 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader19 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip4 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox2 = new System.Windows.Forms.ToolStripTextBox();
@@ -216,6 +216,7 @@
             this.toolStripButtonRedo = new System.Windows.Forms.ToolStripButton();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.columnHeader17 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -810,7 +811,7 @@
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.listView1.HideSelection = false;
             this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
             this.listView1.Location = new System.Drawing.Point(20, 84);
             this.listView1.Margin = new System.Windows.Forms.Padding(4);
             this.listView1.Name = "listView1";
@@ -1181,7 +1182,8 @@
             this.columnHeader15,
             this.columnHeader16,
             this.columnHeader17,
-            this.columnHeader18});
+            this.columnHeader18,
+            this.columnHeader19});
             this.listView5.ContextMenuStrip = this.contextMenuStrip4;
             this.listView5.FullRowSelect = true;
             this.listView5.HideSelection = false;
@@ -1214,15 +1216,15 @@
             this.columnHeader16.Text = "Control";
             this.columnHeader16.Width = 83;
             // 
-            // columnHeader17
-            // 
-            this.columnHeader17.Text = "Trigger";
-            this.columnHeader17.Width = 150;
-            // 
             // columnHeader18
             // 
-            this.columnHeader18.Text = "Direction";
-            this.columnHeader18.Width = 68;
+            this.columnHeader18.Text = "Trigger name";
+            this.columnHeader18.Width = 150;
+            // 
+            // columnHeader19
+            // 
+            this.columnHeader19.Text = "Direction";
+            this.columnHeader19.Width = 68;
             // 
             // contextMenuStrip4
             // 
@@ -1244,7 +1246,7 @@
             this.toolStripSeparator6,
             this.toolStripMenuItem12});
             this.contextMenuStrip4.Name = "contextMenuStrip1";
-            this.contextMenuStrip4.Size = new System.Drawing.Size(215, 389);
+            this.contextMenuStrip4.Size = new System.Drawing.Size(186, 361);
             this.contextMenuStrip4.Text = "Next Animation";
             this.contextMenuStrip4.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip4_Opening);
             // 
@@ -1252,7 +1254,7 @@
             // 
             this.toolStripMenuItem8.Enabled = false;
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(214, 26);
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(185, 26);
             this.toolStripMenuItem8.Text = "Probability:";
             // 
             // toolStripTextBox2
@@ -1264,13 +1266,13 @@
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(211, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(182, 6);
             // 
             // toolStripMenuItem9
             // 
             this.toolStripMenuItem9.Enabled = false;
             this.toolStripMenuItem9.Name = "toolStripMenuItem9";
-            this.toolStripMenuItem9.Size = new System.Drawing.Size(214, 26);
+            this.toolStripMenuItem9.Size = new System.Drawing.Size(185, 26);
             this.toolStripMenuItem9.Text = "Control:";
             // 
             // toolStripComboBox3
@@ -1292,13 +1294,13 @@
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(211, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(182, 6);
             // 
             // toolStripMenuItem10
             // 
             this.toolStripMenuItem10.Enabled = false;
             this.toolStripMenuItem10.Name = "toolStripMenuItem10";
-            this.toolStripMenuItem10.Size = new System.Drawing.Size(214, 26);
+            this.toolStripMenuItem10.Size = new System.Drawing.Size(185, 26);
             this.toolStripMenuItem10.Text = "Animation:";
             // 
             // toolStripComboBox4
@@ -1313,7 +1315,7 @@
             this.toolStripMenuItem13.Enabled = false;
             this.toolStripMenuItem13.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.toolStripMenuItem13.Name = "toolStripMenuItem13";
-            this.toolStripMenuItem13.Size = new System.Drawing.Size(214, 26);
+            this.toolStripMenuItem13.Size = new System.Drawing.Size(185, 26);
             this.toolStripMenuItem13.Text = "Trigger:";
             // 
             // toolStripComboBox5
@@ -1327,7 +1329,7 @@
             this.toolStripMenuItem14.Enabled = false;
             this.toolStripMenuItem14.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.toolStripMenuItem14.Name = "toolStripMenuItem14";
-            this.toolStripMenuItem14.Size = new System.Drawing.Size(214, 26);
+            this.toolStripMenuItem14.Size = new System.Drawing.Size(185, 26);
             this.toolStripMenuItem14.Text = "Direction:";
             // 
             // toolStripComboBox6
@@ -1344,20 +1346,20 @@
             // 
             this.toolStripMenuItem11.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem11.Image")));
             this.toolStripMenuItem11.Name = "toolStripMenuItem11";
-            this.toolStripMenuItem11.Size = new System.Drawing.Size(214, 26);
+            this.toolStripMenuItem11.Size = new System.Drawing.Size(185, 26);
             this.toolStripMenuItem11.Text = "SAVE";
             this.toolStripMenuItem11.Click += new System.EventHandler(this.toolStripMenuItem11_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(211, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(182, 6);
             // 
             // toolStripMenuItem12
             // 
             this.toolStripMenuItem12.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem12.Image")));
             this.toolStripMenuItem12.Name = "toolStripMenuItem12";
-            this.toolStripMenuItem12.Size = new System.Drawing.Size(214, 26);
+            this.toolStripMenuItem12.Size = new System.Drawing.Size(185, 26);
             this.toolStripMenuItem12.Text = "REMOVE";
             this.toolStripMenuItem12.Click += new System.EventHandler(this.toolStripMenuItem12_Click);
             // 
@@ -2355,6 +2357,11 @@
             // 
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
+            // columnHeader17
+            // 
+            this.columnHeader17.Text = "Trigger Id";
+            this.columnHeader17.Width = 40;
+            // 
             // EditWindows
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -2622,8 +2629,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader14;
         private System.Windows.Forms.ColumnHeader columnHeader15;
         private System.Windows.Forms.ColumnHeader columnHeader16;
-        private System.Windows.Forms.ColumnHeader columnHeader17;
         private System.Windows.Forms.ColumnHeader columnHeader18;
+        private System.Windows.Forms.ColumnHeader columnHeader19;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip4;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem8;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox2;
@@ -2640,5 +2647,6 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem12;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox5;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem14;
+        private System.Windows.Forms.ColumnHeader columnHeader17;
     }
 }

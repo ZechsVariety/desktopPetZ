@@ -1946,7 +1946,8 @@ namespace PetEditor
                     catch (ArgumentOutOfRangeException)
                     {
                         toolStripComboBox5.SelectedIndex = -1;
-                        lv.SelectedItems[0].SubItems.Add(toolStripComboBox5.Text);
+                        lv.SelectedItems[0].SubItems.Add((toolStripComboBox5.SelectedItem as XmlNodeCombo).Id.ToString());
+                        lv.SelectedItems[0].SubItems.Add((toolStripComboBox5.SelectedItem as XmlNodeCombo).Name);
                         break;
                     }
                 }
@@ -1955,7 +1956,7 @@ namespace PetEditor
                 {
                     try
                     {
-                        if (k.ToString() == lv.SelectedItems[0].SubItems[5].Text)
+                        if (k.ToString() == lv.SelectedItems[0].SubItems[6].Text)
                         {
                             toolStripComboBox6.SelectedItem = k;
                             break;
@@ -1993,7 +1994,8 @@ namespace PetEditor
                     lvi.SubItems.Add((toolStripComboBox4.SelectedItem as XmlNodeCombo).Name);
                     lvi.SubItems.Add(toolStripTextBox2.Text);
                     lvi.SubItems.Add(toolStripComboBox3.Text);
-                    lvi.SubItems.Add(toolStripComboBox5.Text);
+                    lvi.SubItems.Add((toolStripComboBox5.SelectedItem as XmlNodeCombo).Id.ToString());
+                    lvi.SubItems.Add((toolStripComboBox5.SelectedItem as XmlNodeCombo).Name);
                     lvi.SubItems.Add(toolStripComboBox6.Text);
                     lv.Height += 30;
                     lv.Parent.Height += 30;
@@ -2012,8 +2014,9 @@ namespace PetEditor
                     lvi.SubItems[1].Text = (toolStripComboBox4.SelectedItem as XmlNodeCombo).Name;
                     lvi.SubItems[2].Text = toolStripTextBox2.Text;
                     lvi.SubItems[3].Text = toolStripComboBox3.Text;
-                    lvi.SubItems[4].Text = toolStripComboBox5.Text;
-                    lvi.SubItems[5].Text = toolStripComboBox6.Text;
+                    lvi.SubItems[4].Text = (toolStripComboBox5.SelectedItem as XmlNodeCombo).Id.ToString();
+                    lvi.SubItems[5].Text = (toolStripComboBox5.SelectedItem as XmlNodeCombo).Name;
+                    lvi.SubItems[6].Text = toolStripComboBox6.Text;
                 }
             }
             else
