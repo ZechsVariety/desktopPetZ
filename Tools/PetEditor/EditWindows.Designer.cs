@@ -128,11 +128,11 @@
             this.toolStripComboBox3 = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripComboBox5 = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripMenuItem13 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripComboBox6 = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripMenuItem14 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripComboBox4 = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripMenuItem13 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripComboBox5 = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripMenuItem14 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripComboBox6 = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripMenuItem();
@@ -1235,11 +1235,11 @@
             this.toolStripComboBox3,
             this.toolStripSeparator5,
             this.toolStripMenuItem10,
-            this.toolStripComboBox5,
-            this.toolStripMenuItem13,
-            this.toolStripComboBox6,
-            this.toolStripMenuItem14,
             this.toolStripComboBox4,
+            this.toolStripMenuItem13,
+            this.toolStripComboBox5,
+            this.toolStripMenuItem14,
+            this.toolStripComboBox6,
             this.toolStripMenuItem11,
             this.toolStripSeparator6,
             this.toolStripMenuItem12});
@@ -1301,12 +1301,12 @@
             this.toolStripMenuItem10.Size = new System.Drawing.Size(214, 26);
             this.toolStripMenuItem10.Text = "Animation:";
             // 
-            // toolStripComboBox5
+            // toolStripComboBox4
             // 
-            this.toolStripComboBox5.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.toolStripComboBox5.MergeAction = System.Windows.Forms.MergeAction.Insert;
-            this.toolStripComboBox5.Name = "toolStripComboBox5";
-            this.toolStripComboBox5.Size = new System.Drawing.Size(121, 28);
+            this.toolStripComboBox4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBox4.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.toolStripComboBox4.Name = "toolStripComboBox4";
+            this.toolStripComboBox4.Size = new System.Drawing.Size(121, 28);
             // 
             // toolStripMenuItem13
             // 
@@ -1316,11 +1316,11 @@
             this.toolStripMenuItem13.Size = new System.Drawing.Size(214, 26);
             this.toolStripMenuItem13.Text = "Trigger:";
             // 
-            // toolStripComboBox6
+            // toolStripComboBox5
             // 
-            this.toolStripComboBox6.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.toolStripComboBox6.Name = "toolStripComboBox6";
-            this.toolStripComboBox6.Size = new System.Drawing.Size(121, 28);
+            this.toolStripComboBox5.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBox5.Name = "toolStripComboBox5";
+            this.toolStripComboBox5.Size = new System.Drawing.Size(121, 28);
             // 
             // toolStripMenuItem14
             // 
@@ -1330,15 +1330,15 @@
             this.toolStripMenuItem14.Size = new System.Drawing.Size(214, 26);
             this.toolStripMenuItem14.Text = "Direction:";
             // 
-            // toolStripComboBox4
+            // toolStripComboBox6
             // 
-            this.toolStripComboBox4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.toolStripComboBox4.Items.AddRange(new object[] {
+            this.toolStripComboBox6.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBox6.Items.AddRange(new object[] {
             "any",
             "infront",
             "behind"});
-            this.toolStripComboBox4.Name = "toolStripComboBox4";
-            this.toolStripComboBox4.Size = new System.Drawing.Size(121, 28);
+            this.toolStripComboBox6.Name = "toolStripComboBox6";
+            this.toolStripComboBox6.Size = new System.Drawing.Size(121, 28);
             // 
             // toolStripMenuItem11
             // 
@@ -1346,6 +1346,7 @@
             this.toolStripMenuItem11.Name = "toolStripMenuItem11";
             this.toolStripMenuItem11.Size = new System.Drawing.Size(214, 26);
             this.toolStripMenuItem11.Text = "SAVE";
+            this.toolStripMenuItem11.Click += new System.EventHandler(this.toolStripMenuItem11_Click);
             // 
             // toolStripSeparator6
             // 
@@ -1358,6 +1359,7 @@
             this.toolStripMenuItem12.Name = "toolStripMenuItem12";
             this.toolStripMenuItem12.Size = new System.Drawing.Size(214, 26);
             this.toolStripMenuItem12.Text = "REMOVE";
+            this.toolStripMenuItem12.Click += new System.EventHandler(this.toolStripMenuItem12_Click);
             // 
             // groupBox5
             // 
@@ -2630,13 +2632,13 @@
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox3;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem10;
-        private System.Windows.Forms.ToolStripComboBox toolStripComboBox5;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem13;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox4;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem13;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBox6;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem11;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem12;
-        private System.Windows.Forms.ToolStripComboBox toolStripComboBox6;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBox5;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem14;
     }
 }

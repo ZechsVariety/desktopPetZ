@@ -507,10 +507,10 @@ namespace PetEditor
             */
             toolStripComboBox2.Items.Clear();
             toolStripComboBox2.Items.AddRange(XmlTools.GetAnimationList());
+            toolStripComboBox4.Items.Clear();
+            toolStripComboBox4.Items.AddRange(XmlTools.GetAnimationList());
             toolStripComboBox5.Items.Clear();
             toolStripComboBox5.Items.AddRange(XmlTools.GetAnimationList());
-            toolStripComboBox6.Items.Clear();
-            toolStripComboBox6.Items.AddRange(XmlTools.GetAnimationList());
             tabPage4.Tag = null;
             groupBox5.Enabled = false;
             groupBox6.Enabled = false;
@@ -1854,11 +1854,9 @@ namespace PetEditor
             }
         }
 
-        // Context menu for "if another pet is detected" box
+        // Context menu for "if another pet is detected" box (trigger animations)
         private void contextMenuStrip4_Opening(object sender, CancelEventArgs e)
         {
-            Console.WriteLine("Working");
-
             var cms = sender as ContextMenuStrip;
             var lv = cms.SourceControl as ListView;
             if (lv.SelectedIndices.Count == 0)
@@ -1867,9 +1865,9 @@ namespace PetEditor
                 toolStripMenuItem11.Text = "ADD NEW";
                 toolStripTextBox2.Text = "10";
                 toolStripComboBox3.SelectedIndex = 0;
-                toolStripComboBox4.SelectedIndex = 0;
+                toolStripComboBox4.SelectedIndex = -1;
                 toolStripComboBox5.SelectedIndex = -1;
-                toolStripComboBox6.SelectedIndex = -1;
+                toolStripComboBox6.SelectedIndex = 0;
             }
             else
             {
@@ -1888,7 +1886,7 @@ namespace PetEditor
                 toolStripComboBox4.SelectedIndex = -1;
                 foreach (var k in toolStripComboBox4.Items)
                 {
-                    if (k.ToString() == lv.SelectedItems[0].SubItems[3].Text)
+                    if ((k as XmlNodeCombo).Id.ToString() == lv.SelectedItems[0].SubItems[0].Text)
                     {
                         toolStripComboBox4.SelectedItem = k;
                         break;
@@ -1897,7 +1895,7 @@ namespace PetEditor
                 toolStripComboBox5.SelectedIndex = -1;
                 foreach (var k in toolStripComboBox5.Items)
                 {
-                    if ((k as XmlNodeCombo).Id.ToString() == lv.SelectedItems[0].SubItems[0].Text)
+                    if (k.ToString() == lv.SelectedItems[0].SubItems[4].Text)
                     {
                         toolStripComboBox5.SelectedItem = k;
                         break;
@@ -1906,12 +1904,73 @@ namespace PetEditor
                 toolStripComboBox6.SelectedIndex = -1;
                 foreach (var k in toolStripComboBox6.Items)
                 {
-                    if ((k as XmlNodeCombo).Id.ToString() == lv.SelectedItems[0].SubItems[0].Text)
+                    if (k.ToString() == lv.SelectedItems[0].SubItems[5].Text)
                     {
                         toolStripComboBox6.SelectedItem = k;
                         break;
                     }
                 }
+            }
+        }
+
+        // Add or save next node (trigger animations)
+        private void toolStripMenuItem11_Click(object sender, EventArgs e)
+        {
+            var cms = contextMenuStrip4;
+            var lv = cms.SourceControl as ListView;
+            Console.WriteLine(lv.Name);
+            if (lv.SelectedIndices.Count == 0)
+            {
+                if (toolStripComboBox3.SelectedIndex >= 0 && toolStripComboBox4.SelectedIndex >= 0 && toolStripComboBox5.SelectedIndex >= 0 && toolStripComboBox6.SelectedIndex >= 0)
+                {
+                    var lvi = lv.Items.Add((toolStripComboBox4.SelectedItem as XmlNodeCombo).Id.ToString());
+                    var n2 = XmlTools.GetXmlAnimationNode((toolStripComboBox4.SelectedItem as XmlNodeCombo).Id);
+                    try
+                    {
+                        lvi.ImageIndex = n2.Sequence.Frame[0];
+                    }
+                    catch (Exception) { }
+                    lvi.SubItems.Add((toolStripComboBox4.SelectedItem as XmlNodeCombo).Name);
+                    lvi.SubItems.Add(toolStripTextBox2.Text);
+                    lvi.SubItems.Add(toolStripComboBox3.Text);
+                    lvi.SubItems.Add(toolStripComboBox5.Text);
+                    lvi.SubItems.Add(toolStripComboBox6.Text);
+                    lv.Height += 30;
+                    lv.Parent.Height += 30;
+                }
+                else
+                {
+                    MessageBox.Show("Not all parameters are set.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                var lvi = lv.SelectedItems[0];
+                lvi.SubItems[0].Text = (toolStripComboBox4.SelectedItem as XmlNodeCombo).Id.ToString();
+                var n2 = XmlTools.GetXmlAnimationNode((toolStripComboBox4.SelectedItem as XmlNodeCombo).Id);
+                try
+                {
+                    lvi.ImageIndex = n2.Sequence.Frame[0];
+                }
+                catch (Exception) { }
+                lvi.SubItems[1].Text = (toolStripComboBox4.SelectedItem as XmlNodeCombo).Name;
+                lvi.SubItems[2].Text = toolStripTextBox2.Text;
+                lvi.SubItems[3].Text = toolStripComboBox3.Text;
+                lvi.SubItems[4].Text = toolStripComboBox5.Text;
+                lvi.SubItems[5].Text = toolStripComboBox6.Text;
+            }
+            animation_Edited(sender, e);
+        }
+
+        // Remove node (trigger animations)
+        private void toolStripMenuItem12_Click(object sender, EventArgs e)
+        {
+            var cms = contextMenuStrip4;
+            var lv = cms.SourceControl as ListView;
+            if (lv.SelectedIndices.Count > 0)
+            {
+                lv.Items.Remove(lv.SelectedItems[0]);
+                animation_Edited(sender, e);
             }
         }
     }
