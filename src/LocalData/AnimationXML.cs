@@ -246,8 +246,8 @@ namespace XmlData
         /// <summary>
         ///  What to do if a pet reaches another pet.
         /// </summary>
-        [XmlElement("trigger")]
-        public HitNode Trigger;
+        [XmlElement("interaction")]
+        public HitNode Interaction;
     }
 
     /// <summary>
@@ -385,7 +385,7 @@ namespace XmlData
     }
 
     /// <summary>
-    ///  Next animation to play. Animation, Border, Gravity and Trigger have 0 or more Next-nodes.
+    ///  Next animation to play. Animation, Border, Gravity and Interaction have 0 or more Next-nodes.
     /// </summary>
     public class NextNode
     {
@@ -399,6 +399,16 @@ namespace XmlData
         /// </summary>
         [XmlAttribute("only")]
         public string OnlyFlag;
+        /// <summary>
+        ///  Animation that will trigger this one.
+        /// </summary>
+        [XmlAttribute("trigger")]
+        public int Trigger;
+        /// <summary>
+        ///  Direction of impact
+        /// </summary>
+        [XmlAttribute("direction")]
+        public string Direction;
         /// <summary>
         ///  Next animation ID.
         /// </summary>

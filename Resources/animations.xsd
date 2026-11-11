@@ -69,6 +69,11 @@
                   <xsd:documentation>How much images are on the y axis (tiles) of the sprite sheet.</xsd:documentation>
                 </xsd:annotation>
               </xsd:element>
+			  <xsd:element name='skins' type='xsd:integer' minOccurs='1' maxOccurs='1'>
+                <xsd:annotation>
+                  <xsd:documentation>How many different skins are present in the sprite sheet.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
               <xsd:element name='png' type='xsd:string' minOccurs='1' maxOccurs='1'>
                 <xsd:annotation>
                   <xsd:documentation>Sprite sheet as CDATA base64 encoded, see https://esheep.petrucci.ch/?p=tools&amp;s=base64 to convert it to a base64 string.</xsd:documentation>
@@ -151,7 +156,7 @@
                         </xsd:choice>
                       </xsd:complexType>
                     </xsd:element>
-					<xsd:element name='trigger' minOccurs='0' maxOccurs='1'>
+					<xsd:element name='interaction' minOccurs='0' maxOccurs='1'>
 					  <xsd:complexType>
 						<xsd:choice maxOccurs="10">
 						  <xsd:element ref='next' />
