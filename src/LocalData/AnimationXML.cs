@@ -246,8 +246,8 @@ namespace XmlData
         /// <summary>
         ///  What to do if a pet reaches another pet.
         /// </summary>
-        [XmlElement("interaction")]
-        public HitNode Interaction;
+        [XmlElement("interact")]
+        public HitNode Interact;
     }
 
     /// <summary>
@@ -385,7 +385,7 @@ namespace XmlData
     }
 
     /// <summary>
-    ///  Next animation to play. Animation, Border, Gravity and Interaction have 0 or more Next-nodes.
+    ///  Next animation to play. Animation, Border, Gravity and Interact have 0 or more Next-nodes.
     /// </summary>
     public class NextNode
     {

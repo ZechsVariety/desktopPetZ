@@ -673,9 +673,9 @@ namespace PetEditor
             listView4.Height = (listView4.Items.Count + 2) * 33;
 
             listView5.Items.Clear();
-            if (node.Interaction != null && node.Interaction.Next != null)
+            if (node.Interact != null && node.Interact.Next != null)
             {
-                foreach (var n in node.Interaction.Next)
+                foreach (var n in node.Interact.Next)
                 {
                     var lvi = listView5.Items.Add(n.Value.ToString());
                     var n2 = XmlTools.GetXmlAnimationNode(n.Value);
@@ -789,21 +789,21 @@ namespace PetEditor
             }
             if (listView5.Items.Count > 0)
             {
-                node.Interaction = new XmlData.HitNode();
-                node.Interaction.Next = new XmlData.NextNode[listView5.Items.Count];
+                node.Interact = new XmlData.HitNode();
+                node.Interact.Next = new XmlData.NextNode[listView5.Items.Count];
                 for (var k = 0; k < listView5.Items.Count; k++)
                 {
-                    node.Interaction.Next[k] = new XmlData.NextNode();
-                    node.Interaction.Next[k].Value = int.Parse(listView5.Items[k].SubItems[0].Text);
-                    node.Interaction.Next[k].Probability = int.Parse(listView5.Items[k].SubItems[2].Text);
-                    node.Interaction.Next[k].OnlyFlag = listView5.Items[k].SubItems[3].Text;
-                    node.Interaction.Next[k].Trigger = listView5.Items[k].SubItems[4].Text;
-                    node.Interaction.Next[k].Direction = listView5.Items[k].SubItems[6].Text;
+                    node.Interact.Next[k] = new XmlData.NextNode();
+                    node.Interact.Next[k].Value = int.Parse(listView5.Items[k].SubItems[0].Text);
+                    node.Interact.Next[k].Probability = int.Parse(listView5.Items[k].SubItems[2].Text);
+                    node.Interact.Next[k].OnlyFlag = listView5.Items[k].SubItems[3].Text;
+                    node.Interact.Next[k].Trigger = listView5.Items[k].SubItems[4].Text;
+                    node.Interact.Next[k].Direction = listView5.Items[k].SubItems[6].Text;
                 }
             }
             else
             {
-                node.Interaction = null;
+                node.Interact = null;
             }
             node.Start = new XmlData.MovingNode();
             node.Start.Interval = richTextBox6.Text;
@@ -1877,7 +1877,7 @@ namespace PetEditor
             }
         }
 
-        // Context menu for "if another pet is detected" box (interaction animations)
+        // Context menu for "if another pet is detected" box (interact animations)
         private void contextMenuStrip4_Opening(object sender, CancelEventArgs e)
         {
             var cms = sender as ContextMenuStrip;
@@ -1973,7 +1973,7 @@ namespace PetEditor
             }
         }
 
-        // Add or save next node (interaction animations)
+        // Add or save next node (interact animations)
         private void toolStripMenuItem11_Click(object sender, EventArgs e)
         {
             var cms = contextMenuStrip4;
@@ -2027,7 +2027,7 @@ namespace PetEditor
             animation_Edited(sender, e);
         }
 
-        // Remove node (interaction animations)
+        // Remove node (interact animations)
         private void toolStripMenuItem12_Click(object sender, EventArgs e)
         {
             var cms = contextMenuStrip4;

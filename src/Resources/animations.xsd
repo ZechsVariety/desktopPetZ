@@ -156,7 +156,7 @@
                         </xsd:choice>
                       </xsd:complexType>
                     </xsd:element>
-					<xsd:element name='interaction' minOccurs='0' maxOccurs='1'>
+					<xsd:element name='interact' minOccurs='0' maxOccurs='1'>
 					  <xsd:complexType>
 						<xsd:choice maxOccurs="10">
 						  <xsd:element ref='next' />
