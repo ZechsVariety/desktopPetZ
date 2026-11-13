@@ -791,7 +791,7 @@ namespace DesktopPet
                                 )
                             {
                                 // Set border animation with correct "only" value
-                                int iBorderAnimation = window.Value == "Sheep" ? SetPetInteractionAnimations(rct) : Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
+                                int iBorderAnimation = window.Value == "Sheep" ? SetPetInteractAnimations(rct) : Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
 
                                 // If a "none", "vertical+" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
                                 if (iBorderAnimation >= 0)
@@ -872,7 +872,7 @@ namespace DesktopPet
                                 )
                             {
                                 // Set border animation with correct "only" value
-                                int iBorderAnimation = window.Value == "Sheep" ? SetPetInteractionAnimations(rct) : Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
+                                int iBorderAnimation = window.Value == "Sheep" ? SetPetInteractAnimations(rct) : Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
 
                                 // If a "none", "vertical+" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
                                 if (iBorderAnimation >= 0)
@@ -1185,7 +1185,7 @@ namespace DesktopPet
         /// <remarks>Trigger animations are prioritized over these ones!</remarks>
         /// <param name="rct">Rect of sheep2's window</param>
         /// <returns>ID of the next animation for sheep1 to play. -1 if there is no animation.</returns>
-        private int SetPetInteractionAnimations(NativeMethods.RECT rct)
+        private int SetPetInteractAnimations(NativeMethods.RECT rct)
         {
             // NOTE: For readability, this pet is referred to as "sheep1", and the other pet it collides with is called "sheep2"
 
@@ -1583,10 +1583,11 @@ namespace DesktopPet
                 MenuItem menuNext = cm.MenuItems.Add("Next");
                 MenuItem menuBorder = cm.MenuItems.Add("Border");
                 MenuItem menuGravity = cm.MenuItems.Add("Gravity");
+                MenuItem menuInteract = cm.MenuItems.Add("Interact");
                 cm.MenuItems.Add("-");
                 MenuItem menuSpawn = cm.MenuItems.Add("Spawns");
 
-                List<TNextAnimation> list = Animations.GetNextAnimations(CurrentAnimation.ID, true, false, false);
+                List<TNextAnimation> list = Animations.GetNextAnimations(CurrentAnimation.ID, true, false, false, false);
                 foreach (TNextAnimation ani in list)
                 {
                     MenuItem menu = menuNext.MenuItems.Add("ID." + ani.ID + " - " + Animations.SheepAnimations[ani.ID].Name + "\t (Prob: " + ani.Probability + ") only:" + ani.only.ToString());
@@ -1594,7 +1595,7 @@ namespace DesktopPet
                 }
                 if (list.Count == 0) menuNext.Enabled = false;
 
-                list = Animations.GetNextAnimations(CurrentAnimation.ID, false, true, false);
+                list = Animations.GetNextAnimations(CurrentAnimation.ID, false, true, false, false);
                 foreach (TNextAnimation ani in list)
                 {
                     MenuItem menu = menuBorder.MenuItems.Add("ID." + ani.ID + " - " + Animations.SheepAnimations[ani.ID].Name + "\t (Prob: " + ani.Probability + ") only: " + ani.only.ToString());
@@ -1602,13 +1603,21 @@ namespace DesktopPet
                 }
                 if (list.Count == 0) menuBorder.Enabled = false;
 
-                list = Animations.GetNextAnimations(CurrentAnimation.ID, false, false, true);
+                list = Animations.GetNextAnimations(CurrentAnimation.ID, false, false, true, false);
                 foreach (TNextAnimation ani in list)
                 {
                     MenuItem menu = menuGravity.MenuItems.Add("ID." + ani.ID + " - " + Animations.SheepAnimations[ani.ID].Name + "\t (Prob: " + ani.Probability + ") only:" + ani.only.ToString());
                     menu.Click += (ms, me) =>{ SetNewAnimation(ani.ID); };
                 }
                 if (list.Count == 0) menuGravity.Enabled = false;
+
+                list = Animations.GetNextAnimations(CurrentAnimation.ID, false, false, false, true);
+                foreach (TNextAnimation ani in list)
+                {
+                    MenuItem menu = menuInteract.MenuItems.Add("ID." + ani.ID + " - " + Animations.SheepAnimations[ani.ID].Name + " | Trigger: " + ani.TriggerID + " - " + Animations.SheepAnimations[ani.TriggerID].Name + "\t (Prob: " + ani.Probability + ") only:" + ani.only.ToString() + " dir:" + ani.Direction.ToString());
+                    menu.Click += (ms, me) => { SetNewAnimation(ani.ID); };
+                }
+                if (list.Count == 0) menuInteract.Enabled = false;
 
                 List<TSpawn> listS = Animations.GetNextSpawns();
                 foreach (TSpawn spa in listS)
