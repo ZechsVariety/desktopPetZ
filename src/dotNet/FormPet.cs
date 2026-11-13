@@ -1179,10 +1179,9 @@ namespace DesktopPet
 
         /// <summary>
         /// When sheeps collide, this function runs for one sheep only, but decides what BOTH sheeps should do
-        /// <para>The program tries to randomly pick an animation that both sheeps have. Otherwise, each sheep gets a different random one</para>
-        /// <para>If sheeps are facing/moving in the same direction, sheep2 will not change its animation</para>
+        /// <para>1. First, the program checks if either sheep triggers the other one's interact animations</para>
+        /// <para>2. If not, the program tries to randomly pick a petSide animation that both sheeps have. If they don't have any in common, each sheep gets a different random one.<br />In this case, if sheeps are facing/moving in the same direction, sheep2 will not change its animation</para>
         /// </summary>
-        /// <remarks>Trigger animations are prioritized over these ones!</remarks>
         /// <param name="rct">Rect of sheep2's window</param>
         /// <returns>ID of the next animation for sheep1 to play. -1 if there is no animation.</returns>
         private int SetPetInteractAnimations(NativeMethods.RECT rct)
@@ -1230,11 +1229,80 @@ namespace DesktopPet
             if (sheep2 == null)
                 return Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
 
+            int animationID = -1;
+            int sheep2AnimationID = -1;
+
             // Get data for deciding how to pick the animations
 
             TAnimation sheep2CurrentAnim = sheep2.CurrentAnimation; // Initialized here to prevent runtime errors
 
-            List<TNextAnimation> commonBorderAnims = new List<TNextAnimation>(); // List of all next end-border animations that both sheep have in common
+            // Lists of all next end-interact animations whose triggers match the animation of the other sheep
+            List<TNextAnimation> sheep1ValidInteractAnims = new List<TNextAnimation>();
+            List<TNextAnimation> sheep2ValidInteractAnims = new List<TNextAnimation>();
+
+            // Determine where each sheep is in relation to each other
+            TNextAnimation.TDirection sheep1InteractDirection;
+            if((IsMovingLeft && sheep2.Left < Left) || (!IsMovingLeft && sheep2.Right > Right))
+                sheep1InteractDirection = TNextAnimation.TDirection.INFRONT;
+            else
+                sheep1InteractDirection = TNextAnimation.TDirection.BEHIND;
+            TNextAnimation.TDirection sheep2InteractDirection;
+            if (sheep2.IsMovingLeft && Left < sheep2.Left || (!sheep2.IsMovingLeft && Right > sheep2.Right))
+                sheep2InteractDirection = TNextAnimation.TDirection.INFRONT;
+            else
+                sheep2InteractDirection = TNextAnimation.TDirection.BEHIND;
+
+            // Determine if sheep1 has any valid interact anims
+            foreach (TNextAnimation interactAnim in CurrentAnimation.EndInteract)
+            {
+                // Ignore animation if the probability is 0
+                if (interactAnim.Probability == 0)
+                    continue;
+
+                // Ignore animation if sheep2 isn't in the intended direction
+                if (interactAnim.Direction != sheep1InteractDirection && interactAnim.Direction != TNextAnimation.TDirection.ANY)
+                    continue;
+
+                // If sheep2's current animation matches the intended trigger, add this animation to the list of randomly picked animations
+                if (interactAnim.TriggerID == sheep2CurrentAnim.ID)
+                    sheep1ValidInteractAnims.Add(interactAnim);
+            }
+
+            // Determine if sheep2 has any valid interact anims
+            foreach (TNextAnimation interactAnim in sheep2CurrentAnim.EndInteract)
+            {
+                // Ignore animation if the probability is 0
+                if (interactAnim.Probability == 0)
+                    continue;
+
+                // Ignore animation if sheep1 isn't in the intended direction
+                if (interactAnim.Direction != sheep2InteractDirection && interactAnim.Direction != TNextAnimation.TDirection.ANY)
+                    continue;
+
+                // If sheep1's current animation matches the intended trigger, add this animation to the list of randomly picked animations
+                if (interactAnim.TriggerID == CurrentAnimation.ID)
+                    sheep2ValidInteractAnims.Add(interactAnim);
+            }
+
+            // Play sheep1 interact anims
+            if (sheep1ValidInteractAnims.Count > 0)
+                animationID = Animations.SetNextInteractAnimation(sheep1ValidInteractAnims, TNextAnimation.TOnly.PETSIDE);
+            // Play sheep2 interact anims
+            if (sheep2ValidInteractAnims.Count > 0)
+                sheep2AnimationID = Animations.SetNextInteractAnimation(sheep2ValidInteractAnims, TNextAnimation.TOnly.PETSIDE);
+
+            //Console.WriteLine("1: " + sheep1ValidInteractAnims.Count);
+            //Console.WriteLine("2: " + sheep2ValidInteractAnims.Count);
+
+            // Return if both sheep had their animations set
+            if (sheep1ValidInteractAnims.Count + sheep2ValidInteractAnims.Count > 0)
+            {
+                sheep2.SetNewAnimation(sheep2AnimationID);
+                return animationID;
+            }
+
+            // List of all next end-border animations that both sheeps have in common
+            List<TNextAnimation> commonBorderAnims = new List<TNextAnimation>();
 
             // Determine if sheeps are both facing/moving in the same direction
             bool sameDirection = IsMovingLeft == sheep2.IsMovingLeft // check if they're facing the same direction
@@ -1246,6 +1314,10 @@ namespace DesktopPet
             {
                 // Break if sheeps are moving in same direction
                 if (sameDirection)
+                    break;
+
+                // Break if either sheep isn't able to play a common animation because it's already playing an interact one
+                if (sheep1ValidInteractAnims.Count + sheep2ValidInteractAnims.Count > 0)
                     break;
 
                 // Skip this animation if it isn't set to None/PetSide/Vertical+
@@ -1274,42 +1346,45 @@ namespace DesktopPet
 
             // Pick random animation
 
-            int animationID = -1;
-
-            // If both sheep have some of the same end-border animations, make both sheep play the same random animation
+            // If both sheep have some of the same end-border animations, and neither are doing an interact anim instead, make both sheep play the same random animation
             if (commonBorderAnims.Count > 0)
             {
                 // Pick random animation to be applied to both sheep
                 animationID = Animations.SetNextInteractAnimation(commonBorderAnims, TNextAnimation.TOnly.PETSIDE);
+
                 // Apply to sheep2 if not -1 (which should never be the case)
-                if(animationID >= 0)
-                    sheep2.SetNewAnimation(animationID);
+                if (animationID >= 0)
+                    sheep2AnimationID = animationID;
 
                 StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Both pets interaction: " + animationID + " (both)");
             }
-            // If sheeps have different end-border animations, pick a random one for both
+            // If sheeps have different end-border animations, or one of them is doing an interact anim instead, pick a random one for whomever needs it
             else
             {
                 // Sheep1 animation
-                animationID = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
+                if (sheep1ValidInteractAnims.Count == 0)
+                {
+                    animationID = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.PETSIDE);
 
-                if(animationID >= 0)
-                    StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Pet1 interaction: " + animationID);
+                    if (animationID >= 0)
+                        StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Pet1 interaction: " + animationID);
+                }
 
                 // Sheep2 animation (only if it is facing sheep1)
-                if (!sameDirection)
+                if (sheep2ValidInteractAnims.Count == 0 && !sameDirection)
                 {
-                    int sheep2AnimationID = sheep2.Animations.SetNextBorderAnimation(sheep2CurrentAnim.ID, TNextAnimation.TOnly.PETSIDE);
+                    sheep2AnimationID = sheep2.Animations.SetNextBorderAnimation(sheep2CurrentAnim.ID, TNextAnimation.TOnly.PETSIDE);
                     // Only set new animation if one was found
                     if (sheep2AnimationID >= 0)
                     {
-                        sheep2.SetNewAnimation(sheep2AnimationID);
-
                         StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "Pet2 interaction: " + sheep2AnimationID);
                     }
                 }
             }
 
+            // Apply animations for both sheeps
+            if (sheep2AnimationID >= 0)
+                sheep2.SetNewAnimation(sheep2AnimationID);
             return animationID;
         }
 
