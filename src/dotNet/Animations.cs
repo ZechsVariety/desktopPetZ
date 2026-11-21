@@ -831,9 +831,9 @@ namespace DesktopPet
             /// Start the next animation if a pet border is hit
             /// </summary>
             /// <param name="animations">Available animations, as determined in <see cref="FormPet.SetPetInteractAnimations(NativeMethods.RECT)"/></param>
-            /// <param name="where">Where the pet is "walking"</param>
+            /// <param name="where">Where the pet is "walking". Defaults to NONE for triggered animations</param>
             /// <returns>ID of the next animation to play. -1 if there is no animation.</returns>
-        public int SetNextInteractAnimation(List<TNextAnimation> animations, TNextAnimation.TOnly where)
+        public int SetNextInteractAnimation(List<TNextAnimation> animations, TNextAnimation.TOnly where = TNextAnimation.TOnly.NONE)
         {
             StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.info, "pet interaction detected");
             return SetNextGeneralAnimation(animations, where);
@@ -861,6 +861,7 @@ namespace DesktopPet
                 {
                     // Skip if this animation has the wrong "only" value
                     if (anim.only != TNextAnimation.TOnly.NONE // none anims are considered for every collision
+                        && where != TNextAnimation.TOnly.NONE // if where is none, ALL animations are considered (used for triggered animations)
                         && !(isHorizontal_ && anim.only == TNextAnimation.TOnly.HORIZONTAL_) // horizontal+ anims are considered for every horizontal anim
                         && !(isVertical_ && anim.only == TNextAnimation.TOnly.VERTICAL_) // vertical+ anims are considered for every vertical anim
                         && anim.only != where) // intended "only" value
@@ -875,6 +876,7 @@ namespace DesktopPet
                 {
                     // Skip if this animation has the wrong "only" value
                     if (anim.only != TNextAnimation.TOnly.NONE
+                        && where != TNextAnimation.TOnly.NONE
                         && !(isHorizontal_ && anim.only == TNextAnimation.TOnly.HORIZONTAL_)
                         && !(isVertical_ && anim.only == TNextAnimation.TOnly.VERTICAL_)
                         && anim.only != where)
