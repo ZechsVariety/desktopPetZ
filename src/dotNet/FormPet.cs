@@ -1291,11 +1291,11 @@ namespace DesktopPet
             if (sheep2ValidInteractAnims.Count > 0)
                 sheep2AnimationID = Animations.SetNextInteractAnimation(sheep2ValidInteractAnims, TNextAnimation.TOnly.PETSIDE);
 
-            //Console.WriteLine("1: " + sheep1ValidInteractAnims.Count);
-            //Console.WriteLine("2: " + sheep2ValidInteractAnims.Count);
+            //Console.WriteLine("sheep1 InteractAnims: " + sheep1ValidInteractAnims.Count + " | animID: " + animationID);
+            //Console.WriteLine("sheep2 InteractAnims: " + sheep2ValidInteractAnims.Count + " | animID: " + sheep2AnimationID);
 
             // Return if both sheep had their animations set
-            if (sheep1ValidInteractAnims.Count + sheep2ValidInteractAnims.Count > 0)
+            if (sheep1ValidInteractAnims.Count > 0 && sheep2ValidInteractAnims.Count > 0)
             {
                 sheep2.SetNewAnimation(sheep2AnimationID);
                 return animationID;
