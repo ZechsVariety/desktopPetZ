@@ -70,4 +70,5 @@ v0.3.1
 * Replaced pet-mimicking with a far better "trigger animation" system
 
   * "Taskbar", "Horizontal" and "Window" only values are respected
+* Reduced redundancy in border detection
 
