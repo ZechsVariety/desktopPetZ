@@ -1,4 +1,4 @@
-# DesktopPet Z
+# DesktopPet-Z v1.0
 
 #### AKA: zSheep
 
@@ -14,23 +14,31 @@ Original author: [Adrianotiger](https://github.com/Adrianotiger)
 
 
 
-DesktopPet Z is a fork of [desktopPet v1.3.2 by Adriano](https://github.com/Adrianotiger/desktopPet). It's my custom build for fun tests and experiments, and it includes [all my custom pets](https://github.com/ZechsVariety/Zechs-Desktop-Pets).
+DesktopPet-Z is an expansion of [desktopPet v1.3.2 by Adriano](https://github.com/Adrianotiger/desktopPet), for my fun tests and experiments, and it includes [all my custom pets](https://github.com/ZechsVariety/Zechs-Desktop-Pets).
 
-
-
-This fork is purely for fun, but I also turn any successful experiments (that could benefit the vanilla app) into [separate branches](https://github.com/ZechsVariety/desktopPetZ/branches), and then create pull requests with them.
+I also add most of the custom features to the original DesktopPet.
 
 
 
 ### Additions
 
-(WIP)
+
+
+##### Added to original DesktopPet:
+
+* Pet tossing
+* Pet window-side collisions
+* Pet skins
+* Pet interaction
+* Several of my more finished pets
+* Various bug fixes
 
 
 
-### NOTE:
+##### DesktopPet-Z exclusives:
 
-
-
-Please keep in mind that this is my first time forking a repository and there WILL BE issues, like bugs and silly spaghetti code.
+* ALL my custom pets
+* Pet sets
+* "Kill all" button
+* Much higher pet limit
 

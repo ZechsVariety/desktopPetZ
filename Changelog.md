@@ -65,7 +65,7 @@ v0.3.1
 
 
 
-### V1.0 (WIP)
+### V1.0 (2026-11-22)
 
 * Replaced pet-mimicking with a far better pet interaction system using trigger animations
 
