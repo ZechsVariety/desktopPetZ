@@ -118,6 +118,7 @@
             this.columnHeader14 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader15 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader16 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader17 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader18 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader19 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip4 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -216,7 +217,7 @@
             this.toolStripButtonRedo = new System.Windows.Forms.ToolStripButton();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.columnHeader17 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imageFlipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -557,17 +558,18 @@
             this.imageHeightToolStripMenuItem,
             this.imageXToolStripMenuItem,
             this.imageYToolStripMenuItem,
+            this.imageFlipToolStripMenuItem,
             this.randomToolStripMenuItem,
             this.randomSpawnToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(187, 264);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(215, 318);
             this.contextMenuStrip1.Text = "Menu X";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem1.Image")));
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(186, 26);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(214, 26);
             this.toolStripMenuItem1.Text = "Screen Width";
             this.toolStripMenuItem1.ToolTipText = "Width of the monitor screen";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem_Click);
@@ -576,7 +578,7 @@
             // 
             this.screenHeightToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("screenHeightToolStripMenuItem.Image")));
             this.screenHeightToolStripMenuItem.Name = "screenHeightToolStripMenuItem";
-            this.screenHeightToolStripMenuItem.Size = new System.Drawing.Size(186, 26);
+            this.screenHeightToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
             this.screenHeightToolStripMenuItem.Text = "Screen Height";
             this.screenHeightToolStripMenuItem.ToolTipText = "Height of the monitor screen";
             this.screenHeightToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem_Click);
@@ -585,7 +587,7 @@
             // 
             this.areaWidthToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("areaWidthToolStripMenuItem.Image")));
             this.areaWidthToolStripMenuItem.Name = "areaWidthToolStripMenuItem";
-            this.areaWidthToolStripMenuItem.Size = new System.Drawing.Size(186, 26);
+            this.areaWidthToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
             this.areaWidthToolStripMenuItem.Text = "Area Width";
             this.areaWidthToolStripMenuItem.ToolTipText = "Width of the working area (if windows taskbar is on the bottom, this is the scree" +
     "n size)";
@@ -595,7 +597,7 @@
             // 
             this.areaHeightToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("areaHeightToolStripMenuItem.Image")));
             this.areaHeightToolStripMenuItem.Name = "areaHeightToolStripMenuItem";
-            this.areaHeightToolStripMenuItem.Size = new System.Drawing.Size(186, 26);
+            this.areaHeightToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
             this.areaHeightToolStripMenuItem.Text = "Area Height";
             this.areaHeightToolStripMenuItem.ToolTipText = "Height of the available working size (Screen height - Windows taskbar height)";
             this.areaHeightToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem_Click);
@@ -604,7 +606,7 @@
             // 
             this.imageWidthToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("imageWidthToolStripMenuItem.Image")));
             this.imageWidthToolStripMenuItem.Name = "imageWidthToolStripMenuItem";
-            this.imageWidthToolStripMenuItem.Size = new System.Drawing.Size(186, 26);
+            this.imageWidthToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
             this.imageWidthToolStripMenuItem.Text = "Image Width";
             this.imageWidthToolStripMenuItem.ToolTipText = "Width of the current pet";
             this.imageWidthToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem_Click);
@@ -613,7 +615,7 @@
             // 
             this.imageHeightToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("imageHeightToolStripMenuItem.Image")));
             this.imageHeightToolStripMenuItem.Name = "imageHeightToolStripMenuItem";
-            this.imageHeightToolStripMenuItem.Size = new System.Drawing.Size(186, 26);
+            this.imageHeightToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
             this.imageHeightToolStripMenuItem.Text = "Image Height";
             this.imageHeightToolStripMenuItem.ToolTipText = "Height of the current pet";
             this.imageHeightToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem_Click);
@@ -622,7 +624,7 @@
             // 
             this.imageXToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("imageXToolStripMenuItem.Image")));
             this.imageXToolStripMenuItem.Name = "imageXToolStripMenuItem";
-            this.imageXToolStripMenuItem.Size = new System.Drawing.Size(186, 26);
+            this.imageXToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
             this.imageXToolStripMenuItem.Text = "Image X";
             this.imageXToolStripMenuItem.ToolTipText = "current X position of the pet inside the screen";
             this.imageXToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem_Click);
@@ -631,7 +633,7 @@
             // 
             this.imageYToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("imageYToolStripMenuItem.Image")));
             this.imageYToolStripMenuItem.Name = "imageYToolStripMenuItem";
-            this.imageYToolStripMenuItem.Size = new System.Drawing.Size(186, 26);
+            this.imageYToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
             this.imageYToolStripMenuItem.Text = "Image Y";
             this.imageYToolStripMenuItem.ToolTipText = "Current Y position of the pet inside the screen";
             this.imageYToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem_Click);
@@ -640,7 +642,7 @@
             // 
             this.randomToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("randomToolStripMenuItem.Image")));
             this.randomToolStripMenuItem.Name = "randomToolStripMenuItem";
-            this.randomToolStripMenuItem.Size = new System.Drawing.Size(186, 26);
+            this.randomToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
             this.randomToolStripMenuItem.Text = "Random";
             this.randomToolStripMenuItem.ToolTipText = "Random value from 0 to 100";
             this.randomToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem_Click);
@@ -649,7 +651,7 @@
             // 
             this.randomSpawnToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("randomSpawnToolStripMenuItem.Image")));
             this.randomSpawnToolStripMenuItem.Name = "randomSpawnToolStripMenuItem";
-            this.randomSpawnToolStripMenuItem.Size = new System.Drawing.Size(186, 26);
+            this.randomSpawnToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
             this.randomSpawnToolStripMenuItem.Text = "Random Spawn";
             this.randomSpawnToolStripMenuItem.ToolTipText = "After each spawn, a random value from 0 to 100 is generated";
             this.randomSpawnToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItem_Click);
@@ -1215,6 +1217,11 @@
             // 
             this.columnHeader16.Text = "Control";
             this.columnHeader16.Width = 83;
+            // 
+            // columnHeader17
+            // 
+            this.columnHeader17.Text = "Trigger Id";
+            this.columnHeader17.Width = 40;
             // 
             // columnHeader18
             // 
@@ -2357,10 +2364,13 @@
             // 
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
-            // columnHeader17
+            // imageFlipToolStripMenuItem
             // 
-            this.columnHeader17.Text = "Trigger Id";
-            this.columnHeader17.Width = 40;
+            this.imageFlipToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("imageFlipToolStripMenuItem.Image")));
+            this.imageFlipToolStripMenuItem.Name = "imageFlipToolStripMenuItem";
+            this.imageFlipToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
+            this.imageFlipToolStripMenuItem.Text = "Image Flip";
+            this.imageFlipToolStripMenuItem.ToolTipText = "whether pet is facing left (1) or right (-1)";
             // 
             // EditWindows
             // 
@@ -2648,5 +2658,6 @@
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox5;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem14;
         private System.Windows.Forms.ColumnHeader columnHeader17;
+        private System.Windows.Forms.ToolStripMenuItem imageFlipToolStripMenuItem;
     }
 }

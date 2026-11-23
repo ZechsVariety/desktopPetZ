@@ -340,7 +340,7 @@ namespace PetEditor
             TValue v;
 
             v.Compute = text;
-            v.IsDynamic = (v.Compute.IndexOf("random") >= 0 || v.Compute.IndexOf("randS") >= 0 || v.Compute.IndexOf("imageX") >= 0 || v.Compute.IndexOf("imageY") >= 0);
+            v.IsDynamic = (v.Compute.IndexOf("random") >= 0 || v.Compute.IndexOf("randS") >= 0 || v.Compute.IndexOf("imageX") >= 0 || v.Compute.IndexOf("imageY") >= 0 || v.Compute.IndexOf("imageF") >= 0);
             v.IsScreen = (v.Compute.IndexOf("screen") >= 0 || v.Compute.IndexOf("area") >= 0);
             v.Value = ParseValue(v.Compute, debugInfo);
 
@@ -387,6 +387,7 @@ namespace PetEditor
             parsingText = parsingText.Replace("imageH", WindowDimensions.Image.Y.ToString());
             parsingText = parsingText.Replace("imageX", (parentX).ToString(CultureInfo.InvariantCulture));
             parsingText = parsingText.Replace("imageY", (parentY).ToString(CultureInfo.InvariantCulture));
+            parsingText = parsingText.Replace("imageF", (parentFlipped ? -1 : 1).ToString(CultureInfo.InvariantCulture));
             parsingText = parsingText.Replace("random", rand.Next(0, 100).ToString(CultureInfo.InvariantCulture));
             parsingText = parsingText.Replace("randS", iRandomSpawn.ToString(CultureInfo.InvariantCulture));
             

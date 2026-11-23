@@ -611,7 +611,8 @@ namespace PetEditor
             parsingText = parsingText.Replace("imageH", dimensions.Image.Height.ToString(CultureInfo.InvariantCulture));
             parsingText = parsingText.Replace("imageX", dimensions.Image.X.ToString(CultureInfo.InvariantCulture));
             parsingText = parsingText.Replace("imageY", dimensions.Image.Y.ToString(CultureInfo.InvariantCulture));
-            if(dimensions.Random >= 0)
+            parsingText = parsingText.Replace("imageF", dimensions.....ToString(CultureInfo.InvariantCulture));
+            if (dimensions.Random >= 0)
                 parsingText = parsingText.Replace("random", dimensions.Random.ToString(CultureInfo.InvariantCulture));
             else
                 parsingText = parsingText.Replace("random", rand.Next(0, 100).ToString(CultureInfo.InvariantCulture));
