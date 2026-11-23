@@ -207,7 +207,8 @@ namespace DesktopPet
         void AddNewSheep_Click(object sender, EventArgs e)
         {
             //Process.Start("explorer", null);
-            Program.Mainthread.AddSheep();
+            Thread test = new Thread(Program.Mainthread.AddSheep);
+            test.Start();
         }
 
 

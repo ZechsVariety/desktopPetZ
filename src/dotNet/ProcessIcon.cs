@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Drawing;
 using System.Reflection;
+using System.Threading;
 
 namespace DesktopPet
 {
@@ -114,7 +115,8 @@ namespace DesktopPet
             {
                 // Start Windows Explorer.
                 //Process.Start("explorer", null);
-                Program.Mainthread.AddSheep();
+                Thread test = new Thread(Program.Mainthread.AddSheep);
+                test.Start();
             }
         }
     }

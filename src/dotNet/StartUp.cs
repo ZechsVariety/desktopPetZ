@@ -312,8 +312,9 @@ namespace DesktopPet
 						xml.LoadAnimations(animations);
 					}
 
-					AddSheep();
-				}
+                    Thread test = new Thread(AddSheep);
+                    test.Start();
+                }
 				else
 				{
 					timer1.Enabled = false;
