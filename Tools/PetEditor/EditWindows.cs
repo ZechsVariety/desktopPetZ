@@ -1272,7 +1272,7 @@ namespace PetEditor
                 return;
             }
             int j = 0;
-            List<string> keys = new List<string>() { "screenW", "screenH", "areaW", "areaH", "imageW", "imageH", "imageX", "imageY", "imageF", "random", "randS" };
+            List<string> keys = new List<string>() { "screenW", "screenH", "areaW", "areaH", "imageW", "imageH", "imageX", "imageY", "random", "randS" };
             for(;j<contextMenuStrip1.Items.Count;j++)
             {
                 if(contextMenuStrip1.Items[j] == sender) break;

@@ -15,7 +15,6 @@ namespace DesktopPet
     /// - areaW / areaH = width / height of area<br />
     /// - imageW / imageH = width / height of the image frame<br />
     /// - imageX / imageY = left / top position of the parent image<br />
-    /// - imageF = whether image is flipped. Facing left = 1, right = -1<br />
     /// - random = a random number between 0 and 99 (inclusive)<br />
     /// - randS = a number between 0 and 99 (inclusive). This number doesn't change until next spawn<br />
     /// If you want discover more about what you can do, see <a href="https://msdn.microsoft.com/en-us/library/system.data.datacolumn.expression(v=vs.110).aspx">https://msdn.microsoft.com/en-us/library/system.data.datacolumn.expression(v=vs.110).aspx</a><br />
