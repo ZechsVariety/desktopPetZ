@@ -792,8 +792,8 @@ namespace DesktopPet
                                     iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
                                 }
 
-                                // If a "none", "vertical+" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
-                                if (iBorderAnimation >= 0)
+                                // If a "none", "vertical+" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal. It also ignores it if it's already playing the animation.
+                                if (iBorderAnimation >= 0 && iBorderAnimation != CurrentAnimation.ID)
                                 {
                                     PositionX = rct.Right;
                                     x = 0;
@@ -1296,6 +1296,9 @@ namespace DesktopPet
             else
                 sheep2InteractDirection = TNextAnimation.TDirection.BEHIND;
 
+            // Determine if all horizontal+ animations should be considered
+            bool isHorizontal_ = (only == TNextAnimation.TOnly.HORIZONTAL || only == TNextAnimation.TOnly.WINDOW || only == TNextAnimation.TOnly.TASKBAR) ? true : false; // horizontal+ counts for horizontal, window and taskbar collisions
+
             // Determine if sheep1 has any valid interact anims
             foreach (TNextAnimation interactAnim in CurrentAnimation.EndInteract)
             {
@@ -1304,7 +1307,11 @@ namespace DesktopPet
                     continue;
 
                 // Ignore animation if it has the wrong TOnly value
-                if (interactAnim.only != only && interactAnim.only != TNextAnimation.TOnly.NONE && interactAnim.only != TNextAnimation.TOnly.PETSIDE && interactAnim.only != TNextAnimation.TOnly.VERTICAL_)
+                if (interactAnim.only != only
+                    && interactAnim.only != TNextAnimation.TOnly.NONE
+                    && interactAnim.only != TNextAnimation.TOnly.PETSIDE
+                    && interactAnim.only != TNextAnimation.TOnly.VERTICAL_
+                    && !(isHorizontal_ && interactAnim.only == TNextAnimation.TOnly.HORIZONTAL_))
                     continue;
 
                 // Ignore animation if sheep2 isn't in the intended direction
@@ -1323,7 +1330,11 @@ namespace DesktopPet
                     continue;
 
                 // Ignore animation if it has the wrong TOnly value. Sheep2 is assumed to have the same only value so that it doesn't have to be recalculated
-                if (interactAnim.only != only && interactAnim.only != TNextAnimation.TOnly.NONE && interactAnim.only != TNextAnimation.TOnly.PETSIDE && interactAnim.only != TNextAnimation.TOnly.VERTICAL_)
+                if (interactAnim.only != only
+                    && interactAnim.only != TNextAnimation.TOnly.NONE
+                    && interactAnim.only != TNextAnimation.TOnly.PETSIDE
+                    && interactAnim.only != TNextAnimation.TOnly.VERTICAL_
+                    && !(isHorizontal_ && interactAnim.only == TNextAnimation.TOnly.HORIZONTAL_))
                     continue;
 
                 // Ignore animation if sheep1 isn't in the intended direction

@@ -69,7 +69,7 @@ v0.3.1
 
 * Replaced pet-mimicking with a far better pet interaction system using trigger animations
 
-  * "Taskbar", "Horizontal" and "Window" TOnly values work. Others don't change anything
+  * "Taskbar", "Horizontal", "Horizontal+" and "Window" TOnly values work. Others don't change anything
   * Added direction flag
   * Implemented into Pet Editor, with some basic Pet Tester and GraphViz functionality
   * Updated XML schemas
