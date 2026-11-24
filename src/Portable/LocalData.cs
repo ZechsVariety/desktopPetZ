@@ -223,6 +223,18 @@ namespace DesktopPet
             AppSettings["multiXml"].Value = multiXml;
             Save();
         }
+        // If you already have a multiXml (ex: on startup)
+        public void SetMultiXml(string multiXml)
+        {
+            Properties.Settings.Default.multiXml = multiXml;
+            AppSettings["multiXml"].Value = multiXml;
+            Save();
+        }
+
+        public string GetMultiXml()
+        {
+            return AppSettings["multiXml"].Value;
+        }
 
         /// <summary>
         /// Get a random xml from the "multiXml" property

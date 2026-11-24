@@ -308,6 +308,21 @@ namespace DesktopPet
 				{
                     if (iSheeps == 0)
 					{
+                        string multiXml = Program.MyData.GetMultiXml();
+
+                        //if you have a pet set selected, randomize the pet
+                        if (multiXml != "")
+                        {
+                            //get a random xml from the multiXml list
+                            string xml = Program.MyData.GetRandomXml();
+
+                            //set xml to the random one
+                            Program.MyData.SetXml(xml, "..");
+                            Program.MyData.SetMultiXml(multiXml);
+
+                            AddDebugInfo(DEBUG_TYPE.warning, "pet randomized!");
+                        }
+
 						AddDebugInfo(DEBUG_TYPE.info, "init application...");
 						xml.LoadAnimations(animations);
 					}
