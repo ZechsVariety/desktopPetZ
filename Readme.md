@@ -1,6 +1,4 @@
-# DesktopPet-Z v1.0
-
-#### AKA: zSheep
+# DesktopPet-Z v1.1
 
 
 
@@ -14,13 +12,17 @@ Original author: [Adrianotiger](https://github.com/Adrianotiger)
 
 
 
-DesktopPet-Z is an expansion of [desktopPet v1.3.2 by Adriano](https://github.com/Adrianotiger/desktopPet), for my fun tests and experiments, and it includes [all my custom pets](https://github.com/ZechsVariety/Zechs-Desktop-Pets).
+**DesktopPet-Z is an AI-free expansion of** [**desktopPet v1.3.2 by Adriano**](https://github.com/Adrianotiger/desktopPet), mainly for my fun tests and experiments. It includes [all my custom pets](https://github.com/ZechsVariety/Zechs-Desktop-Pets), as well as a new "**Pet Sets"** feature.
 
-I also add most of the custom features to the original DesktopPet.
+
+
+It may not look like much, but that's because I ported most of the unique features to the original DesktopPet too 😄
 
 
 
 ### Additions
+
+All of these features are available in DesktopPet-Z
 
 
 
@@ -29,7 +31,7 @@ I also add most of the custom features to the original DesktopPet.
 * [Pet tossing](https://github.com/Adrianotiger/desktopPet/pull/150)
 * [Pet window-side collisions](https://github.com/Adrianotiger/desktopPet/pull/167)
 * [Pet skins](https://github.com/Adrianotiger/desktopPet/pull/172)
-* Pet interaction (WIP)
+* [Pet interaction](https://github.com/Adrianotiger/desktopPet/pull/190)
 * 5 of my more finished pets
 * Various small changes and bug fixes
 
@@ -40,7 +42,7 @@ I also add most of the custom features to the original DesktopPet.
 * ALL my custom pets
 * Pet sets
 * Retain your pet count when loading a new pet
-* "Kill all" button
+* "Kill all" button >:)
 * Much higher pet limit
 
 
@@ -49,11 +51,13 @@ I also add most of the custom features to the original DesktopPet.
 
 ### Stance on AI
 
-I am firmly against generative AI, especially when it comes to hobby-born projects like this one. So, all of my features are 100% human-made.
-
-I'm aware that recent updates to DesktopPet make use of generative AI, but DesktopPet-Z is built from an old version (v1.3.2), which I believe is AI-free.
+All of my features and additions are 100% human-made.
 
 
 
-NOTE: Vanilla pets are automatically retrieved from DesktopPet, so some new pets made by the community use generative AI.
+I am **firmly against the use of generative AI**, especially in passion projects, but recent updates to DesktopPet have unfortunately made use of it. So, DesktopPet-Z aims to be the **completely AI-free alternative**! It is built from DesktopPet v1.3.2, which seems to precede any AI use in that project.
+
+
+
+**NOTE:** I have manually blacklisted the AI-generated vanilla pets. Please keep in mind, new pets are automatically retrieved from DesktopPet, so please let me know if I miss any, as well as if I wrongfully blacklisted any of your pets.
 

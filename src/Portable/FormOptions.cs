@@ -133,14 +133,16 @@ namespace DesktopPet
             WebPets = Newtonsoft.Json.JsonConvert.DeserializeObject<Pets>(vanillaContent);
 
             //remove duplicate pets
-            List<Pet> duplicatePets = new List<Pet>();
+            List<Pet> blacklistedPets = new List<Pet>();
             foreach (Pet pet in WebPets.pets)
             {
-                if (pet.author == "Zecheriah")
-                    duplicatePets.Add(pet);
+                // remove my duplicates and remove pets with AI-generated elements (sprites and/or code)
+                if (pet.author == "Zecheriah"
+                    || pet.author == "Luan Felipe")
+                    blacklistedPets.Add(pet);
             }
-            foreach(Pet duplicatePet in  duplicatePets)
-                WebPets.pets.Remove(duplicatePet);
+            foreach(Pet pet in blacklistedPets)
+                WebPets.pets.Remove(pet);
 
             //get the pets object from Zecheriah's pets.json
             var extraContent = await client.GetStringAsync(urlZech + "pets.json");

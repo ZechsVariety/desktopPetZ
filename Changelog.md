@@ -84,4 +84,5 @@ V1.1
   * Randomize on program launch
   * Display Pet Set name in tooltip
   * "Reroll" button in context menu
+* Blacklisted AI-generated pets and updated AI policy
 
