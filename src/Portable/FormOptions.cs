@@ -527,7 +527,7 @@ namespace DesktopPet
                 d.Click += (se, ev) =>
                 {
                     //set the multiXml value to a concatenated string of all the selected pet xmls
-                    Program.MyData.SetMultiXml(petXmls);
+                    Program.MyData.SetMultiXml(i.title, petXmls);
 
                     //get a random xml from the multiXml list
                     string xml = Program.MyData.GetRandomXml();

@@ -200,19 +200,19 @@ namespace DesktopPet
         }
 
         /// <summary>
-        /// Set the "multiXml" property, which is a concatenation of multiple xmls with a pipe (|) delimiter (ex: "[xml1]|[xml2]")
+        /// Set the "multiXml" property, which is a concatenation of the pet set name, and then multiple xmls with pipe (|) delimiters (ex: "sheeps|xml1|xml2")
         /// It should save between sessions.
         /// </summary>
+        /// <param name="setName">Name of the pet set</param>
         /// <param name="xmls">List of xmls to be added</param>
-        public void SetMultiXml(List<XmlDocument> xmls)
+        public void SetMultiXml(string setName, List<XmlDocument> xmls)
         {
             //concat string
-            string multiXml = "";
+            string multiXml = setName;
             for (int i = 0; i < xmls.Count; i++)
             {
                 //delimiter
-                if(i != 0)
-                    multiXml += "|";
+                multiXml += "|";
 
                 //add xml to string
                 multiXml += xmls[i].OuterXml;
@@ -235,6 +235,13 @@ namespace DesktopPet
         {
             return AppSettings["multiXml"].Value;
         }
+        public string GetMultiXmlName()
+        {
+            if (GetMultiXml() != "")
+                return GetMultiXml().Split('|')[0];
+            else
+                return "";
+        }
 
         /// <summary>
         /// Get a random xml from the "multiXml" property
@@ -247,7 +254,7 @@ namespace DesktopPet
 
             //get random index and return the chosen xml
             Random random = new Random();
-            return xmls[random.Next(0, xmls.Count)];
+            return xmls[random.Next(1, xmls.Count)];
         }
 
         /// <summary>

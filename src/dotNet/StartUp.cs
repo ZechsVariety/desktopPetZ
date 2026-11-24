@@ -133,7 +133,8 @@ namespace DesktopPet
                         xml.AnimationXML.Header.Author, 
                         xml.AnimationXML.Header.Title, 
                         xml.AnimationXML.Header.Version, 
-                        xml.AnimationXML.Header.Info
+                        xml.AnimationXML.Header.Info,
+                        Program.MyData.GetMultiXmlName()
                         );
 
                 // Wait 1 second, before starting first animation
@@ -393,7 +394,8 @@ namespace DesktopPet
                 xml.AnimationXML.Header.Author, 
                 xml.AnimationXML.Header.Title, 
                 xml.AnimationXML.Header.Version, 
-                xml.AnimationXML.Header.Info);
+                xml.AnimationXML.Header.Info,
+                Program.MyData.GetMultiXmlName());
 
                 // start animation in 1 second.
             timer1.Tag = "A";

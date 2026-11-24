@@ -33,7 +33,7 @@ namespace DesktopPet
             ni.MouseClick += new MouseEventHandler(Ni_MouseClick);
             ni.MouseDoubleClick += new MouseEventHandler(Ni_MouseDoubleClick);
 
-            ni.Text = "eSheep Desktop Pet Z";
+            ni.Text = "eSheep\npetSet\nDesktop Pet Z";
             ni.Visible = true;
 
             // Attach a context menu.
@@ -43,14 +43,14 @@ namespace DesktopPet
             /// <summary>
             /// Displays the icon in the system tray.
             /// </summary>
-        public void SetIcon(System.IO.MemoryStream icon, string petName, string aboutAuthor, string aboutTitle, string aboutVersion, string aboutInfo)
+        public void SetIcon(System.IO.MemoryStream icon, string petName, string aboutAuthor, string aboutTitle, string aboutVersion, string aboutInfo, string petSetName)
         {
             bool success = true;
 			try
 			{
 				ni.Icon = new Icon(icon, 32, 32);
 				ContextMenus.UpdateIcon(ni.Icon, petName, aboutAuthor, aboutTitle, aboutVersion, aboutInfo);
-				ni.Text = petName + " Desktop Pet Z";
+				ni.Text = petName + (petSetName != "" ? ("\nSet: " + petSetName) : "") + "\nDesktop Pet Z";
 			}
 			catch(Exception)
 			{
