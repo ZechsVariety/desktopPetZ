@@ -25,6 +25,10 @@ namespace DesktopPet
             /// </summary>
         static ToolStripMenuItem newSheepMenuItem;
             /// <summary>
+            /// Reroll Menu Item: if using a PetSet, pick a new pet. Otherwise, just reset the pets.
+            /// </summary>
+        static ToolStripMenuItem rerollMenuItem;
+            /// <summary>
             /// Kill Sheep Menu Item
             /// </summary>
         static ToolStripMenuItem killSheepMenuItem;
@@ -138,6 +142,16 @@ namespace DesktopPet
             sep = new ToolStripSeparator();
             menu.Items.Add(sep);
 
+            // Item: PetSet Reroll.
+            rerollMenuItem = new ToolStripMenuItem
+            {
+                Text = "&PetSet: Reroll"
+            };
+            rerollMenuItem.Click += new EventHandler(PetSetReroll_Click);
+            rerollMenuItem.Image = Resources.exit;
+            rerollMenuItem.Font = new Font(rerollMenuItem.Font, rerollMenuItem.Font.Style | FontStyle.Bold);
+            menu.Items.Add(rerollMenuItem);
+
             // Item: Kill All Sheep.
             killSheepMenuItem = new ToolStripMenuItem
             {
@@ -190,6 +204,10 @@ namespace DesktopPet
         {
             newSheepMenuItem.Text = "&Add new " + petName;
             newSheepMenuItem.Image = newIcon.ToBitmap();
+            if (Program.MyData.GetMultiXml() != "")
+                rerollMenuItem.Text = "&PetSet: Reroll";
+            else
+                rerollMenuItem.Text = "&Reset " + petName + "s";
             killSheepMenuItem.Text = "&Kill all " + petName + "s";
             closeSheepMenuItem.Text = "&Remove " + petName + " and Close";
 
@@ -284,6 +302,32 @@ namespace DesktopPet
 #else
             OpenOptionWindow("xamlesheep://options");
 #endif
+        }
+
+        /// <summary>
+        /// Handles the Click event of the Reroll Sheep control.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PetSetReroll_Click(object sender, EventArgs e)
+        {
+            //if you have a pet set selected, randomize the pet.
+            if (Settings.Default.multiXml != "")
+            {
+                //get a random xml from the multiXml list
+                string xml = Program.MyData.GetRandomXml();
+
+                //set xml to the random one
+                Program.MyData.SetXml(xml, "..");
+                //NOTE: this automatically kills all pets.
+                Program.Mainthread.LoadNewXMLFromString(xml);
+
+                StartUp.AddDebugInfo(StartUp.DEBUG_TYPE.warning, "pet randomized!");
+            }
+            else
+            {
+                Program.Mainthread.LoadNewXMLFromString(Settings.Default.xml);
+            }
         }
 
         /// <summary>

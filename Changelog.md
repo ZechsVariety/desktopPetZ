@@ -75,3 +75,13 @@ v0.3.1
   * Updated XML schemas
 * Reduced redundancy in border detection
 
+
+
+V1.1
+
+* Pet Set improvements:
+
+  * Randomize on program launch
+  * Display Pet Set name in tooltip
+  * "Reroll" button in context menu
+
