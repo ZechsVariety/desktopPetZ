@@ -881,8 +881,8 @@ namespace DesktopPet
                                     iBorderAnimation = Animations.SetNextBorderAnimation(CurrentAnimation.ID, TNextAnimation.TOnly.WINDOWSIDE);
                                 }
 
-                                // If a "none", "vertical+" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal.
-                                if (iBorderAnimation >= 0)
+                                // If a "none", "vertical+" or "petSide"/"windowSide" border animation exists, play it. Otherwise, pet ignores this collision and continues as normal. It also ignores it if it's already playing the animation.
+                                if (iBorderAnimation >= 0 && iBorderAnimation != CurrentAnimation.ID)
                                 {
                                     PositionX = rct.Left - Width;
                                     x = 0;
