@@ -77,7 +77,7 @@ v0.3.1
 
 
 
-V1.1
+V1.1 (2026-11-24)
 
 * Pet Set improvements:
 
@@ -85,4 +85,13 @@ V1.1
   * Display Pet Set name in tooltip
   * "Reroll" button in context menu
 * Blacklisted AI-generated pets and updated AI policy
+
+
+
+v1.2 (WIP)
+
+* Pet Editor v0.9.1:
+
+  * Fixed inability to type operators (-, /, \*) in text fields
+  * Renamed to PetEditor-Z because it may receive unique features soon
 
